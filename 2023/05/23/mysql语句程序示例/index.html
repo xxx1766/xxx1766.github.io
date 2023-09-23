@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="mybatis mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql语句程序示例">
+<meta property="og:url" content="http://example.com/2023/05/23/mysql%E8%AF%AD%E5%8F%A5%E7%A8%8B%E5%BA%8F%E7%A4%BA%E4%BE%8B/index.html">
+<meta property="og:site_name" content="XiuXian Blog">
+<meta property="og:description" content="mybatis mysql">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230524193022800.png">
+<meta property="og:image" content="c:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230527103931614.png">
+<meta property="og:image" content="c:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230527103943783.png">
+<meta property="og:image" content="c:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230527104023885.png">
+<meta property="article:published_time" content="2023-05-23T14:39:52.000Z">
+<meta property="article:modified_time" content="2023-05-29T11:38:40.531Z">
+<meta property="article:author" content="XiuXian">
+<meta property="article:tag" content="知识技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230524193022800.png">
+
+<link rel="canonical" href="http://example.com/2023/05/23/mysql%E8%AF%AD%E5%8F%A5%E7%A8%8B%E5%BA%8F%E7%A4%BA%E4%BE%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>mysql语句程序示例 | XiuXian Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">XiuXian Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/05/23/mysql%E8%AF%AD%E5%8F%A5%E7%A8%8B%E5%BA%8F%E7%A4%BA%E4%BE%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="XiuXian">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XiuXian Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mysql语句程序示例
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-05-23 22:39:52" itemprop="dateCreated datePublished" datetime="2023-05-23T22:39:52+08:00">2023-05-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-05-29 19:38:40" itemprop="dateModified" datetime="2023-05-29T19:38:40+08:00">2023-05-29</time>
+              </span>
+
+          
+            <div class="post-description">mybatis mysql</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC]</p>
+<h1 id="mybatis配置"><a href="#mybatis配置" class="headerlink" title="mybatis配置"></a>mybatis配置</h1><p>假设已经安装配置好了</p>
+<p>mybatis的核心配置文件在resources目录下，名为Mybatis-config.xml，有模板，整体代码框架如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">configuration</span></span></span><br><span class="line"><span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="string">&quot;https://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">			<span class="comment">&lt;!--这里要写入连接mysql数据库的信息--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;jdbc:mysql://localhost:3306/test&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;root&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;2023&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--这里要写sql映射--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--userMapper.xml文件实现mapper代理--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--xml文件名可更改--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;[Projectname]/Mapper/userMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="XXXMapper-xml"><a href="#XXXMapper-xml" class="headerlink" title="XXXMapper.xml"></a>XXXMapper.xml</h1><p>以文件名userMapper.xml为例，一般是</p>
+<p>要实现Mapper代理需要建一个和userMapper.xml同名的接口，在该接口中存放与userMapper.xml中SQL语言一样的抽象方法，要这个接口和userMapper.xml所在的目录要相同（？？？我的并没有）</p>
+<p>userMapper.xml整体代码</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span></span></span><br><span class="line"><span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="string">&quot;https://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.kinroy.Mapper.userMapper&quot;</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectall&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.kinroy.pojo.User&quot;</span>&gt;</span></span><br><span class="line">        select * from user;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectzhangsan&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.kinroy.pojo.User&quot;</span>&gt;</span></span><br><span class="line">       select * from user where name=&#x27;张三&#x27;;</span><br><span class="line"> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>与其同名接口的整体代码：（我的架构对应的应该是UserDao）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package com.kinroy.Mapper;</span><br><span class="line"> </span><br><span class="line">import com.kinroy.pojo.User;</span><br><span class="line"> </span><br><span class="line">import java.util.List;</span><br><span class="line"> </span><br><span class="line">public interface userMapper &#123;</span><br><span class="line">    List&lt;User&gt; selectall();</span><br><span class="line">    User selectzhangsan();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="sql语句"><a href="#sql语句" class="headerlink" title="sql语句"></a>sql语句</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>SQL (Structured Query Language)：结构化查询语句</p>
+<p>SQL常用的三部分：数据查询语言DQL，数据操作语言DML，数据定义语言DDL</p>
+<p>DQL：常见保留字SELECT，WHERE，ORDER BY，GROUP BY，HAVING</p>
+<p>DML：常见动词INSERT，UPDATE，DELETE</p>
+<p>DBMS (Database Management System) ：数据库管理系统</p>
+<p>DBA (Database Administration) ：数据库管理员，保障DBMS正常高效运行</p>
+<h2 id="常用类型"><a href="#常用类型" class="headerlink" title="常用类型"></a>常用类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MySQL:           </span><br><span class="line">INT              整型</span><br><span class="line">BIGINT           长整型</span><br><span class="line">DECIMAL          浮点数</span><br><span class="line">DATE/DATETIME    日期</span><br><span class="line">VARCHAR          字符串</span><br></pre></td></tr></table></figure>
+
+<p>其他<a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-data-types.html">MySQL 数据类型 | 菜鸟教程 (runoob.com)</a></p>
+<h2 id="管理操作"><a href="#管理操作" class="headerlink" title="管理操作"></a>管理操作</h2><p>先了解文件结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">|-连接</span><br><span class="line">	|--database1 </span><br><span class="line">		|---table1</span><br><span class="line">		|---table2</span><br><span class="line">		|---table3</span><br><span class="line">	|--database2</span><br><span class="line">		|---table1</span><br><span class="line">	|--database3</span><br><span class="line">		|---table1</span><br><span class="line">		|---table2</span><br><span class="line">		|---table3</span><br><span class="line">		|---table4</span><br><span class="line">|-连接</span><br></pre></td></tr></table></figure>
+
+<p>命令行操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">use &lt;数据库名&gt;;					 切换数据库</span><br><span class="line">show databases;					查看数据库列表</span><br><span class="line">create database &lt;数据库名&gt;;		 创建数据库</span><br><span class="line">drop database &lt;数据库名&gt;;		 删除数据库</span><br><span class="line">alter database &lt;数据库名&gt; &lt;操作&gt;;	修改数据库</span><br><span class="line"></span><br><span class="line">drop table &lt;表名&gt;; 删除表 注意是drop不是delete delete用于删表记录</span><br><span class="line"></span><br><span class="line">show tables;					查看当前数据库下所有表</span><br><span class="line">show columns from &lt;表名&gt;;			显示表的属性</span><br><span class="line">show index from &lt;表名&gt;;			显示表的详细索引信息，包括主键</span><br><span class="line"></span><br><span class="line">show table status from &lt;数据库名&gt;;   显示数据库中所有表的信息</span><br><span class="line">show table status from &lt;数据库名&gt; like &#x27;runoob%&#x27;;	表名以runoob开头的表的信息</span><br><span class="line">show table status from &lt;数据库&gt; like &#x27;runoob%&#x27;\G;   加上\G，查询结果按列打印(可能会出错去掉分号就可以了，\G 和分号 ; 的作用相似，两者取其一即可)</span><br><span class="line"></span><br><span class="line">show grants;					查看当前用户的权限</span><br><span class="line"></span><br><span class="line">show variables like &quot;%character%&quot;; 查看编码方式</span><br><span class="line">set character_set_server = utf8; 设置编码方式</span><br><span class="line">create database name character set utf8; 创建表的时候设置编码</span><br><span class="line">alter database name character set utf8; 修改数据库成utf8的.</span><br><span class="line">alter table type character set utf8; 修改表默认用utf8.</span><br><span class="line">alter table type modify type_name varchar(50) CHARACTER SET utf8; 修改字段用utf8</span><br></pre></td></tr></table></figure>
+
+<p>修改编码一：手动</p>
+<p><img src="C:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230524193022800.png" alt="image-20230524193022800"></p>
+<p>修改方式二：修改默认 配置文件<a target="_blank" rel="noopener" href="https://blog.csdn.net/haduwi/article/details/107134679">(250条消息) Mysql 5.7 修改中文字符编码_10Alexander01的博客-CSDN博客</a></p>
+<h2 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h2><p><strong>注意</strong>：F6在Navicat Premium里可以打开命令行操作，试一下命令行操作</p>
+<p><strong>注意</strong>：password() 加密函数已经在 8.0.11 中移除了，可以使用 MD5() 函数代替</p>
+<p><strong>注意：</strong>在注意需要执行 <strong>FLUSH PRIVILEGES</strong> 语句。 这个命令执行后会重新载入授权表。若不执行该命令，无法使用新创建的用户来连接mysql服务器，除非你重启mysql服务器</p>
+<p><strong>注意</strong>：MySQL 的SQL语句以分号 (;) 作为结束标识</p>
+<p>可以在创建用户时，为用户指定权限，在对应的权限列中，在插入语句中设置为 ‘Y’ 即可</p>
+<p>添加用户的实例，用户名为用户名为guest，密码为123456，并授权用户可进行 SELECT, INSERT 和 UPDATE操作权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@host# mysql -u root -p</span><br><span class="line">Enter password:*******</span><br><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line"></span><br><span class="line">mysql&gt; INSERT INTO user </span><br><span class="line">          (host, user, authentication_string, </span><br><span class="line">           select_priv, insert_priv, update_priv) </span><br><span class="line">           VALUES (&#x27;localhost&#x27;, &#x27;guest&#x27;, </span><br><span class="line">           PASSWORD(&#x27;123456&#x27;), &#x27;Y&#x27;, &#x27;Y&#x27;, &#x27;Y&#x27;);</span><br><span class="line">Query OK, 1 row affected (0.20 sec)</span><br><span class="line">**某些属性会不允许是空或无默认值，安装提示加属性填值就行**</span><br><span class="line"></span><br><span class="line">mysql&gt; FLUSH PRIVILEGES;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT host, user, password FROM user WHERE user = &#x27;guest&#x27;;</span><br><span class="line">+-----------+---------+------------------+</span><br><span class="line">| host      | user    | password         |</span><br><span class="line">+-----------+---------+------------------+</span><br><span class="line">| localhost | guest | 6f8c114b58f2ce9e |</span><br><span class="line">+-----------+---------+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>另外一种添加用户的方法为通过SQL的 GRANT 命令，以下命令会给指定数据库TUTORIALS添加用户 zara ，密码为 zara123 ，下面的命令会在mysql数据库中的user表创建一条用户信息记录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line"></span><br><span class="line">mysql&gt; GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP</span><br><span class="line">    -&gt; ON TUTORIALS.*</span><br><span class="line">    -&gt; TO &#x27;zara&#x27;@&#x27;localhost&#x27;</span><br><span class="line">    -&gt; IDENTIFIED BY &#x27;zara123&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>grant 普通 DBA 管理某个 MySQL 数据库的权限。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant all privileges on testdb to dba@&#x27;localhost&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>其中，关键字 <strong>privileges</strong> 可以省略。</p>
+<p>grant 高级 DBA 管理 MySQL 中所有数据库的权限。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant all on *.* to dba@&#x27;localhost&#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h2><h3 id="表的约束"><a href="#表的约束" class="headerlink" title="表的约束"></a>表的约束</h3><p>非空约束 NOT NULL</p>
+<p>设置列的默认值 DEFAULT</p>
+<p>唯一约束 UNIQUE （不允许值存在重复）</p>
+<p>主键约束 PRIMARY KEY（非空且唯一）</p>
+<p>主键自增长 AUTO_INCERMENT</p>
+<p>外键约束 FOREIGN KEY （A表的外键列必须参考B表的主键列）</p>
+<h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create table &lt;表名&gt; (column_name1 column_type1 [some constraints], column_name2 column_type2,...);</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create table if not exists `example` (</span><br><span class="line">	`id` int unsigned auto_increment,</span><br><span class="line">	`title` varchar(100) not null,</span><br><span class="line">	`author` varchar(40) not null,</span><br><span class="line">	`date` date,</span><br><span class="line">	primary key(`id`)</span><br><span class="line">)engine=InnoDB default charset=utf8;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：不是单引号</p>
+<p>或者</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CREATE TABLE runoob_tbl(</span><br><span class="line">    -&gt; runoob_id INT NOT NULL AUTO_INCREMENT,</span><br><span class="line">    -&gt; runoob_title VARCHAR(100) NOT NULL,</span><br><span class="line">    -&gt; runoob_author VARCHAR(40) NOT NULL,</span><br><span class="line">    -&gt; submission_date DATE,</span><br><span class="line">    -&gt; PRIMARY KEY ( runoob_id )</span><br><span class="line">    -&gt; )ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>注意：创建表的时候可以加个检查</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE IF EXISTS &lt;表名&gt;; </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><h4 id="SQL-INSERT-INTO"><a href="#SQL-INSERT-INTO" class="headerlink" title="SQL: INSERT INTO"></a>SQL: INSERT INTO</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO table_name ( field1, field2,...fieldN )</span><br><span class="line">                       VALUES</span><br><span class="line">                       ( value1, value2,...valueN );</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：数据是字符型时必须使用单引号或者双引号，如“wuwawawa”</p>
+<p>例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO runoob_tbl </span><br><span class="line">	(runoob_title, runoob_author, submission_date)</span><br><span class="line">	VALUES</span><br><span class="line">	(&quot;学习 PHP&quot;, &quot;菜鸟教程&quot;, NOW());</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：上述实例中没有提供 runoob_id 的数据，因为该字段在创建表的时候已经设置它为 AUTO_INCREMENT(自动增加)属性。 所以，该字段会自动递增而不需要我们去设置。</p>
+<p><strong>注意</strong>：实例中 NOW()是一个 MySQL 函数，该函数返回日期和时间。</p>
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO runoob_tbl</span><br><span class="line">	VALUES</span><br><span class="line">	(0,&quot;JAVA 教程&quot;, &quot;RUNOOB.COM&quot;, &#x27;2016-05-06&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：如果添加过主键自增（PRINARY KEY AUTO_INCREMENT）第一列在增加数据的时候，可以写为<strong>0</strong>或者<strong>null</strong>，这样添加数据可以自增， 从而可以添加全部数据，而不用特意规定那几列添加数据。</p>
+<h4 id="Springboot中"><a href="#Springboot中" class="headerlink" title="Springboot中"></a>Springboot中</h4><h3 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h3><h4 id="SQL：SELECT"><a href="#SQL：SELECT" class="headerlink" title="SQL：SELECT"></a>SQL：SELECT</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SELECT column_name,column_name </span><br><span class="line">[as otherName]</span><br><span class="line">FROM table_name</span><br><span class="line">[WHERE Clause]  #有AND OR BETWEEN...AND like in(...)</span><br><span class="line">[LIMIT N][ OFFSET M]</span><br><span class="line">[LIMIT offset, num_record]</span><br><span class="line">[ORDER BY column_name [desc/asc(倒序/升序)]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询语句中可以使用一个或者多个表，表之间使用逗号(,)分割，并使用WHERE语句来设定查询条件。</li>
+<li>使用星号（*）来代替其他字段，SELECT语句会返回表的所有字段数据</li>
+<li>使用 WHERE 语句来包含任何条件。</li>
+<li>使用 LIMIT 属性来设定返回的记录数。</li>
+<li>通过OFFSET指定SELECT语句开始查询的数据偏移量。默认情况下偏移量为0。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from runoob_tbl;</span><br></pre></td></tr></table></figure>
+
+<p>分页功能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">select * from _table limit (page_number-1)*lines_perpage, lines_perpage</span><br><span class="line"></span><br><span class="line">或</span><br><span class="line"></span><br><span class="line">select * from _table limit lines_perpage offset (page_number-1)*lines_perpage</span><br></pre></td></tr></table></figure>
+
+<p>关联查询</p>
+<p>分为左关联和右关联</p>
+<p>左关联: <code>left join ... on ...</code></p>
+<p>右关联:<code>right join... on ...</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 字段 from 表1 left join 表2 on  条件 (一般为表1与表2的关联条件)</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select user.username,orders.id,count(*) </span><br><span class="line">from user left join orders </span><br><span class="line">on user.id = orders.user_id </span><br></pre></td></tr></table></figure>
+
+<h4 id="Springboot中-1"><a href="#Springboot中-1" class="headerlink" title="Springboot中"></a>Springboot中</h4><h3 id="筛选语句"><a href="#筛选语句" class="headerlink" title="筛选语句"></a>筛选语句</h3><h4 id="SQL：WHERE子句"><a href="#SQL：WHERE子句" class="headerlink" title="SQL：WHERE子句"></a>SQL：WHERE子句</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT field1, field2,...fieldN FROM table_name1, table_name2...</span><br><span class="line">[WHERE condition1 [AND [OR]] condition2.....</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：如果给定的条件在表中没有任何匹配的记录，那么查询不会返回任何数据。</p>
+<p><strong>注意</strong>： WHERE 子句的字符串比较是不区分大小写的，可以使用 BINARY 关键字来设定 WHERE 子句的字符串比较是区分大小写的</p>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from runoob_tbl WHERE runoob_author=&#x27;菜鸟教程&#x27;;</span><br><span class="line">SELECT * from runoob_tbl WHERE BINARY runoob_author=&#x27;RUNOOB.COM&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Springboot上"><a href="#Springboot上" class="headerlink" title="Springboot上"></a>Springboot上</h4><h3 id="更新语句"><a href="#更新语句" class="headerlink" title="更新语句"></a>更新语句</h3><h4 id="SQL：UPDATE语句"><a href="#SQL：UPDATE语句" class="headerlink" title="SQL：UPDATE语句"></a>SQL：UPDATE语句</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UPDATE table_name SET field1=new-value1, field2=new-value2</span><br><span class="line">[WHERE Clause]</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UPDATE runoob_tbl SET runoob_title=&#x27;学习 C++&#x27; WHERE runoob_id=3;</span><br></pre></td></tr></table></figure>
+
+<p>当需要将字段中的特定字符串（子串）批量修改为其他字符串时</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UPDATE table_name SET field=REPLACE(field, &#x27;old-string&#x27;, &#x27;new-string&#x27;) </span><br><span class="line">[WHERE Clause]</span><br></pre></td></tr></table></figure>
+
+<h4 id="Springboot"><a href="#Springboot" class="headerlink" title="Springboot"></a>Springboot</h4><h3 id="删除语句"><a href="#删除语句" class="headerlink" title="删除语句"></a>删除语句</h3><h4 id="SQL：DELETE语句"><a href="#SQL：DELETE语句" class="headerlink" title="SQL：DELETE语句"></a>SQL：DELETE语句</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM table_name [WHERE Clause]</span><br></pre></td></tr></table></figure>
+
+<p>（？？？是只删记录吗？删了之后表还存在吗？）</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM runoob_tbl WHERE runoob_id=3;</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>delete，drop，truncate 都有删除表的作用，区别在于：</p>
+<ul>
+<li>1、delete 和 truncate 仅仅删除表数据，drop 连表数据和表结构一起删除，打个比方，delete 是单杀，truncate 是团灭，drop 是把电脑摔了。</li>
+<li>2、delete 是 DML 语句，操作完以后如果没有不想提交事务还可以回滚，truncate 和 drop 是 DDL 语句，操作完马上生效，不能回滚，打个比方，delete 是发微信说分手，后悔还可以撤回，truncate 和 drop 是直接扇耳光说滚，不能反悔。</li>
+<li>3、执行的速度上，<strong>drop&gt;truncate&gt;delete</strong>，打个比方，drop 是神舟火箭，truncate 是和谐号动车，delete 是自行车。</li>
+</ul>
+</blockquote>
+<h4 id="Springboot-1"><a href="#Springboot-1" class="headerlink" title="Springboot"></a>Springboot</h4><h3 id="匹配语句"><a href="#匹配语句" class="headerlink" title="匹配语句"></a>匹配语句</h3><h4 id="SQL：LIKE子句"><a href="#SQL：LIKE子句" class="headerlink" title="SQL：LIKE子句"></a>SQL：LIKE子句</h4><p> LIKE即模糊匹配</p>
+<ul>
+<li>**%**字符来表示任意字符，如果没有使用 **%**， LIKE 子句与等号 <strong>&#x3D;</strong> 的效果是一样的</li>
+<li>**_**字符匹配单个字符</li>
+<li>**[]**匹配括号所列的字符中的一个，指定一个字符、字符串或范围</li>
+<li>**[^]**匹配不在括号所列之内的单个字符</li>
+</ul>
+<p>正则表达式<a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-regexp.html">MySQL 正则表达式 | 菜鸟教程 (runoob.com)</a></p>
+<p>规则示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x27;%a&#x27;     //以a结尾的数据</span><br><span class="line">&#x27;a%&#x27;     //以a开头的数据</span><br><span class="line">&#x27;%a%&#x27;    //含有a的数据</span><br><span class="line">&#x27;_a_&#x27;    //三位且中间字母是a的</span><br><span class="line">&#x27;_a&#x27;     //两位且结尾字母是a的</span><br><span class="line">&#x27;a_&#x27;     //两位且开头字母是a的</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ELECT field1, field2,...fieldN </span><br><span class="line">FROM table_name</span><br><span class="line">WHERE field1 LIKE condition1 [AND [OR]] filed2 = &#x27;somevalue&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from runoob_tbl  WHERE runoob_author LIKE &#x27;%COM&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Springboot-2"><a href="#Springboot-2" class="headerlink" title="Springboot"></a>Springboot</h4><h3 id="集合操作"><a href="#集合操作" class="headerlink" title="集合操作"></a>集合操作</h3><h4 id="SQL：UNION操作符"><a href="#SQL：UNION操作符" class="headerlink" title="SQL：UNION操作符"></a>SQL：UNION操作符</h4><p>UNION 操作符用于连接两个以上的 SELECT 语句的<strong>结果</strong>组合到一个<strong>结果集合</strong>中</p>
+<ul>
+<li><strong>DISTINCT:</strong> 可选，删除结果集中重复的数据。<strong>默认情况下 UNION 操作符已经删除了重复数据</strong>，所以 DISTINCT 修饰符对结果没啥影响。</li>
+<li><strong>ALL:</strong> 可选，返回所有结果集，包含重复数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SELECT expression1, expression2, ... expression_n</span><br><span class="line">FROM tables</span><br><span class="line">[WHERE conditions]</span><br><span class="line">UNION [ALL | DISTINCT]</span><br><span class="line">SELECT expression1, expression2, ... expression_n</span><br><span class="line">FROM tables</span><br><span class="line">[WHERE conditions];</span><br></pre></td></tr></table></figure>
+
+<p>示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT country FROM Websites</span><br><span class="line">UNION</span><br><span class="line">SELECT country FROM apps</span><br></pre></td></tr></table></figure>
+
+<h4 id="Sprintboot"><a href="#Sprintboot" class="headerlink" title="Sprintboot"></a>Sprintboot</h4><h3 id="排序操作"><a href="#排序操作" class="headerlink" title="排序操作"></a>排序操作</h3><h4 id="SQL：ORDER-BY子句"><a href="#SQL：ORDER-BY子句" class="headerlink" title="SQL：ORDER BY子句"></a>SQL：ORDER BY子句</h4><p>使用 <strong>ASC</strong> 或 <strong>DESC</strong> 关键字来设置查询结果是按<strong>升序</strong>或<strong>降序</strong>排列。 默认情况下，它是按升序排列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT field1, field2,...fieldN FROM table_name1, table_name2...</span><br><span class="line">ORDER BY field1 [ASC [DESC][默认 ASC]], [field2...] [ASC [DESC][默认 ASC]]</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * from runoob_tbl ORDER BY submission_date ASC;</span><br></pre></td></tr></table></figure>
+
+<p>注意：gbk（汉字编码字符集）直接ORDER对拼音进行排序，如果用的是utf8需要先转码才能达到拼音排序的效果<code>CONVERT(runoob_title using gbk)</code></p>
+<h4 id="Springboot-3"><a href="#Springboot-3" class="headerlink" title="Springboot"></a>Springboot</h4><h3 id="分组操作"><a href="#分组操作" class="headerlink" title="分组操作"></a>分组操作</h3><h4 id="SQL：GROUP-BY语句"><a href="#SQL：GROUP-BY语句" class="headerlink" title="SQL：GROUP BY语句"></a>SQL：GROUP BY语句</h4><p>在分组的列上我们可以使用 COUNT, SUM, AVG等函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT column_name, function(column_name)</span><br><span class="line">FROM table_name</span><br><span class="line">WHERE column_name operator value</span><br><span class="line">GROUP BY column_name;</span><br></pre></td></tr></table></figure>
+
+<p>示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT name, COUNT(*) FROM   employee_tbl GROUP BY name;</span><br><span class="line">SELECT name, SUM(signin) as signin_count FROM  employee_tbl GROUP BY name WITH ROLLUP;</span><br><span class="line">SELECT coalesce(name, &#x27;总数&#x27;), SUM(signin) as signin_count FROM  employee_tbl GROUP BY name WITH ROLLUP;</span><br></pre></td></tr></table></figure>
+
+<p>可以使用 coalesce 来设置一个可以取代 NUll 的名称，coalesce 语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select coalesce(a,b,c);</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：如果a==null,则选择b；如果b==null,则选择c；如果a!&#x3D;null,则选择a；如果a b c 都为null ，则返回为null</p>
+<h4 id="Springboot-4"><a href="#Springboot-4" class="headerlink" title="Springboot"></a>Springboot</h4><h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="连接操作"><a href="#连接操作" class="headerlink" title="连接操作"></a>连接操作</h3><p>在两个或多个表中查询数据</p>
+<h4 id="SQL：JOIN语句"><a href="#SQL：JOIN语句" class="headerlink" title="SQL：JOIN语句"></a>SQL：JOIN语句</h4><p>可以在 SELECT, UPDATE 和 DELETE 语句中使用 Mysql 的 JOIN 来联合多表查询，JOIN 按照功能大致分为如下三类：</p>
+<ul>
+<li><strong>INNER JOIN或JOIN（内连接,或等值连接）</strong>：获取两个表中字段匹配关系的记录。</li>
+<li><strong>LEFT JOIN（左连接）：</strong>获取左表所有记录，即使右表没有对应匹配的记录。</li>
+<li><strong>RIGHT JOIN（右连接）：</strong> 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录。</li>
+</ul>
+<p>示例：</p>
+<p>内连接</p>
+<p><img src="C:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230527103931614.png" alt="image-20230527103931614"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a INNER JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;</span><br><span class="line">&lt;==&gt;</span><br><span class="line">SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a, tcount_tbl b WHERE a.runoob_author = b.runoob_author;</span><br></pre></td></tr></table></figure>
+
+<p>左连接</p>
+<p><img src="C:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230527103943783.png" alt="image-20230527103943783"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a LEFT JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;</span><br></pre></td></tr></table></figure>
+
+<p>右连接</p>
+<p><img src="C:\Users\Anne\AppData\Roaming\Typora\typora-user-images\image-20230527104023885.png" alt="image-20230527104023885"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a RIGHT JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Springboot-5"><a href="#Springboot-5" class="headerlink" title="Springboot"></a>Springboot</h4><h3 id="NULL值处理"><a href="#NULL值处理" class="headerlink" title="NULL值处理"></a>NULL值处理</h3><h4 id="SQL：IS-NULL-amp-IS-NOT-NULL操作符"><a href="#SQL：IS-NULL-amp-IS-NOT-NULL操作符" class="headerlink" title="SQL：IS NULL &amp; IS NOT NULL操作符"></a>SQL：IS NULL &amp; IS NOT NULL操作符</h4><p>MySQL提供了三大运算符:</p>
+<ul>
+<li><strong>IS NULL:</strong> 当列的值是 NULL,此运算符返回 true。</li>
+<li><strong>IS NOT NULL:</strong> 当列的值不为 NULL, 运算符返回 true。</li>
+<li><strong>&lt;&#x3D;&gt;:</strong> 比较操作符（不同于 &#x3D; 运算符），当比较的的两个值相等或者都为 NULL 时返回 true。</li>
+</ul>
+<p>关于 NULL 的条件比较运算是比较特殊的。你不能使用 &#x3D; NULL 或 !&#x3D; NULL 在列中查找 NULL 值 。</p>
+<p>在 MySQL 中，NULL 值与任何其它值的比较（即使是 NULL）永远返回 NULL，即 NULL &#x3D; NULL 返回 NULL 。</p>
+<p>MySQL 中处理 NULL 使用 IS NULL 和 IS NOT NULL 运算符。</p>
+<p>ifnull(columnName2,0)：若columnName2有值为NULL时转为0</p>
+<p>示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM runoob_test_tbl WHERE runoob_count IS NULL;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="修改操作"><a href="#修改操作" class="headerlink" title="修改操作"></a>修改操作</h3><p>修改数据表名或者修改数据表字段</p>
+<h4 id="SQL：ALTER命令"><a href="#SQL：ALTER命令" class="headerlink" title="SQL：ALTER命令"></a>SQL：ALTER命令</h4><p>如下命令使用了 ALTER 命令及 DROP 子句来删除以上创建表的 i 字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl  DROP i;</span><br></pre></td></tr></table></figure>
+
+<p>如果数据表中只剩余一个字段则无法使用DROP来删除字段。</p>
+<p>MySQL 中使用 ADD 子句来向数据表中添加列，如下实例在表 testalter_tbl 中添加 i 字段，并定义数据类型:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl ADD i INT;</span><br></pre></td></tr></table></figure>
+
+<p>如果你需要指定新增字段的位置，可以使用MySQL提供的关键字 FIRST (设定位第一列)， AFTER 字段名（设定位于某个字段之后）。</p>
+<p>尝试以下 ALTER TABLE 语句, 在执行成功后，使用 SHOW COLUMNS 查看表结构的变化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE testalter_tbl DROP i;</span><br><span class="line">ALTER TABLE testalter_tbl ADD i INT FIRST;</span><br><span class="line">ALTER TABLE testalter_tbl DROP i;</span><br><span class="line">ALTER TABLE testalter_tbl ADD i INT AFTER c;</span><br></pre></td></tr></table></figure>
+
+<p>FIRST 和 AFTER 关键字可用于 ADD 与 MODIFY 子句，所以如果你想重置数据表字段的位置就需要先使用 DROP 删除字段然后使用 ADD 来添加字段并设置位置。</p>
+<p>如果需要修改字段类型及名称, 你可以在ALTER命令中使用 MODIFY 或 CHANGE 子句 。</p>
+<p>例如，把字段 c 的类型从 CHAR(1) 改为 CHAR(10)，可以执行以下命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl MODIFY c CHAR(10);</span><br></pre></td></tr></table></figure>
+
+<p>使用 CHANGE 子句, 语法有很大的不同。 在 CHANGE 关键字之后，紧跟着的是你要修改的字段名，然后指定新字段名及类型。尝试如下实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl CHANGE i j BIGINT;</span><br><span class="line">mysql&gt; ALTER TABLE testalter_tbl CHANGE j j INT;</span><br></pre></td></tr></table></figure>
+
+<p>当你修改字段时，你可以指定是否包含值或者是否设置默认值。</p>
+<p>以下实例，指定字段 j 为 NOT NULL 且默认值为100 。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl </span><br><span class="line">    -&gt; MODIFY j BIGINT NOT NULL DEFAULT 100;</span><br></pre></td></tr></table></figure>
+
+<p>如果你不设置默认值，MySQL会自动设置该字段默认为 NULL。</p>
+<p>你可以使用 ALTER 来修改字段的默认值，尝试以下实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl ALTER i SET DEFAULT 1000;</span><br><span class="line">mysql&gt; SHOW COLUMNS FROM testalter_tbl;</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">| Field | Type    | Null | Key | Default | Extra |</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">| c     | char(1) | YES  |     | NULL    |       |</span><br><span class="line">| i     | int(11) | YES  |     | 1000    |       |</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>你也可以使用 ALTER 命令及 DROP子句来删除字段的默认值，如下实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl ALTER i DROP DEFAULT;</span><br><span class="line">mysql&gt; SHOW COLUMNS FROM testalter_tbl;</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">| Field | Type    | Null | Key | Default | Extra |</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">| c     | char(1) | YES  |     | NULL    |       |</span><br><span class="line">| i     | int(11) | YES  |     | NULL    |       |</span><br><span class="line">+-------+---------+------+-----+---------+-------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line">Changing a Table Type:</span><br></pre></td></tr></table></figure>
+
+<p>修改数据表类型，可以使用 ALTER 命令及 TYPE 子句来完成。尝试以下实例，我们将表 testalter_tbl 的类型修改为 MYISAM ：</p>
+<p><strong>注意：</strong>查看数据表类型可以使用 SHOW TABLE STATUS 语句。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl ENGINE = MYISAM;</span><br><span class="line">mysql&gt;  SHOW TABLE STATUS LIKE &#x27;testalter_tbl&#x27;\G</span><br><span class="line">*************************** 1. row ****************</span><br><span class="line">           Name: testalter_tbl</span><br><span class="line">           Type: MyISAM</span><br><span class="line">     Row_format: Fixed</span><br><span class="line">           Rows: 0</span><br><span class="line"> Avg_row_length: 0</span><br><span class="line">    Data_length: 0</span><br><span class="line">Max_data_length: 25769803775</span><br><span class="line">   Index_length: 1024</span><br><span class="line">      Data_free: 0</span><br><span class="line"> Auto_increment: NULL</span><br><span class="line">    Create_time: 2007-06-03 08:04:36</span><br><span class="line">    Update_time: 2007-06-03 08:04:36</span><br><span class="line">     Check_time: NULL</span><br><span class="line"> Create_options:</span><br><span class="line">        Comment:</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>如果需要修改数据表的名称，可以在 ALTER TABLE 语句中使用 RENAME 子句来实现。</p>
+<p>尝试以下实例将数据表 testalter_tbl 重命名为 alter_tbl：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl RENAME TO alter_tbl;</span><br></pre></td></tr></table></figure>
+
+<p>ALTER 命令还可以用来创建及删除MySQL数据表的索引，该功能我们会在接下来的章节中介绍。</p>
+<h3 id="Mysql事务处理"><a href="#Mysql事务处理" class="headerlink" title="Mysql事务处理"></a>Mysql事务处理</h3><p>保证ACID原则</p>
+<p>MYSQL 事务处理主要有两种方法：</p>
+<p>1、用 BEGIN, ROLLBACK, COMMIT来实现</p>
+<ul>
+<li><strong>BEGIN</strong> 开始一个事务</li>
+<li><strong>ROLLBACK</strong> 事务回滚</li>
+<li><strong>COMMIT</strong> 事务确认</li>
+</ul>
+<p>2、直接用 SET 来改变 MySQL 的自动提交模式:</p>
+<ul>
+<li><strong>SET AUTOCOMMIT&#x3D;0</strong> 禁止自动提交</li>
+<li><strong>SET AUTOCOMMIT&#x3D;1</strong> 开启自动提交</li>
+</ul>
+<p>示例<a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-transaction.html">MySQL 事务 | 菜鸟教程 (runoob.com)</a></p>
+<h3 id="Mysql索引"><a href="#Mysql索引" class="headerlink" title="Mysql索引"></a>Mysql索引</h3><p>索引分单列索引和组合索引。单列索引，即一个索引只包含单个列，一个表可以有多个单列索引，但这不是组合索引。组合索引，即一个索引包含多个列。</p>
+<p>创建索引时，你需要确保该索引是应用在 SQL 查询语句的条件(一般作为 WHERE 子句的条件)。</p>
+<p>实际上，索引也是一张表，该表保存了主键与索引字段，并指向实体表的记录。</p>
+<p>上面都在说使用索引的好处，但过多的使用索引将会造成滥用。因此索引也会有它的缺点：虽然索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存一下索引文件。</p>
+<p>建立索引会占用磁盘空间的索引文件。</p>
+<h4 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h4><p>创建索引，没有任何限制的普通索引.如果是CHAR，VARCHAR类型，length可以小于字段实际长度；如果是BLOB和TEXT类型，必须指定 length。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE INDEX indexName ON table_name (column_name(length))</span><br></pre></td></tr></table></figure>
+
+<p>修改表结构&#x2F;添加索引</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER table tableName ADD INDEX indexName(columnName)</span><br></pre></td></tr></table></figure>
+
+<p>也可以在创建表的时候直接指定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE mytable(  </span><br><span class="line">    ID INT NOT NULL,   </span><br><span class="line">    username VARCHAR(16) NOT NULL,  </span><br><span class="line">    INDEX [indexName] (username(length))  </span><br><span class="line">);  </span><br></pre></td></tr></table></figure>
+
+<p>删除索引</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP INDEX [indexName] ON mytable; </span><br></pre></td></tr></table></figure>
+
+<h4 id="唯一索引"><a href="#唯一索引" class="headerlink" title="唯一索引"></a>唯一索引</h4><p>唯一索引和普通索引的区别是索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一。</p>
+<p>创建索引</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE UNIQUE INDEX indexName ON mytable(username(length)) </span><br></pre></td></tr></table></figure>
+
+<p>修改表结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER table mytable ADD UNIQUE [indexName] (username(length))</span><br></pre></td></tr></table></figure>
+
+<p>创建表的时候直接指定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE mytable(  </span><br><span class="line">    ID INT NOT NULL,   </span><br><span class="line">    username VARCHAR(16) NOT NULL,  </span><br><span class="line">    UNIQUE [indexName] (username(length))  </span><br><span class="line">);  </span><br></pre></td></tr></table></figure>
+
+<h4 id="使用ALTER-命令添加和删除索引"><a href="#使用ALTER-命令添加和删除索引" class="headerlink" title="使用ALTER 命令添加和删除索引"></a>使用ALTER 命令添加和删除索引</h4><p>有四种方式来添加数据表的索引：</p>
+<ul>
+<li><strong>ALTER TABLE tbl_name ADD PRIMARY KEY (column_list)</strong>:该语句添加一个主键，这意味着索引值必须是唯一的，且不能为NULL。</li>
+<li><strong>ALTER TABLE tbl_name ADD UNIQUE index_name (column_list):</strong> 这条语句创建索引的值必须是唯一的（除了NULL外，NULL可能会出现多次）。</li>
+<li><strong>ALTER TABLE tbl_name ADD INDEX index_name (column_list):</strong> 添加普通索引，索引值可出现多次。</li>
+<li>**ALTER TABLE tbl_name ADD FULLTEXT index_name (column_list):**该语句指定了索引为 FULLTEXT ，用于全文索引。</li>
+</ul>
+<h3 id="临时表"><a href="#临时表" class="headerlink" title="临时表"></a>临时表</h3><p>临时表只在当前连接可见，当关闭连接时，Mysql会自动删除表并释放所有空间。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CREATE TEMPORARY TABLE SalesSummary (</span><br><span class="line">    -&gt; product_name VARCHAR(50) NOT NULL</span><br><span class="line">    -&gt; , total_sales DECIMAL(12,2) NOT NULL DEFAULT 0.00</span><br><span class="line">    -&gt; , avg_unit_price DECIMAL(7,2) NOT NULL DEFAULT 0.00</span><br><span class="line">    -&gt; , total_units_sold INT UNSIGNED NOT NULL DEFAULT 0</span><br><span class="line">);</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; INSERT INTO SalesSummary</span><br><span class="line">    -&gt; (product_name, total_sales, avg_unit_price, total_units_sold)</span><br><span class="line">    -&gt; VALUES</span><br><span class="line">    -&gt; (&#x27;cucumber&#x27;, 100.25, 90, 2);</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT * FROM SalesSummary;</span><br><span class="line">+--------------+-------------+----------------+------------------+</span><br><span class="line">| product_name | total_sales | avg_unit_price | total_units_sold |</span><br><span class="line">+--------------+-------------+----------------+------------------+</span><br><span class="line">| cucumber     |      100.25 |          90.00 |                2 |</span><br><span class="line">+--------------+-------------+----------------+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">或者</span><br><span class="line">CREATE TEMPORARY TABLE 临时表名 AS</span><br><span class="line">(</span><br><span class="line">    SELECT *  FROM 旧的表名</span><br><span class="line">    LIMIT 0,10000</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>当你使用 <strong>SHOW TABLES</strong>命令显示数据表列表时，你将无法看到 SalesSummary表。</p>
+<p>如果你退出当前MySQL会话，再使用 <strong>SELECT</strong>命令来读取原先创建的临时表数据，那你会发现数据库中没有该表的存在，因为在你退出时该临时表已经被销毁了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; DROP TABLE SalesSummary;</span><br></pre></td></tr></table></figure>
+
+<h3 id="复制表"><a href="#复制表" class="headerlink" title="复制表"></a>复制表</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">1. 使用 SHOW CREATE TABLE 命令获取创建数据表(CREATE TABLE) 语句，该语句包含了原数据表的结构，索引等。</span><br><span class="line">SHOW CREATE TABLE &lt;待复制的表&gt;;</span><br><span class="line">例如要复制user表，能拿到如下信息：</span><br><span class="line">| user  | CREATE TABLE `user` (</span><br><span class="line">  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `username` varchar(255) DEFAULT NULL,</span><br><span class="line">  `password` varchar(255) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 |</span><br><span class="line"></span><br><span class="line">2. 复制以下命令显示的SQL语句，修改数据表名，并执行SQL语句，通过以上命令 将完全的复制数据表结构。</span><br><span class="line">CREATE TABLE `clone_user` (</span><br><span class="line">  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `username` varchar(255) DEFAULT NULL,</span><br><span class="line">  `password` varchar(255) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">3. 如果你想复制表的内容，你就可以使用 INSERT INTO ... SELECT 语句来实现。</span><br><span class="line">INSERT INTO clone_user (</span><br><span class="line">	id,</span><br><span class="line">	username,</span><br><span class="line">	password)</span><br><span class="line">SELECT id, username, password</span><br><span class="line">FROM user;</span><br></pre></td></tr></table></figure>
+
+<p>另一种方式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE targetTable LIKE sourceTable;</span><br><span class="line">INSERT INTO targetTable SELECT * FROM sourceTable;</span><br><span class="line"></span><br><span class="line">也可以对拷贝的信息进行选择</span><br><span class="line">CREATE TABLE newadmin AS</span><br><span class="line">(</span><br><span class="line">    SELECT username, password FROM admin</span><br><span class="line">)</span><br><span class="line">改名</span><br><span class="line">CREATE TABLE newadmin AS</span><br><span class="line">(  </span><br><span class="line">    SELECT id, username AS uname, password AS pass FROM admin</span><br><span class="line">)</span><br><span class="line">定义复制表的字段信息</span><br><span class="line">CREATE TABLE newadmin</span><br><span class="line">(</span><br><span class="line">    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY</span><br><span class="line">)</span><br><span class="line">AS</span><br><span class="line">(</span><br><span class="line">    SELECT * FROM admin</span><br><span class="line">)  </span><br></pre></td></tr></table></figure>
+
+<h3 id="元数据"><a href="#元数据" class="headerlink" title="元数据"></a>元数据</h3><p>MySQL以下三种信息：</p>
+<ul>
+<li><strong>查询结果信息：</strong> SELECT, UPDATE 或 DELETE语句影响的记录数。</li>
+<li><strong>数据库和数据表的信息：</strong> 包含了数据库及数据表的结构信息。</li>
+<li><strong>MySQL服务器信息：</strong> 包含了数据库服务器的当前状态，版本号等。</li>
+</ul>
+<p>以下命令语句可以在 MySQL 的命令提示符使用，也可以在脚本中 使用，如PHP脚本。</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SELECT VERSION( )</td>
+<td align="left">服务器版本信息</td>
+</tr>
+<tr>
+<td align="left">SELECT DATABASE( )</td>
+<td align="left">当前数据库名 (或者返回空)</td>
+</tr>
+<tr>
+<td align="left">SELECT USER( )</td>
+<td align="left">当前用户名</td>
+</tr>
+<tr>
+<td align="left">SHOW STATUS</td>
+<td align="left">服务器状态</td>
+</tr>
+<tr>
+<td align="left">SHOW VARIABLES</td>
+<td align="left">服务器配置变量</td>
+</tr>
+</tbody></table>
+<h3 id="序列"><a href="#序列" class="headerlink" title="序列"></a>序列</h3><p><strong>重置序列</strong>：当删了记录后需要重新排列，要注意ACID的问题，如果在删除的同时又有新记录添加，有可能会出现数据混乱</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE clone_user DROP id;</span><br><span class="line">mysql&gt; ALTER TABLE clone_user </span><br><span class="line">    -&gt; ADD id INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST,</span><br><span class="line">    -&gt; ADD PRIMARY KEY (id);</span><br></pre></td></tr></table></figure>
+
+<p>(就是删了原字段及其数据，重建了一下)</p>
+<p><strong>设置序列初始值</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CREATE TABLE insect</span><br><span class="line">    -&gt; (</span><br><span class="line">    -&gt; id INT UNSIGNED NOT NULL AUTO_INCREMENT,</span><br><span class="line">    -&gt; PRIMARY KEY (id),</span><br><span class="line">    -&gt; name VARCHAR(30) NOT NULL, </span><br><span class="line">    -&gt; date DATE NOT NULL,</span><br><span class="line">    -&gt; origin VARCHAR(30) NOT NULL</span><br><span class="line">)engine=innodb auto_increment=100 charset=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>也可以在表创建成功后，通过以下语句来实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE t AUTO_INCREMENT = 100;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h4><p><a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-functions.html">MySQL 函数 | 菜鸟教程 (runoob.com)</a></p>
+<h4 id="创建函数"><a href="#创建函数" class="headerlink" title="创建函数"></a>创建函数</h4><p>使用函数创建自增序列管理表(批量使用自增表,设置初始值,自增幅度)</p>
+<p>???<a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-using-sequences.html">MySQL 序列使用 | 菜鸟教程 (runoob.com)</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">DROP FUNCTION IF EXISTS currval; </span><br><span class="line">DELIMITER $ </span><br><span class="line">CREATE FUNCTION currval (seq_name VARCHAR(50)) </span><br><span class="line">RETURNS INTEGER</span><br><span class="line">LANGUAGE SQL </span><br><span class="line">DETERMINISTIC </span><br><span class="line">CONTAINS SQL </span><br><span class="line">SQL SECURITY DEFINER </span><br><span class="line">COMMENT &#x27;&#x27;</span><br><span class="line">BRGIN</span><br><span class="line">DECLARE value INTEGER; </span><br><span class="line">SET value = 0; </span><br><span class="line">SELECT current_value INTO value </span><br><span class="line">FROM sequence</span><br><span class="line">WHERE name = seq_name; </span><br><span class="line">RETURN value;</span><br><span class="line">END</span><br><span class="line">$ </span><br><span class="line">DELIMITER;</span><br></pre></td></tr></table></figure>
+
+<h3 id="处理重复数据"><a href="#处理重复数据" class="headerlink" title="处理重复数据"></a>处理重复数据</h3><p><strong>防止出现重复数据</strong>：指定字段为主键或唯一（PRIMARY KEY 或 UNIQUE）来保证数据唯一性</p>
+<p>INSERT IGNORE INTO 当插入数据时，在设置了记录的唯一性后，如果插入重复数据，将不返回错误，只以警告形式返回。 而 REPLACE INTO 如果存在 primary 或 unique 相同的记录，则先删除掉。再插入新记录。</p>
+<p>添加一个 UNIQUE 索引，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE person_tbl</span><br><span class="line">(</span><br><span class="line">   first_name CHAR(20) NOT NULL,</span><br><span class="line">   last_name CHAR(20) NOT NULL,</span><br><span class="line">   sex CHAR(10),</span><br><span class="line">   UNIQUE (last_name, first_name)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>统计重复数据</strong>：</p>
+<p>HAVING子句设置重复数大于1。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT COUNT(*) as repetitions, last_name, first_name</span><br><span class="line">    -&gt; FROM person_tbl</span><br><span class="line">    -&gt; GROUP BY last_name, first_name</span><br><span class="line">    -&gt; HAVING repetitions &gt; 1 and 其他条件;</span><br></pre></td></tr></table></figure>
+
+<p><strong>过滤重复数据</strong>：</p>
+<p>如果你需要读取不重复的数据可以在 SELECT 语句中使用 DISTINCT 关键字来过滤重复数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT DISTINCT last_name, first_name</span><br><span class="line">    -&gt; FROM person_tbl;</span><br></pre></td></tr></table></figure>
+
+<p>你也可以使用 GROUP BY 来读取数据表中不重复的数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT last_name, first_name</span><br><span class="line">    -&gt; FROM person_tbl</span><br><span class="line">    -&gt; GROUP BY (last_name, first_name);</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除重复数据</strong>：</p>
+<p>如果你想删除数据表中的重复数据，你可以使用以下的SQL语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CREATE TABLE tmp SELECT last_name, first_name, sex FROM person_tbl  GROUP BY (last_name, first_name, sex);</span><br><span class="line">mysql&gt; DROP TABLE person_tbl;</span><br><span class="line">mysql&gt; ALTER TABLE tmp RENAME TO person_tbl;</span><br></pre></td></tr></table></figure>
+
+<p>当然你也可以在数据表中添加 INDEX（索引） 和 PRIMAY KEY（主键）这种简单的方法来删除表中的重复记录。方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER IGNORE TABLE person_tbl</span><br><span class="line">    -&gt; ADD PRIMARY KEY (last_name, first_name);</span><br></pre></td></tr></table></figure>
+
+<h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><p><strong>永远不要信任用户的输入，我们必须认定用户输入的数据都是不安全的，我们都需要对用户输入的数据进行过滤处理。</strong></p>
+<p>防止SQL注入，我们需要注意以下几个要点：</p>
+<ul>
+<li>1.永远不要信任用户的输入。对用户的输入进行校验，可以通过正则表达式，或限制长度；对单引号和 双”-“进行转换等。</li>
+<li>2.永远不要使用动态拼装sql，可以使用参数化的sql或者直接使用存储过程进行数据查询存取。</li>
+<li>3.永远不要使用管理员权限的数据库连接，为每个应用使用单独的权限有限的数据库连接。</li>
+<li>4.不要把机密信息直接存放，加密或者hash掉密码和敏感的信息。</li>
+<li>5.应用的异常信息应该给出尽可能少的提示，最好使用自定义的错误信息对原始错误信息进行包装</li>
+<li>6.sql注入的检测方法一般采取辅助软件或网站平台来检测，软件一般采用sql注入检测工具jsky，网站平台就有亿思网站安全平台检测工具。MDCSOFT SCAN等。采用MDCSOFT-IPS可以有效的防御SQL注入，XSS攻击等。</li>
+</ul>
+<p>以对用户输入的数据进行转义</p>
+<h3 id="导出数据"><a href="#导出数据" class="headerlink" title="导出数据"></a>导出数据</h3><p>将数据表 runoob_tbl 数据导出到 &#x2F;tmp&#x2F;runoob.txt 文件中:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM runoob_tbl </span><br><span class="line">    -&gt; INTO OUTFILE &#x27;/tmp/runoob.txt&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>你可以通过命令选项来设置数据输出的指定格式，以下实例为导出 CSV 格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM passwd INTO OUTFILE &#x27;/tmp/runoob.txt&#x27;</span><br><span class="line">    -&gt; FIELDS TERMINATED BY &#x27;,&#x27; ENCLOSED BY &#x27;&quot;&#x27;</span><br><span class="line">    -&gt; LINES TERMINATED BY &#x27;\r\n&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>在下面的例子中，生成一个文件，各值用逗号隔开。这种格式可以被许多程序使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT a,b,a+b INTO OUTFILE &#x27;/tmp/result.text&#x27;</span><br><span class="line">FIELDS TERMINATED BY &#x27;,&#x27; OPTIONALLY ENCLOSED BY &#x27;&quot;&#x27;</span><br><span class="line">LINES TERMINATED BY &#x27;\n&#x27;</span><br><span class="line">FROM test_table;</span><br></pre></td></tr></table></figure>
+
+<p>注意：输出不能是一个已存在的文件。防止文件数据被篡改。</p>
+<p>mysqldump其他操作<a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-database-export.html">MySQL 导出数据 | 菜鸟教程 (runoob.com)</a></p>
+<h3 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h3><p><a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-database-import.html">MySQL 导入数据 | 菜鸟教程 (runoob.com)</a></p>
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><p><a target="_blank" rel="noopener" href="https://www.runoob.com/mysql/mysql-operator.html">MySQL 运算符 | 菜鸟教程 (runoob.com)</a></p>
+<h3 id="-1"><a href="#-1" class="headerlink" title=""></a></h3><h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><h2 id="mybatisX插件"><a href="#mybatisX插件" class="headerlink" title="mybatisX插件"></a>mybatisX插件</h2><h2 id="sql语句执行顺序"><a href="#sql语句执行顺序" class="headerlink" title="sql语句执行顺序"></a>sql语句执行顺序</h2><p>上面执行顺序有误。谷歌来的顺序是这样的</p>
+<ol>
+<li>FROM, including JOINs</li>
+<li>WHERE</li>
+<li>GROUP BY</li>
+<li>HAVING</li>
+<li>WINDOW functions</li>
+<li>SELECT</li>
+<li>DISTINCT</li>
+<li>UNION</li>
+<li>ORDER BY</li>
+<li>LIMIT and OFFSET</li>
+</ol>
+<h2 id="导入操作？"><a href="#导入操作？" class="headerlink" title="导入操作？"></a>导入操作？</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E6%8A%80%E6%9C%AF/" rel="tag"># 知识技术</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/05/15/5-15-5-21%E5%91%A8%E8%AE%A1%E5%88%92/" rel="prev" title="5.15-5.21周计划">
+      <i class="fa fa-chevron-left"></i> 5.15-5.21周计划
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/05/23/CAP%E7%90%86%E8%AE%BA%E4%B8%8EBASE%E7%90%86%E8%AE%BA/" rel="next" title="CAP理论与BASE理论">
+      CAP理论与BASE理论 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mybatis%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">mybatis配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XXXMapper-xml"><span class="nav-number">2.</span> <span class="nav-text">XXXMapper.xml</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sql%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.</span> <span class="nav-text">sql语句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">常用类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E6%93%8D%E4%BD%9C"><span class="nav-number">3.3.</span> <span class="nav-text">管理操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7"><span class="nav-number">3.4.</span> <span class="nav-text">创建用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.</span> <span class="nav-text">表操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E7%9A%84%E7%BA%A6%E6%9D%9F"><span class="nav-number">3.5.1.</span> <span class="nav-text">表的约束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A1%A8"><span class="nav-number">3.5.2.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.3.</span> <span class="nav-text">插入数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL-INSERT-INTO"><span class="nav-number">3.5.3.1.</span> <span class="nav-text">SQL: INSERT INTO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot%E4%B8%AD"><span class="nav-number">3.5.3.2.</span> <span class="nav-text">Springboot中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.4.</span> <span class="nav-text">查询数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9ASELECT"><span class="nav-number">3.5.4.1.</span> <span class="nav-text">SQL：SELECT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot%E4%B8%AD-1"><span class="nav-number">3.5.4.2.</span> <span class="nav-text">Springboot中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%9B%E9%80%89%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.5.</span> <span class="nav-text">筛选语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AWHERE%E5%AD%90%E5%8F%A5"><span class="nav-number">3.5.5.1.</span> <span class="nav-text">SQL：WHERE子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot%E4%B8%8A"><span class="nav-number">3.5.5.2.</span> <span class="nav-text">Springboot上</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.6.</span> <span class="nav-text">更新语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AUPDATE%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.6.1.</span> <span class="nav-text">SQL：UPDATE语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot"><span class="nav-number">3.5.6.2.</span> <span class="nav-text">Springboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.7.</span> <span class="nav-text">删除语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9ADELETE%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.7.1.</span> <span class="nav-text">SQL：DELETE语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot-1"><span class="nav-number">3.5.7.2.</span> <span class="nav-text">Springboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.8.</span> <span class="nav-text">匹配语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9ALIKE%E5%AD%90%E5%8F%A5"><span class="nav-number">3.5.8.1.</span> <span class="nav-text">SQL：LIKE子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot-2"><span class="nav-number">3.5.8.2.</span> <span class="nav-text">Springboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.9.</span> <span class="nav-text">集合操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AUNION%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">3.5.9.1.</span> <span class="nav-text">SQL：UNION操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Sprintboot"><span class="nav-number">3.5.9.2.</span> <span class="nav-text">Sprintboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.10.</span> <span class="nav-text">排序操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AORDER-BY%E5%AD%90%E5%8F%A5"><span class="nav-number">3.5.10.1.</span> <span class="nav-text">SQL：ORDER BY子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot-3"><span class="nav-number">3.5.10.2.</span> <span class="nav-text">Springboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.11.</span> <span class="nav-text">分组操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AGROUP-BY%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.11.1.</span> <span class="nav-text">SQL：GROUP BY语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot-4"><span class="nav-number">3.5.11.2.</span> <span class="nav-text">Springboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">3.5.12.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.13.</span> <span class="nav-text">连接操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AJOIN%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.13.1.</span> <span class="nav-text">SQL：JOIN语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Springboot-5"><span class="nav-number">3.5.13.2.</span> <span class="nav-text">Springboot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NULL%E5%80%BC%E5%A4%84%E7%90%86"><span class="nav-number">3.5.14.</span> <span class="nav-text">NULL值处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AIS-NULL-amp-IS-NOT-NULL%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">3.5.14.1.</span> <span class="nav-text">SQL：IS NULL &amp; IS NOT NULL操作符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.15.</span> <span class="nav-text">修改操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%EF%BC%9AALTER%E5%91%BD%E4%BB%A4"><span class="nav-number">3.5.15.1.</span> <span class="nav-text">SQL：ALTER命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86"><span class="nav-number">3.5.16.</span> <span class="nav-text">Mysql事务处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql%E7%B4%A2%E5%BC%95"><span class="nav-number">3.5.17.</span> <span class="nav-text">Mysql索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95"><span class="nav-number">3.5.17.1.</span> <span class="nav-text">普通索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="nav-number">3.5.17.2.</span> <span class="nav-text">唯一索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8ALTER-%E5%91%BD%E4%BB%A4%E6%B7%BB%E5%8A%A0%E5%92%8C%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95"><span class="nav-number">3.5.17.3.</span> <span class="nav-text">使用ALTER 命令添加和删除索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E8%A1%A8"><span class="nav-number">3.5.18.</span> <span class="nav-text">临时表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E8%A1%A8"><span class="nav-number">3.5.19.</span> <span class="nav-text">复制表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.20.</span> <span class="nav-text">元数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97"><span class="nav-number">3.5.21.</span> <span class="nav-text">序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">3.5.22.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="nav-number">3.5.22.1.</span> <span class="nav-text">内置函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0"><span class="nav-number">3.5.22.2.</span> <span class="nav-text">创建函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E9%87%8D%E5%A4%8D%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.23.</span> <span class="nav-text">处理重复数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="nav-number">3.5.24.</span> <span class="nav-text">SQL注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.25.</span> <span class="nav-text">导出数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.26.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.5.27.</span> <span class="nav-text">运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-1"><span class="nav-number">3.5.28.</span> <span class="nav-text"></span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatisX%E6%8F%92%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">mybatisX插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">4.2.</span> <span class="nav-text">sql语句执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="nav-number">4.3.</span> <span class="nav-text">导入操作？</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="XiuXian"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">XiuXian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-05 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XiuXian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

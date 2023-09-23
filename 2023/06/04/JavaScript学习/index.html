@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="JavaScript 网页设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript学习">
+<meta property="og:url" content="http://example.com/2023/06/04/JavaScript%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="XiuXian Blog">
+<meta property="og:description" content="JavaScript 网页设计">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-04T11:10:47.000Z">
+<meta property="article:modified_time" content="2023-06-15T01:29:03.390Z">
+<meta property="article:author" content="XiuXian">
+<meta property="article:tag" content="知识技术">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/06/04/JavaScript%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JavaScript学习 | XiuXian Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">XiuXian Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/04/JavaScript%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="XiuXian">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XiuXian Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-04 19:10:47" itemprop="dateCreated datePublished" datetime="2023-06-04T19:10:47+08:00">2023-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-15 09:29:03" itemprop="dateModified" datetime="2023-06-15T09:29:03+08:00">2023-06-15</time>
+              </span>
+
+          
+            <div class="post-description">JavaScript 网页设计</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_51604330/article/details/116567496">(254条消息) 教你快速使用VSCode编写HTML文件_vscode html_半生瓜のblog的博客-CSDN博客</a></p>
+<p>完成html在VScode上运行</p>
+<h2 id="JS功能"><a href="#JS功能" class="headerlink" title="JS功能"></a>JS功能</h2><ul>
+<li>直接写入HTML输出流</li>
+<li>对事件的反应</li>
+<li>改变HTML内容</li>
+<li>改变HTML图像</li>
+<li>改变HTML样式</li>
+<li>验证输入</li>
+</ul>
+<h2 id="JS实例"><a href="#JS实例" class="headerlink" title="JS实例"></a>JS实例</h2><p><a target="_blank" rel="noopener" href="https://www.runoob.com/js/js-examples.html">JavaScript 实例 | 菜鸟教程 (runoob.com)</a></p>
+<p>对象实例<a target="_blank" rel="noopener" href="https://www.runoob.com/js/js-ex-objects.html">JavaScript 对象实例 | 菜鸟教程 (runoob.com)</a></p>
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><h3 id="开发者工具的使用"><a href="#开发者工具的使用" class="headerlink" title="开发者工具的使用"></a>开发者工具的使用</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/231865779">F12 - 开发者工具详解 - 知乎 (zhihu.com)</a></p>
+<h3 id="显示数据的方式"><a href="#显示数据的方式" class="headerlink" title="显示数据的方式"></a>显示数据的方式</h3><p>JavaScript没有任何打印或者输出的函数</p>
+<p>avaScript 可以通过不同的方式来输出数据：</p>
+<ul>
+<li>使用 <strong>window.alert()</strong> 弹出警告框。</li>
+<li>使用 <strong>document.write()</strong> 方法将内容写到 HTML 文档中。</li>
+<li>使用 <strong>innerHTML</strong> 写入到 HTML 元素。</li>
+<li>▲使用 <strong>console.log()</strong> 写入到浏览器的控制台。</li>
+</ul>
+<p>注意：console不会打断你页面的操作，如果用alert弹出来内容，那么页面就死了，但是console输出内容后你页面还可以正常操作。</p>
+<p>注意：innerHTML很多情况下都优于document.write，其原因在于其允许更精确的控制要刷新页面的那一个部分。</p>
+<h3 id="判断数据类型"><a href="#判断数据类型" class="headerlink" title="判断数据类型"></a>判断数据类型</h3><p>在 JavaScript 中有 6 种不同的数据类型：</p>
+<ul>
+<li>string</li>
+<li>number</li>
+<li>boolean</li>
+<li>object</li>
+<li>function</li>
+<li>symbol</li>
+</ul>
+<p>3 种对象类型：</p>
+<ul>
+<li>Object</li>
+<li>Date</li>
+<li>Array</li>
+</ul>
+<p>2 个不包含任何值的数据类型：</p>
+<ul>
+<li>null</li>
+<li>undefined</li>
+</ul>
+<p>用typeof()函数，但是typeof()函数不能区别array和object，使用Array.isArray()方法或者使用 instanceof 操作符</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/note/26685">JavaScript 判断对象是否为数组</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/javascript-check-arrayisobject.html">JavaScript 判断该对象是否为数组</a></li>
+</ul>
+<h3 id="Object的null-和-undefined"><a href="#Object的null-和-undefined" class="headerlink" title="Object的null 和 undefined"></a>Object的null 和 undefined</h3><p><strong>JavaScript 对象是拥有属性和方法的数据</strong></p>
+<p><strong>对象是容器&#x2F;键值对的容器</strong></p>
+<p><strong>注意</strong>：键的类型不一定是字符串，而是字符串或符号，一般类型都是转换成字符串（对象数字等类型），但是符号不会被强制转换。</p>
+<p>在 JavaScript 中, null 用于对象, undefined 用于变量，属性和方法。</p>
+<p>对象只有被定义才有可能为 null，否则为 undefined。</p>
+<p>如果我们想测试对象是否存在，在对象还没定义时将会抛出一个错误。</p>
+<p>错误的使用方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (myObj !== null &amp;&amp; typeof myObj !== &quot;undefined&quot;) </span><br></pre></td></tr></table></figure>
+
+<p>正确的方式是我们需要先使用 typeof 来检测对象是否已定义：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (typeof myObj !== &quot;undefined&quot; &amp;&amp; myObj !== null) </span><br></pre></td></tr></table></figure>
+
+<h3 id="“helloworld”还是new-String-“helloworld”"><a href="#“helloworld”还是new-String-“helloworld”" class="headerlink" title="“helloworld”还是new String(“helloworld”)"></a>“helloworld”还是new String(“helloworld”)</h3><p>不要创建 String 对象。它会拖慢执行速度，并可能产生其他副作用</p>
+<p>BUT 原始值字符串，如 “John”, 没有属性和方法(因为他们不是对象)，原始值可以使用 JavaScript 的属性和方法，因为 JavaScript 在执行方法和属性时可以把原始值当作对象</p>
+<h3 id="转为布尔类型"><a href="#转为布尔类型" class="headerlink" title="转为布尔类型"></a>转为布尔类型</h3><p>其他数据类型转换为布尔类型的规则: <strong>null、undefined、0、NaN、空字符串</strong>转换为<strong>false</strong>，其他转化为 <strong>true</strong></p>
+<h3 id="switch判断"><a href="#switch判断" class="headerlink" title="switch判断"></a>switch判断</h3><p>switch 中 case的判断是&#x3D;&#x3D;&#x3D;的判断，即数据类型和值的双重判断，这点要注意。</p>
+<h3 id="for循环特点"><a href="#for循环特点" class="headerlink" title="for循环特点"></a>for循环特点</h3><p>中间如有某些下标未被使用（即未被赋值），在遍历的时候，采用一般的 for 循环和 for…in 循环得到的结果不同。</p>
+<p>for…in 循环会自动跳过那些没被赋值的元素，而 for 循环则不会，它会显示出 undefined</p>
+<p>for…of功能</p>
+<ul>
+<li><p>循环一个生成器</p>
+</li>
+<li><p>循环一个拥有enumerate属性的对象（普通对象不行，按对象所拥有的属性进行循环，可使用内置的Object.keys()方法）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for (var key of Object.keys(someObject)) &#123;</span><br><span class="line">  console.log(key + &quot;: &quot; + someObject[key]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环一个DOM collection（？？）</p>
+</li>
+<li><p>循环字符串</p>
+</li>
+<li><p>循环类型化数组</p>
+</li>
+<li><p>循环Map</p>
+</li>
+<li><p>循环Set</p>
+</li>
+</ul>
+<p>4 种循环的适用场景:</p>
+<ul>
+<li><strong>for</strong> : 比较适合遍历数组,字符串等等。</li>
+<li><strong>for in</strong> : 比较适合遍历对象，遍历对象时使用这个再合适不过了。</li>
+<li><strong>while</strong> : while 的话，与 for 的使用场景差不多。唯一不同的是，遍历的条件必须满足。</li>
+<li><strong>do while</strong> : 至少执行一边的循环，遍历数组和字符串也是很方便。</li>
+</ul>
+<h3 id="标签与break、continue"><a href="#标签与break、continue" class="headerlink" title="标签与break、continue"></a>标签与break、continue</h3><p>break 的作用是跳出代码块, 所以 break 可以使用于循环和 switch 等</p>
+<p>continue 的作用是进入下一个迭代, 所以 continue 只能用于循环的代码块。</p>
+<p>代码块: 基本上是｛｝大括号之间</p>
+<p>然后：</p>
+<ol>
+<li>默认标签的情况（除了默认标签情况，其他时候必须要有名标签，否则会有惊喜）</li>
+</ol>
+<p>当 break 和 continue 同时用于循环时，没有加标签，此时默认标签为当前”循环”的代码块。</p>
+<p>当 break 用于 switch 时，默认标签为当前的 switch 代码块:</p>
+<p>有名标签的情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cars=[&quot;BMW&quot;,&quot;Volvo&quot;,&quot;Saab&quot;,&quot;Ford&quot;];</span><br><span class="line">list:</span><br><span class="line">&#123;</span><br><span class="line">    document.write(cars[0] + &quot;&quot;);</span><br><span class="line">    document.write(cars[1] + &quot;&quot;);</span><br><span class="line">    document.write(cars[2] + &quot;&quot;);</span><br><span class="line">    break list;</span><br><span class="line">    document.write(cars[3] + &quot;&quot;);</span><br><span class="line">    document.write(cars[4] + &quot;&quot;);</span><br><span class="line">    document.write(cars[5] + &quot;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述break list;会跳出list的代码块。如果将break换成continue会有惊喜，违反了明确中的第二点，因为list只是个普通代码块，而不是循环。除非list写成如下形式 list:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for(var i=0; i&lt;10; ++i)</span><br><span class="line">&#123;</span><br><span class="line">    continue list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了标签，可以使用break和continue在多层循环的时候控制外层循环。</p>
+<p>例如下面：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">outerloop</span>:</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">innerloop</span>:</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (j &gt; <span class="number">3</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">2</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span> innerloop;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">4</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span> outerloop;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;i=&quot;</span> + i + <span class="string">&quot; j=&quot;</span> + j + <span class="string">&quot;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="constructor属性"><a href="#constructor属性" class="headerlink" title="constructor属性"></a>constructor属性</h3><p>可以使用 constructor 属性来查看对象是否为某某</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">isArray</span>(<span class="params">myArray</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> myArray.<span class="property">constructor</span>.<span class="title function_">toString</span>().<span class="title function_">indexOf</span>(<span class="string">&quot;Array&quot;</span>) &gt; -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串转数字"><a href="#字符串转数字" class="headerlink" title="字符串转数字"></a>字符串转数字</h3><p>字符串转日期：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">var str = &quot;2019-12-25&quot;;</span><br><span class="line">// 转换日期格式</span><br><span class="line">str = str.replace(/-/g, &#x27;/&#x27;); // &quot;2010/08/01&quot;;</span><br><span class="line">// 创建日期对象</span><br><span class="line">var date = new Date(str);</span><br><span class="line">反之，日期类型转化为格式化的字符串：</span><br><span class="line"></span><br><span class="line">//完整的格式化  </span><br><span class="line">var time2 = new Date().format(&quot;yyyy-MM-dd hh:mm:ss&quot;);</span><br><span class="line">Date.prototype.format = function (fmt) &#123;</span><br><span class="line">    var o = &#123;</span><br><span class="line">        &quot;M+&quot;: this.getMonth() + 1,                 //月份 </span><br><span class="line">        &quot;d+&quot;: this.getDate(),                    //日 </span><br><span class="line">        &quot;h+&quot;: this.getHours(),                   //小时 </span><br><span class="line">        &quot;m+&quot;: this.getMinutes(),                 //分 </span><br><span class="line">        &quot;s+&quot;: this.getSeconds(),                 //秒 </span><br><span class="line">        &quot;q+&quot;: Math.floor((this.getMonth() + 3) / 3), //季度 </span><br><span class="line">        &quot;S&quot;: this.getMilliseconds()             //毫秒 </span><br><span class="line">    &#125;;</span><br><span class="line">    //处理年份</span><br><span class="line">    var reYear = /(y+)/; </span><br><span class="line">    var resultYear = reYear.exec(fmt);</span><br><span class="line">    if (resultYear) </span><br><span class="line">    &#123;</span><br><span class="line">        var yearformatPart = resultYear[0];//匹配到的格式化字符</span><br><span class="line">        var yearVal = (this.getFullYear() + &quot;&quot;).substr(4 - yearformatPart.length);</span><br><span class="line">        fmt = fmt.replace(yearformatPart, yearVal);</span><br><span class="line">    &#125;</span><br><span class="line">    for (var k in o) &#123;</span><br><span class="line">        var re = new RegExp(&quot;(&quot; + k + &quot;)&quot;);</span><br><span class="line">        var re = re.exec(fmt);</span><br><span class="line">        if (re) &#123;</span><br><span class="line">            var Val = &quot;&quot; + o[k];//本次需要替换的数据 </span><br><span class="line">            var formatPart = re[0];//匹配到的格式化字符</span><br><span class="line">            var replaceVal = (formatPart.length == 1) ? (Val) : ((&quot;00&quot; + Val).substr(Val.length));</span><br><span class="line">            fmt = fmt.replace(formatPart, replaceVal);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return fmt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="特殊值判断"><a href="#特殊值判断" class="headerlink" title="特殊值判断"></a>特殊值判断</h3><p><strong>NaN</strong> 这个特殊的数值也可以使用 <strong>Object.is()</strong> 方法来判断。</p>
+<p>并且在这个方法中还可以判断 <strong>+0</strong> 和 <strong>-0</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">console.log(Object.is(NaN, NaN)); //true</span><br><span class="line">console.log(Object.is(+0, -0)); //false</span><br><span class="line">console.log(Object.is(+0, 0)); //true</span><br><span class="line">console.log(Object.is(0, -0)); //false</span><br></pre></td></tr></table></figure>
+
+<h3 id="正则式"><a href="#正则式" class="headerlink" title="正则式"></a>正则式</h3><p><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-obj-regexp.html">JavaScript RegExp 对象 | 菜鸟教程 (runoob.com)</a></p>
+<p>正则表达式表单验证实例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*是否带有小数*/</span></span><br><span class="line"><span class="keyword">function</span>    <span class="title function_">isDecimal</span>(<span class="params">strValue </span>)  &#123;  </span><br><span class="line">   <span class="keyword">var</span>  objRegExp= <span class="regexp">/^\d+\.\d+$/</span>;</span><br><span class="line">   <span class="keyword">return</span>  objRegExp.<span class="title function_">test</span>(strValue);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">/*校验是否中文名称组成 */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">ischina</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> reg=<span class="regexp">/^[\u4E00-\u9FA5]&#123;2,4&#125;$/</span>;   <span class="comment">/*定义验证表达式*/</span></span><br><span class="line">    <span class="keyword">return</span> reg.<span class="title function_">test</span>(str);     <span class="comment">/*进行验证*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*校验是否全由8位数字组成 */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isStudentNo</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> reg=<span class="regexp">/^[0-9]&#123;8&#125;$/</span>;   <span class="comment">/*定义验证表达式*/</span></span><br><span class="line">    <span class="keyword">return</span> reg.<span class="title function_">test</span>(str);     <span class="comment">/*进行验证*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*校验电话码格式 */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isTelCode</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> reg= <span class="regexp">/^((0\d&#123;2,3&#125;-\d&#123;7,8&#125;)|(1[3584]\d&#123;9&#125;))$/</span>;</span><br><span class="line">    <span class="keyword">return</span> reg.<span class="title function_">test</span>(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*校验邮件地址是否合法 */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">IsEmail</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> reg=<span class="regexp">/^\w+@[a-zA-Z0-9]&#123;2,10&#125;(?:\.[a-z]&#123;2,4&#125;)&#123;1,3&#125;$/</span>;</span><br><span class="line">    <span class="keyword">return</span> reg.<span class="title function_">test</span>(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>正则捕获，转换时间格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const str = &#x27;20210426141823&#x27;;</span><br><span class="line">const s = str.replace(/(\d&#123;4&#125;)(\d&#123;2&#125;)(\d&#123;2&#125;)(\d&#123;2&#125;)(\d&#123;2&#125;)(\d&#123;2&#125;)/, (_, ...args) =&gt; &#123;</span><br><span class="line">  const [year, month, day, h, d, s] = args;</span><br><span class="line">  return `$&#123;year&#125;年$&#123;month&#125;月$&#123;day&#125; $&#123;h&#125;时$&#123;d&#125;分$&#123;s&#125;秒`</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">console.log(s);</span><br><span class="line">// 2021年04月26 14时18分23秒</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * [reg 百度网盘链接匹配]</span><br><span class="line"> * 说明：匹配支持百度分享的两种链接格式</span><br><span class="line"> * 格式一：链接: https://pan.baidu.com/s/15gzY8h3SEzVCfGV1xfkJsQ 提取码: vsuw 复制这段内容后打开百度网盘手机App，操作更方便哦</span><br><span class="line"> * 格式二：http://pan.baidu.com/share/link?shareid=179436&amp;uk=3272055266 提取码: vsuw 复制这段内容后打开百度网盘手机App，操作更方便哦</span><br><span class="line"> * 匹配出下载地址和提取码，并且还支持如果没有提取码，也能匹配出下载链接。</span><br><span class="line"> * @type &#123;正则表达式&#125;</span><br><span class="line"> * @return array 返回匹配成功的链接和地址</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">function baiduDownLinkArr( string )&#123;</span><br><span class="line">  var reg = /([http|https]*?:\/\/pan\.baidu\.com\/[(?:s\/)&#123;0,1&#125;|(share)]*(?:[0-9a-zA-Z?=&amp;])+)(?:.+:(?:\s)*)?([a-zA-Z]&#123;4&#125;)?/;</span><br><span class="line">  console.log(reg.exec(string));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="HTML5-表单属性"><a href="#HTML5-表单属性" class="headerlink" title="HTML5 表单属性"></a>HTML5 表单属性</h3><p><a target="_blank" rel="noopener" href="https://www.runoob.com/html/html5-form-attributes.html">HTML5 表单属性 | 菜鸟教程 (runoob.com)</a></p>
+<h3 id="多表单使用同一验证函数问题"><a href="#多表单使用同一验证函数问题" class="headerlink" title="多表单使用同一验证函数问题"></a>多表单使用同一验证函数问题</h3><p>上面用 js 表单验证判断表单字段(fname)值是否存在，如果想多个表单都使用同一个函数调用，传入参数后功能会失效，希望有大佬能解决这个问题。</p>
+<p>现在我在网上找到的替代方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function validateForm(form) &#123;</span><br><span class="line">    var x = form.name.value;</span><br><span class="line">    if (x == null || x == &quot;&quot;) &#123;</span><br><span class="line">        alert(&quot;输入不能为空！&quot;);</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所有表单调用时都使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onsubmit=&quot;return validateForm(this)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>经验证好使。</p>
+<h3 id="事件属性为什么有return-func"><a href="#事件属性为什么有return-func" class="headerlink" title="事件属性为什么有return func()"></a>事件属性为什么有return func()</h3><p><strong>onsubmit&#x3D;”return validateForm()”</strong> 为什么不是 <strong>onsubmit&#x3D;”validateForm()”</strong> ？？</p>
+<p><strong>onsubmit&#x3D;”validateForm()”</strong> 能够调用 <strong>validateForm()</strong> 对表单进行验证，但是在验证不通过的情况下，并不能阻止表单提交。</p>
+<p><strong>onsubmit&#x3D;”return validateForm()”</strong> 当验证不通过时，返回 false，可以阻止表单提交。</p>
+<p>为何？</p>
+<p>原来 onsubmit 属性就像是 <form> 这个 html 对象的一个方法名，其值（一字符串）就是其方法体，默认返回 true；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onsubmit=&quot;return validateForm()&quot;</span><br></pre></td></tr></table></figure>
+
+<p>相当于:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Form.prototype.onsubmit = function() &#123;</span><br><span class="line">    return validateForm()</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这样复写了 onsubmit 的默认方法（默认返回 true），根据 validateForm() 的结果返回 true 或 false，当验证不通过时，返回 false，onsubmit&#x3D;”return false;” 阻止表单提交。</p>
+<h3 id="伪数组"><a href="#伪数组" class="headerlink" title="伪数组"></a>伪数组</h3><p>getElementsByTagName 和 getElementsByClassName 这两个方法查找多个 dom 元素，返回的是 htmlcollection 类型，是伪数组而不是真数组，故不能使用数组的方法。<br>我们可以使用数组原型配合 slice 方法，利用 call，apply，bind 方法将伪数组转为真数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x=<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;main&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> y=x.<span class="title function_">getElementsByTagName</span>(<span class="string">&quot;p&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(y)<span class="comment">//在控制台我们可以看到原型proto为htmlcollection，是伪数组</span></span><br><span class="line"><span class="comment">//伪数组转为真数组方法1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">slice</span>.<span class="title function_">call</span>(y))<span class="comment">//在控制台我们可以看到原型proto为Array(0)，是真数组</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//伪数组转为真数组方法2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">slice</span>.<span class="title function_">apply</span>(y))<span class="comment">//在控制台我们可以看到原型proto为Array(0)，是真数组</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//伪数组转为真数组方法3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">slice</span>.<span class="title function_">bind</span>(y)())<span class="comment">//在控制台我们可以看到原型proto为Array(0)，是真数组</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="一些疑问"><a href="#一些疑问" class="headerlink" title="一些疑问"></a>一些疑问</h2><h5 id="Q：HTML输出流？JavaScript可以直接写入HTML输出流中，为什么只能在-HTML-输出中使用-document-write？在文档加载后使用该方法，会覆盖整个文档？"><a href="#Q：HTML输出流？JavaScript可以直接写入HTML输出流中，为什么只能在-HTML-输出中使用-document-write？在文档加载后使用该方法，会覆盖整个文档？" class="headerlink" title="Q：HTML输出流？JavaScript可以直接写入HTML输出流中，为什么只能在 HTML 输出中使用 document.write？在文档加载后使用该方法，会覆盖整个文档？"></a>Q：HTML输出流？JavaScript可以直接写入HTML输出流中，为什么只能在 HTML 输出中使用 document.write？在文档加载后使用该方法，会覆盖整个文档？</h5><p>注意：绝对不要在文档(DOM)加载完成之后使用 document.write()。这会覆盖该文档。</p>
+<h5 id="Q：怎么在测试的时候把本地图片插入到HTML中？"><a href="#Q：怎么在测试的时候把本地图片插入到HTML中？" class="headerlink" title="Q：怎么在测试的时候把本地图片插入到HTML中？"></a>Q：怎么在测试的时候把本地图片插入到HTML中？</h5><p>比如本地文件名为 eg_mouse,本地地址为C:\Users\xushiyu\Desktop,插入语句&lt;img src&#x3D;”file:&#x2F;&#x2F;C:&#x2F;Users&#x2F;xushiyu&#x2F;Desktop&#x2F;eg_mouse.jpg”</p>
+<p>注意三点</p>
+<ul>
+<li>必须在语句中加入”file:&#x2F;&#x2F;“。</li>
+<li>本地路径为C:\Users\xushiyu\Desktop，注意要将”&quot;该换为”&#x2F;“。</li>
+<li>文件格式.jpg不能忘记。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/CSDNQINGRU/article/details/78503663">https://blog.csdn.net/CSDNQINGRU/article/details/78503663</a></li>
+</ul>
+<h5 id="Q：问题分析：当JS文件放在head标签里中时，并且绑定了onclick事件，就出现了Uncaught-TypeError-Cannot-set-properties-of-null-setting-‘onclick’-错误"><a href="#Q：问题分析：当JS文件放在head标签里中时，并且绑定了onclick事件，就出现了Uncaught-TypeError-Cannot-set-properties-of-null-setting-‘onclick’-错误" class="headerlink" title="Q：问题分析：当JS文件放在head标签里中时，并且绑定了onclick事件，就出现了Uncaught TypeError: Cannot set properties of null (setting ‘onclick’)错误"></a>Q：问题分析：当JS文件放在head标签里中时，并且绑定了onclick事件，就出现了Uncaught TypeError: Cannot set properties of null (setting ‘onclick’)错误</h5><p><strong>原因：</strong>W3School中介绍浏览器先加载完按钮节点才执行JS，当浏览器自顶向下解析时，找不到onclick绑定的按钮节点了</p>
+<p>解决方案<a target="_blank" rel="noopener" href="https://blog.csdn.net/wls666/article/details/89281458">(259条消息) 解决Uncaught TypeError: Cannot set property ‘onclick’ of null错误的方法_全栈工匠的博客-CSDN博客</a></p>
+<h5 id=""><a href="#" class="headerlink" title=""></a></h5>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E6%8A%80%E6%9C%AF/" rel="tag"># 知识技术</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/05/23/5-22-5-28%E5%91%A8%E8%AE%A1%E5%88%92/" rel="prev" title="5.22-5.28周计划">
+      <i class="fa fa-chevron-left"></i> 5.22-5.28周计划
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/06/12/6-12-6-18%E5%91%A8%E8%AE%A1%E5%88%92/" rel="next" title="6.12-6.18周计划">
+      6.12-6.18周计划 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">配置环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JS%E5%8A%9F%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">JS功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JS%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">JS实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">4.1.</span> <span class="nav-text">开发者工具的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">显示数据的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.3.</span> <span class="nav-text">判断数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object%E7%9A%84null-%E5%92%8C-undefined"><span class="nav-number">4.4.</span> <span class="nav-text">Object的null 和 undefined</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%9Chelloworld%E2%80%9D%E8%BF%98%E6%98%AFnew-String-%E2%80%9Chelloworld%E2%80%9D"><span class="nav-number">4.5.</span> <span class="nav-text">“helloworld”还是new String(“helloworld”)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E4%B8%BA%E5%B8%83%E5%B0%94%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.6.</span> <span class="nav-text">转为布尔类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#switch%E5%88%A4%E6%96%AD"><span class="nav-number">4.7.</span> <span class="nav-text">switch判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for%E5%BE%AA%E7%8E%AF%E7%89%B9%E7%82%B9"><span class="nav-number">4.8.</span> <span class="nav-text">for循环特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E4%B8%8Ebreak%E3%80%81continue"><span class="nav-number">4.9.</span> <span class="nav-text">标签与break、continue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#constructor%E5%B1%9E%E6%80%A7"><span class="nav-number">4.10.</span> <span class="nav-text">constructor属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B0%E5%AD%97"><span class="nav-number">4.11.</span> <span class="nav-text">字符串转数字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%80%BC%E5%88%A4%E6%96%AD"><span class="nav-number">4.12.</span> <span class="nav-text">特殊值判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%BC%8F"><span class="nav-number">4.13.</span> <span class="nav-text">正则式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML5-%E8%A1%A8%E5%8D%95%E5%B1%9E%E6%80%A7"><span class="nav-number">4.14.</span> <span class="nav-text">HTML5 表单属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%A1%A8%E5%8D%95%E4%BD%BF%E7%94%A8%E5%90%8C%E4%B8%80%E9%AA%8C%E8%AF%81%E5%87%BD%E6%95%B0%E9%97%AE%E9%A2%98"><span class="nav-number">4.15.</span> <span class="nav-text">多表单使用同一验证函数问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%B1%9E%E6%80%A7%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89return-func"><span class="nav-number">4.16.</span> <span class="nav-text">事件属性为什么有return func()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E6%95%B0%E7%BB%84"><span class="nav-number">4.17.</span> <span class="nav-text">伪数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%96%91%E9%97%AE"><span class="nav-number">5.</span> <span class="nav-text">一些疑问</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Q%EF%BC%9AHTML%E8%BE%93%E5%87%BA%E6%B5%81%EF%BC%9FJavaScript%E5%8F%AF%E4%BB%A5%E7%9B%B4%E6%8E%A5%E5%86%99%E5%85%A5HTML%E8%BE%93%E5%87%BA%E6%B5%81%E4%B8%AD%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AA%E8%83%BD%E5%9C%A8-HTML-%E8%BE%93%E5%87%BA%E4%B8%AD%E4%BD%BF%E7%94%A8-document-write%EF%BC%9F%E5%9C%A8%E6%96%87%E6%A1%A3%E5%8A%A0%E8%BD%BD%E5%90%8E%E4%BD%BF%E7%94%A8%E8%AF%A5%E6%96%B9%E6%B3%95%EF%BC%8C%E4%BC%9A%E8%A6%86%E7%9B%96%E6%95%B4%E4%B8%AA%E6%96%87%E6%A1%A3%EF%BC%9F"><span class="nav-number">5.0.0.1.</span> <span class="nav-text">Q：HTML输出流？JavaScript可以直接写入HTML输出流中，为什么只能在 HTML 输出中使用 document.write？在文档加载后使用该方法，会覆盖整个文档？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Q%EF%BC%9A%E6%80%8E%E4%B9%88%E5%9C%A8%E6%B5%8B%E8%AF%95%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%8A%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E6%8F%92%E5%85%A5%E5%88%B0HTML%E4%B8%AD%EF%BC%9F"><span class="nav-number">5.0.0.2.</span> <span class="nav-text">Q：怎么在测试的时候把本地图片插入到HTML中？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Q%EF%BC%9A%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%EF%BC%9A%E5%BD%93JS%E6%96%87%E4%BB%B6%E6%94%BE%E5%9C%A8head%E6%A0%87%E7%AD%BE%E9%87%8C%E4%B8%AD%E6%97%B6%EF%BC%8C%E5%B9%B6%E4%B8%94%E7%BB%91%E5%AE%9A%E4%BA%86onclick%E4%BA%8B%E4%BB%B6%EF%BC%8C%E5%B0%B1%E5%87%BA%E7%8E%B0%E4%BA%86Uncaught-TypeError-Cannot-set-properties-of-null-setting-%E2%80%98onclick%E2%80%99-%E9%94%99%E8%AF%AF"><span class="nav-number">5.0.0.3.</span> <span class="nav-text">Q：问题分析：当JS文件放在head标签里中时，并且绑定了onclick事件，就出现了Uncaught TypeError: Cannot set properties of null (setting ‘onclick’)错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link"><span class="nav-number">5.0.0.4.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="XiuXian"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">XiuXian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-05 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XiuXian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
