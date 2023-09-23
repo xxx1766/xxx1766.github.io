@@ -433,30 +433,30 @@
       audioPlayer.play();
     }
   };
-  document.getElementById("download_pcm").onclick = function () {
-    const blob = audioPlayer.getAudioDataBlob("pcm")
-    if (!blob) {
-      return
-    }
-    let defaultName = new Date().getTime();
-    let node = document.createElement("a");
-    node.href = window.URL.createObjectURL(blob);
-    node.download = `${defaultName}.pcm`;
-    node.click();
-    node.remove();
-  };
+  // document.getElementById("download_pcm").onclick = function () {
+  //   const blob = audioPlayer.getAudioDataBlob("pcm")
+  //   if (!blob) {
+  //     return
+  //   }
+  //   let defaultName = new Date().getTime();
+  //   let node = document.createElement("a");
+  //   node.href = window.URL.createObjectURL(blob);
+  //   node.download = `${defaultName}.pcm`;
+  //   node.click();
+  //   node.remove();
+  // };
   
-  document.getElementById("download_wav").onclick = function () {
-    const blob = audioPlayer.getAudioDataBlob("wav")
-  if (!blob) {
-    return
-  }
-    let defaultName = new Date().getTime();
-    let node = document.createElement("a");
-    node.href = window.URL.createObjectURL(blob);
-    node.download = `${defaultName}.wav`;
-    node.click();
-    node.remove();
-  };
+  // document.getElementById("download_wav").onclick = function () {
+  //   const blob = audioPlayer.getAudioDataBlob("wav")
+  // if (!blob) {
+  //   return
+  // }
+  //   let defaultName = new Date().getTime();
+  //   let node = document.createElement("a");
+  //   node.href = window.URL.createObjectURL(blob);
+  //   node.download = `${defaultName}.wav`;
+  //   node.click();
+  //   node.remove();
+  // };
 
 })();
