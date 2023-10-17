@@ -262,7 +262,7 @@
       res += ' dot ';
       for (let i = 0; i < dotNum.length; i++) {
         res += oneNum(dotNum[i]);
-        if (i != dotNum-1) {
+        if (i != dotNum.length-1) {
           res += ' ';
         }
       }
