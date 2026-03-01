@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>K8s DRA | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">K8s DRA</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-02-25</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-02-28</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>5.4k words, 19 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/k8s/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        k8s
+      </a>
+    
+      <a href="/tags/Things-Edge-Cloud/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        Things-Edge-Cloud
+      </a>
+    
+      <a href="/tags/abstract/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        abstract
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <h1 id="DRA：K8s-高效管理和分配专用硬件资源"><a href="#DRA：K8s-高效管理和分配专用硬件资源" class="headerlink" title="DRA：K8s 高效管理和分配专用硬件资源"></a>DRA：K8s 高效管理和分配专用硬件资源</h1><p>ref: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/">K8s官网定义</a>;<br><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-resources/allocate-devices-dra/">Allocate Devices to Workloads with DRA</a>;<br><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-resources/set-up-dra-cluster/">Set Up DRA in a Cluster</a>;<br><a target="_blank" rel="noopener" href="https://github.com/kubernetes/enhancements/tree/master/keps/sig-node/4381-dra-structured-parameters">Dynamic Resource Allocation with Structured Parameters</a></p>
+<p>想象一下，你正在管理一个拥有数百个 GPU 和其他专用硬件设备的 Kubernetes 集群。如何确保这些昂贵的资源被高效利用？如何让多个 pod 共享同一个设备？当设备出现故障时，如何自动迁移工作负载？</p>
+<p><strong>过去的 Kubernetes 调度更多聚焦 CPU&#x2F;内存等“静态资源”的放置和分配</strong>，设备资源通常靠设备插件（Device Plugin）按容器级的请求进行绑定，缺乏跨 Pod 的共享、表达式筛选、统一的设备分类以及对设备状态的可观测性。DRA 提供了系统层面的统一方法来解决这些问题</p>
+<p>Kubernetes 的（DRA，dynamic resource allocation）提供了这些问题的答案。DRA引入了<strong>设备级</strong>的“资源切片”（ResourceSlice）、“设备类别”（DeviceClass）、“资源声明&#x2F;资源声明模板”（ResourceClaim&#x2F;ResourceClaimTemplate）等对象，调度决策要基于这些设备级的声明和切片信息，而不仅仅是节点的 CPU&#x2F;内存容量。<br>也就是说，<strong>DRA（动态资源分配）把设备资源（如 GPU、NIC、加速器等）从传统调度的“固定容量”里提出来</strong>，引入了全新的资源模型和调度流程，使调度器能够基于对设备的声明、分配和驱动的信息来确定 Pod 的放置，从而实现设备的灵活分类、共享和动态管理。</p>
+<p> DRA 是对设备资源（如 GPU、NIC 等）的独立治理框架，与原有的 kube-scheduler 协同工作。CPU&#x2F;内存调度仍然存在，DRA 在此基础上增加对设备资源的声明、切片、分配、绑定与生命周期管理。</p>
+<blockquote>
+<p>With DRA, device drivers and cluster admins define device classes that are available to claim in workloads. Kubernetes allocates matching devices to specific claims and places the corresponding pods on nodes that can access the allocated devices.<br>Allocating resources with DRA is a similar experience to dynamic volume provisioning, in which you use PersistentVolumeClaims to claim storage capacity from storage classes and request the claimed capacity in your pods.</p>
+</blockquote>
+<p>DRA 与原有 Kubernetes 调度的对照</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统 Kubernetes 调度</th>
+<th>DRA（动态资源分配）</th>
+<th>备注&#x2F;要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>关注的资源粒度</td>
+<td>主要对 CPU、内存、存储等静态资源进行放置；设备资源通常通过设备插件在容器级进行绑定，跨 Pod 共享能力不足</td>
+<td>以设备级资源切片、设备类别、资源声明&#x2F;模板等对象为核心，基于设备级信息进行调度与绑定，支持跨 Pod 共享</td>
+<td>引入统一的设备治理单元，超越单容器级绑定的局限</td>
+</tr>
+<tr>
+<td>API 与治理对象</td>
+<td>节点资源和设备插件状态为主要信息，缺乏统一的设备治理模型</td>
+<td>新增治理对象：DeviceClass、ResourceSlice、ResourceClaim、ResourceClaimTemplate 等，提供统一的设备治理入口</td>
+<td>将设备资源从“插件绑定”提升为可声明、可切片、可观测的资源单元</td>
+</tr>
+<tr>
+<td>调度与绑定分工</td>
+<td>调度阶段尽量确定放置，设备绑定通常在后续阶段完成，设备不可用时容易重调度</td>
+<td>多阶段工作流：驱动&#x2F;控制平面创建资源切片、管理员配置设备类别、工作负载创建 ResourceClaim&#x2F;Template，调度器据切片与声明进行放置并绑定</td>
+<td>释放放置与绑定的耦合，提升鲁棒性与可观测性</td>
+</tr>
+<tr>
+<td>设备共享与筛选</td>
+<td>设备通常是单 Pod 的专有资源，跨 Pod 共享困难；筛选能力有限</td>
+<td>支持跨 Pod 共享、基于 CEL 表达式的属性筛选、候选设备优先级、对不同设备类别的灵活匹配</td>
+<td>提升资源利用率与调度灵活性</td>
+</tr>
+<tr>
+<td>设备状态与观测</td>
+<td>设备状态观测有限，治理能力薄弱</td>
+<td>引入设备健康监控、绑定条件、访问权限控制、观测状态报告等，调度对设备状态有更强的感知与治理能力</td>
+<td>提高运维可观测性和诊断能力</td>
+</tr>
+<tr>
+<td>多租户治理</td>
+<td>多租户隔离和统一治理较困难</td>
+<td>提升了设备治理的清晰度与多租户友好性，职责分离更明确（设备管理员、Driver、调度&#x2F;运营人员分工清晰）</td>
+<td>更适合复杂租户场景</td>
+</tr>
+<tr>
+<td>与设备插件的关系</td>
+<td>设备插件驱动设备并与 Pod 绑定，角色较单一</td>
+<td>设备插件仍存在，但提供一个统一治理框架，声明、切片、分配、绑定在框架内协同完成</td>
+<td>插件仍然重要，但职责分离、协同治理增强</td>
+</tr>
+<tr>
+<td>对现有调度器的影响</td>
+<td>仍以传统调度为主，设备资源需额外处理或插件侧绑定</td>
+<td>与调度器协同工作，形成多阶段、对设备切片和资源声明的依赖，调度器在匹配时考虑设备切片和声明</td>
+<td>不是替代，而是扩展与协同</td>
+</tr>
+<tr>
+<td>场景适用性</td>
+<td>适合在不强依赖设备级细粒度治理的环境中使用</td>
+<td>适用于含 GPU&#x2F;NIC 等异构设备的集群，强调跨 Pod 共享、精细筛选和多租户治理</td>
+<td>针对设备资源密集场景提供更高的治理粒度</td>
+</tr>
+</tbody></table>
+<h2 id="动机和目标"><a href="#动机和目标" class="headerlink" title="动机和目标"></a>动机和目标</h2><h3 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h3><p>Kubernetes 最初只把 CPU&#x2F;内存等资源视为容器的核心资源，后续才扩展到存储和可逐节点计数的扩展资源；设备本地资源通过设备插件暴露给容器使用。但对新型设备（GPU, NIC, SmartNIC, FPGA），现有方式和请求自定义资源的 Kubernetes API 显得受限。因此提出 DRA 的 KEP，旨在解决以下用例中的局限性：</p>
+<ul>
+<li>设备初始化：如 FPGA 等加速设备在 workload 启动时需要重新配置，而不必让应用获得完整的硬件访问或提升至 root 权限，从而提升集群安全性。</li>
+<li>设备清理：工作负载结束后，需有清理机制，确保设备不保留前一个作业的配置、参数或数据，并正确进入休眠&#x2F;关机等状态。</li>
+<li>部分分配：设备能力的部分分区（如 Nvidia MIG、SR-IOV）以更好地匹配工作负载需求，提升资源利用率。当前 API 不支持按需动态部分分配，需预分区设备并逐一选取，带来灵活性与利用率的折中。</li>
+<li>可选分配：在部署时希望支持软性设备需求。若设备可分配则分配，若不可用则让工作负载仍可在无设备情况下运行（如使用 GPU 的任务回退到 CPU）。当前设备插件和 Pod 资源声明都不支持这种可选分配。</li>
+<li>Fabric 设备支持：希望在容器部署时利用通过 Fabric（网络、专用链路等）可用的设备资源。</li>
+<li>现有设备插件 API 面临的挑战包括：节点本地资源的发现局限、难以实现跨 Pod 的共用、缺乏统一的设备分类与治理、对健康状态和绑定条件的观测不足等。</li>
+<li>CDI（Containerized Data Interface）等现有扩展已被用于在容器内部暴露资源，但仍需要一个更统一、可观测的治理框架来覆盖设备资源的声明、切片、分配、绑定与生命周期管理。</li>
+</ul>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ul>
+<li>实现集群在使用资源声明（ResourceClaim、ResourceClaimTemplate）时的自动扩缩容能力，确保在资源声明变动导致需要扩容时，集群规模可在一个时间内超出单节点的范围进行调整。</li>
+<li>同时支持节点本地资源和网络附着资源，覆盖更加多样化的设备场景。</li>
+<li>支持供应商定义的配置参数格式，使设备资源的性质和属性可由厂商自定义且可被集群理解和治理。</li>
+<li>允许与现有设备插件并存：不是要替换设备插件 API，而是通过一个独立的治理框架来扩展对设备资源的声明、切片、分配、绑定与生命周期管理，与插件能力协同工作。</li>
+<li>提供设备资源抽象层的进阶能力，允许不同厂商在不同实现之间灵活选择 API 模型（如保留设备插件的场景，同时引入动态资源分配的能力）。</li>
+</ul>
+<h3 id="非目标（Non-Goals）"><a href="#非目标（Non-Goals）" class="headerlink" title="非目标（Non-Goals）"></a>非目标（Non-Goals）</h3><ul>
+<li>不打算替换设备插件 API。对于符合单线性容量模型的设备，设备插件仍然是可行且有效的解决方案；动态资源分配（DRA）与设备插件 API 将并存，厂商可按场景选择最合适的 API。</li>
+<li>不提供一个简单的“我想要某种 GPU”这样的通用抽象。要力求让厂商通过 DeviceClass、ResourceSlice 等对象暴露具体的配置参数和属性，减少用户对具体实现的依赖。</li>
+<li>通过对属性的标准化来实现工作负载的可移植性是一项未来工作，当前重点在于明确设备资源的声明、切片、分配、绑定及治理框架，而不是直接强制统一跨厂商的属性定义。</li>
+</ul>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p><img src="/../images/DRA-Components.jpeg" alt="DRA-Components"></p>
+<ol>
+<li><strong>DeviceClass</strong>（设备类）<br>  对一类可用设备的抽象和分类，例如 GPU、网卡等。它定义了设备的属性、能力以及如何筛选匹配资源的规则。DeviceClass 参数可以匹配 ResourceSlices 中的零个或多个设备。</li>
+<li><strong>ResourceClaim</strong>（资源声明）<br>  对某个 DeviceClass 的设备的具体请求，来自 pod 或工作负载，即描述对集群中附加资源（如设备）的访问请求。Claim 与具体的 ResourceSlice 绑定，确保 pod 获得所需的设备资源的访问。</li>
+<li><strong>ResourceClaimTemplate</strong>（资源声明模板）<br>  为同一工作负载中的多个 pod 生成独立的设备 Claim 的模板，避免不同 pod 之间争抢同一组设备，确保每个 pod 拥有独立的设备访问权。</li>
+<li><strong>ResourceSlice</strong>（资源切片）<br>  在某个节点上由设备驱动创建的、可被分配的设备子集&#x2F;“切片”，表示具体可用的设备池及其元数据（like 设备标识、属性等）。驱动程序在集群中创建和管理 ResourceSlices。每个资源切片必须包含以下信息：<ul>
+<li>Resource pool: 驱动程序管理的一组一个或多个资源。该池可以跨越多个资源切片。对池中资源的更改必须在该池中的所有资源切片中传播。管理该池的设备驱动程序负责确保这种传播发生。</li>
+<li>Devices: 管理池中的设备。ResourceSlice 可以列出池中的每个设备或池中设备的子集。ResourceSlice 定义了设备信息，如属性、版本和容量。设备用户可以通过在 ResourceClaims 或 DeviceClasses 中筛选设备信息来选择设备进行分配。</li>
+<li>Nodes: 可以访问资源的节点。驱动程序可以选择哪些节点可以访问资源，无论是集群中的所有节点、单个命名节点，还是具有特定节点标签的节点。</li>
+<li>e.g. 该资源切片由 <code>resource-driver.example.com</code> 驱动程序管理，位于 <code>black-cat-pool</code> 池中。<code>allNodes: true</code> 字段表示集群中的任何节点都可以访问设备。该资源切片中有一个设备，名为 <code>large-black-cat</code>，具有以下属性：<code>color: black</code>, <code>size: large</code>, <code>cat: true</code>。 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">resource.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ResourceSlice</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cat-slice</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">&quot;resource-driver.example.com&quot;</span></span><br><span class="line">    <span class="attr">pool:</span></span><br><span class="line">        <span class="attr">generation:</span> <span class="number">1</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">&quot;black-cat-pool&quot;</span></span><br><span class="line">        <span class="attr">resourceSliceCount:</span> <span class="number">1</span></span><br><span class="line">    <span class="comment"># The allNodes field defines whether any node in the cluster can access the device.</span></span><br><span class="line">    <span class="attr">allNodes:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">devices:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;large-black-cat&quot;</span></span><br><span class="line">        <span class="attr">attributes:</span></span><br><span class="line">        <span class="attr">color:</span></span><br><span class="line">            <span class="attr">string:</span> <span class="string">&quot;black&quot;</span></span><br><span class="line">        <span class="attr">size:</span></span><br><span class="line">            <span class="attr">string:</span> <span class="string">&quot;large&quot;</span></span><br><span class="line">        <span class="attr">cat:</span></span><br><span class="line">            <span class="attr">bool:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<p>通过上述组件，把“需要哪类设备、有哪些属性、在谁的节点上可用、每个 pod 是否有独立的设备访问权”等信息组合起来，在合适的节点上把设备分配给 pod，并尽量提升资源利用率和调度灵活性。<br>DRA 的主要优势：</p>
+<ul>
+<li>灵活的设备过滤：使用通用表达式语言（CEL）对特定设备属性进行细粒度过滤</li>
+<li>设备共享：通过引用相应的资源声明，多个容器或 pod 可以共享同一资源</li>
+<li>集中式设备分类：设备驱动程序和集群管理员可以使用设备类为应用操作员提供针对各种用例优化的硬件类别</li>
+<li>简化的 pod 请求：使用 DRA，应用操作员不需要在 pod 资源请求中指定设备数量</li>
+</ul>
+<h3 id="用户工作流"><a href="#用户工作流" class="headerlink" title="用户工作流"></a>用户工作流</h3><p><img src="/../images/DRA-workflow.png" alt="DRA 用户工作流"></p>
+<ul>
+<li><p><strong>Driver creation 驱动程序创建</strong>：实现对特定 DeviceClass 的设备暴露与管理，创建并维护 ResourceSlice，确保设备可以被动态分配。</p>
+<ul>
+<li>参与方：设备驱动开发者&#x2F;硬件厂商；节点上的驱动组件（与 kubelet 及 DRA 控制平面协同工作）</li>
+<li>DeviceClass 的实现与注册：定义设备的属性、能力、匹配规则</li>
+<li>ResourceSlice 的暴露与维护：在每个节点上代表一个或若干物理设备的可用切片，带有可筛选的属性（厂商、型号、容量等）</li>
+<li>与调度&#x2F;Claim 控制器的对接接口：提供设备可用性状态、资源元数据、健康信息</li>
+</ul>
+</li>
+<li><p><strong>Cluster configuration 集群配置</strong>：在集群层面定义和治理 DRA 的行为与策略，使资源声明与调度能够正确工作。</p>
+<ul>
+<li>参与方：集群管理员、平台团队；需要对接的 API 服务器、调度器、Kubelet 以及驱动组件</li>
+<li>DeviceClass 配置与策略：定义哪些设备可用、哪些属性需要、是否允许分区&#x2F;共享等</li>
+<li>安全与访问控制：RBAC、准入控制、特权需求、特性门控（Beta&#x2F;Alpha 功能开关）</li>
+<li>调度策略与前置条件：CEL 过滤、属性匹配、节点选择逻辑、对 Claims 的提前绑定策略</li>
+<li>观测与治理：Metrics、事件、日志、健康检查策略。</li>
+</ul>
+</li>
+<li><p><strong>Resource claims 资源声明</strong>：应用或工作负载主动声明需要的设备资源，通过 ResourceClaim 与（可选）ResourceClaimTemplate 表达需求。</p>
+<ul>
+<li>参与方：应用开发者、DevOps、CI&#x2F;CD 流程；调度与运行时系统（控制平面）</li>
+<li>ResourceClaim：对特定 DeviceClass 的设备资源请求，包含数量、分区、属性过滤等约束</li>
+<li>若需要，应用也可通过注入方式将 Claim 与 pod 的生命周期绑定（确保在 pod 启动前资源就绪）</li>
+</ul>
+</li>
+<li><p>pod 调度：将具备可用设备资源的 pod 安置到能够访问到绑定设备的节点上，并确保运行时容器能访问到这些设备。</p>
+<ul>
+<li>参与方：调度器（Scheduler）、Kubernetes 控制平面 kubelet、容器运行时；运行时环境中的设备节点挂载逻辑</li>
+<li>调度阶段：基于 ResourceClaim 的绑定状态、设备可用性、节点标签、亲和&#x2F;排除等约束，将 pod 放置在具备相应资源的节点</li>
+<li>Bindings：Claim 与实际 ResourceSlice 的绑定已经在声明阶段或调度前完成，确保 Node 级别具备访问权限</li>
+<li>运行时接入：kubelet 启动时确保容器能够看到并使用分配的设备切片（如设备节点、设备文件等）</li>
+</ul>
+</li>
+</ul>
+<h3 id="K8s-工作流"><a href="#K8s-工作流" class="headerlink" title="K8s 工作流"></a>K8s 工作流</h3><ol>
+<li><p><strong>ResourceSlice creation 资源切片创建</strong>: 集群中的驱动程序创建表示一个或多个设备的资源切片，这些设备位于一个受管理的相似设备池中。</p>
+</li>
+<li><p><strong>Workload creation 工作负载创建</strong>: 集群控制平面检查新工作负载中对资源声明模板或特定资源声明的引用。</p>
+<ol>
+<li>如果工作负载使用ResourceClaimTemplate，一个名为resourceclaim-controller的控制器会为工作负载中的每个Pod生成资源声明。</li>
+<li>如果工作负载使用特定的 ResourceClaim，Kubernetes 会检查该 ResourceClaim 是否存在于集群中。如果 ResourceClaim 不存在，Pods 将无法部署。</li>
+</ol>
+</li>
+<li><p><strong>ResourceSlice filtering 资源切片过滤</strong>: 对于每个 Pod，Kubernetes 检查集群中的资源切片，以找到满足以下所有条件的设备：可以访问资源的节点、拥有未分配的资源且这些资源符合 Pod 的 ResourceClaim 的节点。</p>
+</li>
+<li><p><strong>Resource allocation 资源分配</strong>: 在为 Pod 的 ResourceClaim 找到合适的 ResourceSlice 后，Kubernetes 调度器会更新 ResourceClaim 以包含分配细节。</p>
+</li>
+<li><p><strong>Pod scheduling Pod调度</strong>: 当资源分配完成后，调度器将Pod放置在可以访问分配资源的节点上。该节点上的设备驱动程序和kubelet配置设备以及Pod对设备的访问。</p>
+</li>
+</ol>
+<h2 id="实践中注意事项"><a href="#实践中注意事项" class="headerlink" title="实践中注意事项"></a>实践中注意事项</h2><h3 id="不同pod类型"><a href="#不同pod类型" class="headerlink" title="不同pod类型"></a>不同pod类型</h3><p>Kubernetes 的 pod 其实是可以被多种工作负载控制器管理的，而 DRA 可以应用于任何通过 pod 模板创建的 pod，只要该 pod（或template）声明了资源请求（ResourceClaim&#x2F;ResourceClaimTemplate）并且集群中存在可满足的 ResourceSlice。<br>DRA决策是基于每个 Pod 单独做出的，意味着每个 Pod 的设备请求在分配时可能得到不同的结果，即使它们来自同一个 ReplicaSet 或者同一组 Pod。</p>
+<ul>
+<li><p>Standalone Pod（单 Pod 直放）</p>
+<ul>
+<li>场景：直接创建一个 Pod，非由控制器管理。</li>
+<li>DRA 使用：在该 Pod 的模板或直接 Pod 规范中声明一个或多个 ResourceClaim 即可。资源会按Claim绑定到相应的 ResourceSlice，调度器在有可用资源的节点上安排该 Pod。注意如果直接指定 nodeName，可能绕过调度流程，需谨慎使用。</li>
+</ul>
+</li>
+<li><p>Deployment &#x2F; ReplicaSet（副本集驱动的工作负载）</p>
+<ul>
+<li>场景：大规模复制同一 Pod 模板，如服务副本。</li>
+<li>DRA 使用：在 Pod 模板中通过 ResourceClaim 或 ResourceClaimTemplate（推荐）为每个副本生成独立的设备请求，确保每个副本获得独立的设备访问权（若使用模板，则每个副本自动获得一个 Claim）。<blockquote>
+<p>exp1: ReplicaSet 下的3个副本，但设备切片分配不同<br>设备类别：gpu.nvidia<br>集群中有两台节点，分别暴露的 ResourceSlice 如下：<br>–NodeA: slice-01 (NVIDIA A100, 80GB)<br>–NodeA: slice-02 (NVIDIA A100, 40GB)<br>–NodeB: slice-03 (NVIDIA RTX A6000, 48GB)<br>Pod 3 个，通过 ReplicaSet 创建，且都请求 1 个 GPU（同一子请求）<br> –Pod-1 被调度到 NodeA，绑定到 slice-01。<br> –Pod-2 被调度到 NodeA，绑定到 slice-02。<br> –Pod-3 因为 NodeB 可用且也是 NVIDIA 之外的型号，按设备筛选仍然满足，但实际绑定到 slice-03。<br>三个 Pod 的“子请求”看起来相同（都请求 1 个 GPU），但实际绑定的设备特性不同（80GB A100、40GB A100、48GB RTX A6000）。Workload 需要能处理不同设备型号&#x2F;容量带来的差异（如某些计算内核对显存有最小需求、或者驱动版本要求不同）。</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>exp2: 同一物理设备分成多个分区，两个 Pod 各自使用一个分区.每个 Pod 的“子请求”在物理设备层面有所不同（分区不同），即使它们的初始请求看起来一样。需要 workload 能容忍同一 GPU 的不同分区分配情况。</p>
+</blockquote>
+<blockquote>
+<p>exp3: 两个 Pod 共享同一个设备（在策略允许的条件下）.虽然是同一个“子请求”目标（同一设备切片），实际运行时的资源分配会在同一设备上对两个 Pod 进行调度与隔离。需要明确的容错和并发控制策略，否则可能出现性能抹平、资源争抢等问题。</p>
+</blockquote>
+<blockquote>
+<p>exp4: 跨节点分布的 ReplicaSet，Pod 的设备可用性不同</p>
+</blockquote>
+</li>
+<li><p>StatefulSet（有序、唯一标识的有状态副本集）</p>
+<ul>
+<li>场景：需要稳定网络标识和存储的有状态应用（如数据库、缓存集群）。</li>
+<li>DRA 使用：StatefulSet 与 ResourceClaimTemplate 结合非常自然，因为每个 Pod（有稳定 ordinal）可以获得独立的设备 Claim，且绑定关系随 Pod 的生命周期保持可预见性。</li>
+</ul>
+</li>
+<li><p>DaemonSet（每个节点一个 Pod）</p>
+<ul>
+<li>场景：需要在集群每个节点上运行一个 Pod 的场景（如监控代理、节点级服务）。</li>
+<li>DRA 使用：每个 DaemonSet 的 Pod 可以独立申请设备资源（通过 Claim&#x2F;Template），因每个节点有自己的 ResourceSlice，资源分配与调度相对简单且对齐性好。</li>
+</ul>
+</li>
+<li><p>Job &#x2F; CronJob（批处理任务）</p>
+<ul>
+<li>场景：一次性或定时执行的任务，每个 Job Pod 可以独立申请并绑定设备资源。</li>
+<li>DRA 使用：Job 模板中声明 ResourceClaim；每个 Pod（Job 的一个执行单元）获得独立资源，适合并发执行的场景。</li>
+</ul>
+</li>
+</ul>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h4 id="考虑优先级列表"><a href="#考虑优先级列表" class="headerlink" title="考虑优先级列表"></a>考虑优先级列表</h4><p>可以为 ResourceClaim 或 ResourceClaimTemplate 中的请求提供优先级子请求列表。调度器将选择第一个可以分配的子请求。在下面的示例中，ResourceClaimTemplate 请求了<strong>一台颜色为黑色、尺寸为大型的设备</strong>。如果没有符合这些属性的设备，pod 将无法调度。通过优先列表功能，可以指定第二个替代方案，<strong>请求两台颜色为白色、尺寸为小型的设备</strong>。如果大型黑色设备可用，将会被分配。如果不可用，但有两台小型白色设备可用，pod 仍然能够运行。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">resource.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ResourceClaimTemplate</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">prioritized-list-claim-template</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">spec:</span></span><br><span class="line">    <span class="attr">devices:</span></span><br><span class="line">      <span class="attr">requests:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">req-0</span></span><br><span class="line">        <span class="attr">firstAvailable:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">large-black</span></span><br><span class="line">          <span class="attr">deviceClassName:</span> <span class="string">resource.example.com</span></span><br><span class="line">          <span class="attr">selectors:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">cel:</span></span><br><span class="line">              <span class="attr">expression:</span> <span class="string">|-</span></span><br><span class="line"><span class="string">                device.attributes[&quot;resource-driver.example.com&quot;].color == &quot;black&quot; &amp;&amp;</span></span><br><span class="line"><span class="string">                device.attributes[&quot;resource-driver.example.com&quot;].size == &quot;large&quot;                </span></span><br><span class="line"><span class="string"></span>        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">small-white</span></span><br><span class="line">          <span class="attr">deviceClassName:</span> <span class="string">resource.example.com</span></span><br><span class="line">          <span class="attr">selectors:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">cel:</span></span><br><span class="line">              <span class="attr">expression:</span> <span class="string">|-</span></span><br><span class="line"><span class="string">                device.attributes[&quot;resource-driver.example.com&quot;].color == &quot;white&quot; &amp;&amp;</span></span><br><span class="line"><span class="string">                device.attributes[&quot;resource-driver.example.com&quot;].size == &quot;small&quot;                </span></span><br><span class="line"><span class="string"></span>          <span class="attr">count:</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+        <a href="/2026/02/27/code-for-work/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          编程训练（1）
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2024/04/25/cgroup%E5%AD%A6%E4%B9%A0/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          cgroup学习
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
