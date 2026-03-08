@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>计算机网络应用层 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">计算机网络应用层</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-03-08</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-03-08</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>3.2k words, 11 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/intership/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        intership
+      </a>
+    
+      <a href="/tags/system/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        system
+      </a>
+    
+      <a href="/tags/network/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        network
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <p>考点：</p>
+<ul>
+<li>DNS 与服务发现</li>
+<li>HTTP&#x2F;HTTPS 基础与报文结构</li>
+<li>HTTP&#x2F;1.1、HTTP&#x2F;2、HTTP&#x2F;3 区别</li>
+<li>TLS&#x2F;SSL 握手、证书校验、HTTPS 加密过程</li>
+<li>Cookie &#x2F; Session &#x2F; Token &#x2F; JWT</li>
+<li>正向代理、反向代理、网关、Ingress</li>
+<li>长连接、短连接、Keep-Alive、连接复用</li>
+<li>WebSocket、gRPC 的特点与适用场景</li>
+<li>应用层负载均衡、限流、重试、超时、熔断</li>
+<li>常见应用层问题排查方法</li>
+</ul>
+<h5 id="Q1：DNS-解析过程是怎样的？在-K8s-里-Service-是如何被解析到-Pod-的？"><a href="#Q1：DNS-解析过程是怎样的？在-K8s-里-Service-是如何被解析到-Pod-的？" class="headerlink" title="Q1：DNS 解析过程是怎样的？在 K8s 里 Service 是如何被解析到 Pod 的？"></a>Q1：DNS 解析过程是怎样的？在 K8s 里 Service 是如何被解析到 Pod 的？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>用户访问域名时，通常会先查本地缓存、操作系统缓存、hosts 文件，再向本地 DNS 服务器发起递归查询。</li>
+<li>DNS 查询过程中可能涉及根域名服务器、顶级域服务器、权威 DNS 服务器。</li>
+<li>在 K8s 中，集群内部通常由 CoreDNS 提供服务发现。</li>
+<li>Pod 访问 <code>service-name.namespace.svc.cluster.local</code> 时，会由 CoreDNS 返回对应 Service 的 ClusterIP。</li>
+<li>若是 Headless Service，则返回后端 Pod IP 列表，而不是虚拟 IP。</li>
+<li>这是 K8s 服务发现的基础，和 Ingress、Service Mesh、微服务调用强相关。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>容易把 Service 名称解析结果 和 Pod IP 混为一谈。</li>
+<li>容易忽略 ClusterIP Service 和 Headless Service 的区别。</li>
+<li>容易只会说公网 DNS，不会结合 K8s 里的 CoreDNS。</li>
+<li>容易误以为 DNS 一定是递归到底，实际上客户端通常是递归请求，本地 DNS 再进行迭代查询。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>CoreDNS 的配置一般看哪个对象？答：<code>ConfigMap</code>。</li>
+<li>如果 CoreDNS 故障，集群里会出现什么现象？答：服务名无法解析，应用互调失败。</li>
+<li>如何排查 DNS 问题？<ul>
+<li><code>nslookup</code></li>
+<li><code>dig</code></li>
+<li><code>cat /etc/resolv.conf</code></li>
+<li>查看 CoreDNS Pod 日志</li>
+</ul>
+</li>
+<li>为什么有时解析慢？<ul>
+<li>上游 DNS 不稳定</li>
+<li>CoreDNS 负载高</li>
+<li>DNS 缓存命中率低</li>
+<li>应用频繁重复解析</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q2：HTTP-和-HTTPS-的区别是什么？为什么生产环境基本都用-HTTPS？"><a href="#Q2：HTTP-和-HTTPS-的区别是什么？为什么生产环境基本都用-HTTPS？" class="headerlink" title="Q2：HTTP 和 HTTPS 的区别是什么？为什么生产环境基本都用 HTTPS？"></a>Q2：HTTP 和 HTTPS 的区别是什么？为什么生产环境基本都用 HTTPS？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>HTTP 是明文传输，HTTPS 是 HTTP + TLS&#x2F;SSL。</li>
+<li>HTTPS 提供三类核心能力：<ul>
+<li>加密性：防止内容被窃听</li>
+<li>完整性：防止报文被篡改</li>
+<li>身份认证：确认服务端身份</li>
+</ul>
+</li>
+<li>HTTP 默认端口一般是 80，HTTPS 默认端口一般是 443。</li>
+<li>在 K8s 中，Ingress&#x2F;Nginx&#x2F;网关常承担 HTTPS 终止职责。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>不能简单说“HTTPS 更安全”，要能说明具体安全在什么地方。</li>
+<li>容易误以为 HTTPS 会把所有内容都完全隐藏，实际上 域名、IP、证书部分信息 不一定完全隐藏。</li>
+<li>容易把 HTTPS 和“接口一定安全”画等号，实际上还要结合鉴权、限流、WAF 等。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>HTTPS 为什么比 HTTP 慢？<ul>
+<li>多了 TLS 握手</li>
+<li>加解密有计算开销</li>
+</ul>
+</li>
+<li>现在为什么影响没那么大？<ul>
+<li>TLS 1.3 优化</li>
+<li>会话复用</li>
+<li>长连接</li>
+<li>硬件性能提升</li>
+</ul>
+</li>
+<li>K8s 中 HTTPS 证书通常怎么管理？<ul>
+<li>Secret</li>
+<li>cert-manager</li>
+<li>ACME 自动签发</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q3：HTTPS-TLS-握手过程你怎么讲？证书校验是怎么做的？"><a href="#Q3：HTTPS-TLS-握手过程你怎么讲？证书校验是怎么做的？" class="headerlink" title="Q3：HTTPS&#x2F;TLS 握手过程你怎么讲？证书校验是怎么做的？"></a>Q3：HTTPS&#x2F;TLS 握手过程你怎么讲？证书校验是怎么做的？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>客户端先发起握手，声明支持的 TLS 版本、加密套件等。</li>
+<li>服务端返回证书、公钥、协商好的加密参数。</li>
+<li>客户端验证证书合法性：<ul>
+<li>是否在有效期内</li>
+<li>域名是否匹配</li>
+<li>是否由受信任 CA 签发</li>
+<li>证书链是否完整</li>
+</ul>
+</li>
+<li>验证通过后，双方协商会话密钥，后续用对称加密传输应用数据。</li>
+<li>非对称加密主要用于身份验证和密钥交换，对称加密用于真正的数据传输。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>容易说成“HTTPS 全程都用非对称加密”，这是不对的。</li>
+<li>容易忽略证书校验中的 域名匹配。</li>
+<li>容易把 CA、证书、公钥、私钥的关系讲乱。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么数据传输不用纯非对称加密？<ul>
+<li>性能差，成本高。</li>
+</ul>
+</li>
+<li>自签证书为什么浏览器默认不信任？<ul>
+<li>不在受信任 CA 链中。</li>
+</ul>
+</li>
+<li>运维里常见证书问题有哪些？<ul>
+<li>证书过期</li>
+<li>证书域名不匹配</li>
+<li>证书链不完整</li>
+<li>Secret 挂载后应用未热更新</li>
+</ul>
+</li>
+<li>常用排查命令<ul>
+<li><code>openssl s_client -connect host:443</code></li>
+<li><code>curl -v https://host</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q4：HTTP-1-1、HTTP-2、HTTP-3-的主要区别是什么？"><a href="#Q4：HTTP-1-1、HTTP-2、HTTP-3-的主要区别是什么？" class="headerlink" title="Q4：HTTP&#x2F;1.1、HTTP&#x2F;2、HTTP&#x2F;3 的主要区别是什么？"></a>Q4：HTTP&#x2F;1.1、HTTP&#x2F;2、HTTP&#x2F;3 的主要区别是什么？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>HTTP&#x2F;1.1<ul>
+<li>默认支持长连接</li>
+<li>存在队头阻塞问题</li>
+<li>常通过多个 TCP 连接并发请求来缓解</li>
+</ul>
+</li>
+<li>HTTP&#x2F;2<ul>
+<li>二进制分帧</li>
+<li>多路复用</li>
+<li>头部压缩</li>
+<li>一个 TCP 连接上可并发多个流</li>
+</ul>
+</li>
+<li>HTTP&#x2F;3<ul>
+<li>基于 QUIC</li>
+<li>QUIC 基于 UDP</li>
+<li>进一步优化握手和队头阻塞问题</li>
+</ul>
+</li>
+<li>在云原生场景里，网关、Ingress、Service Mesh 往往会涉及 HTTP&#x2F;2 和 gRPC。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>不要说 HTTP&#x2F;2 消除了所有队头阻塞，它只是解决了应用层的部分问题，TCP 层仍可能存在影响。</li>
+<li>不要把“HTTP&#x2F;3 基于 UDP”直接理解为“不可靠”，QUIC 自身实现了可靠性机制。</li>
+<li>不要把长连接和 Keep-Alive 完全等同于 HTTP&#x2F;2。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么 gRPC 常基于 HTTP&#x2F;2？<ul>
+<li>多路复用</li>
+<li>流式传输</li>
+<li>更高性能</li>
+</ul>
+</li>
+<li>为什么 QUIC 更适合弱网场景？<ul>
+<li>连接建立更快</li>
+<li>丢包恢复机制更灵活</li>
+</ul>
+</li>
+<li>实际生产中为什么 HTTP&#x2F;3 没有完全替代 HTTP&#x2F;2？<ul>
+<li>生态成熟度</li>
+<li>网络设备兼容性</li>
+<li>运维观测和代理链路支持差异</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q5：GET-和-POST-有什么区别？幂等性是什么意思？为什么运维要关心它？"><a href="#Q5：GET-和-POST-有什么区别？幂等性是什么意思？为什么运维要关心它？" class="headerlink" title="Q5：GET 和 POST 有什么区别？幂等性是什么意思？为什么运维要关心它？"></a>Q5：GET 和 POST 有什么区别？幂等性是什么意思？为什么运维要关心它？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>GET 通常用于获取资源，POST 通常用于提交数据。</li>
+<li>GET 一般是幂等的，POST 通常不是幂等的。</li>
+<li>幂等指：多次执行同一请求，结果和执行一次相同。</li>
+<li>运维要关注幂等性，因为网关、代理、重试机制、超时重发都可能导致请求被重复提交。</li>
+<li>在服务治理里，重试策略必须结合接口幂等性设计。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>不能说“GET 没有请求体，POST 才有请求体”，这是不严谨的。</li>
+<li>不能把“安全方法”和“幂等方法”混为一谈。</li>
+<li>不能简单认为 POST 一定不幂等，业务上也可以通过幂等号设计实现幂等。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>哪些方法通常是幂等的？<ul>
+<li>GET</li>
+<li>PUT</li>
+<li>DELETE</li>
+</ul>
+</li>
+<li>为什么支付、下单接口必须做幂等？<ul>
+<li>防止重复扣费、重复创建订单。</li>
+</ul>
+</li>
+<li>K8s&#x2F;网关中哪些机制会触发重复请求？<ul>
+<li>超时重试</li>
+<li>代理层重发</li>
+<li>客户端失败重试</li>
+<li>负载均衡切换</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q6：Cookie、Session、Token、JWT-有什么区别？"><a href="#Q6：Cookie、Session、Token、JWT-有什么区别？" class="headerlink" title="Q6：Cookie、Session、Token、JWT 有什么区别？"></a>Q6：Cookie、Session、Token、JWT 有什么区别？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>Cookie：浏览器保存在本地的小数据，常随请求自动携带。</li>
+<li>Session：服务端保存的会话状态，客户端通常通过 Cookie 携带 Session ID。</li>
+<li>Token：服务端签发给客户端的凭证，客户端后续请求主动携带。</li>
+<li>JWT：一种自包含的 Token 格式，包含头、载荷、签名。</li>
+<li>在分布式和 K8s 场景下，Token&#x2F;JWT 通常比传统 Session 更利于横向扩展。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>Cookie 不是天然不安全，不安全往往来自配置不当。</li>
+<li>JWT 不是天然“更安全”，它只是更适合某些分布式场景。</li>
+<li>不要把“无状态”理解成系统里完全没有状态，通常只是服务端不保存会话状态。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>Session 在多副本部署中有什么问题？<ul>
+<li>会话不共享</li>
+<li>需要粘性会话或集中式 Session 存储</li>
+</ul>
+</li>
+<li>JWT 的风险是什么？<ul>
+<li>一旦签发，吊销困难</li>
+<li>Token 泄露影响较大</li>
+<li>载荷不能存敏感明文</li>
+</ul>
+</li>
+<li>Cookie 常见安全属性有哪些？<ul>
+<li><code>HttpOnly</code></li>
+<li><code>Secure</code></li>
+<li><code>SameSite</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q7：什么是正向代理、反向代理？K8s-里的-Ingress-更接近哪一种？"><a href="#Q7：什么是正向代理、反向代理？K8s-里的-Ingress-更接近哪一种？" class="headerlink" title="Q7：什么是正向代理、反向代理？K8s 里的 Ingress 更接近哪一种？"></a>Q7：什么是正向代理、反向代理？K8s 里的 Ingress 更接近哪一种？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>正向代理：代理客户端，服务端通常不知道真实客户端是谁。</li>
+<li>反向代理：代理服务端，客户端通常无感知后端真实节点。</li>
+<li>Ingress &#x2F; Nginx Ingress &#x2F; APISIX &#x2F; Traefik 本质上更接近 反向代理。</li>
+<li>反向代理常用于：<ul>
+<li>路由转发</li>
+<li>TLS 终止</li>
+<li>负载均衡</li>
+<li>限流</li>
+<li>鉴权</li>
+<li>灰度发布</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>很多人只会背定义，不会结合实际场景。</li>
+<li>容易把 Nginx、网关、Ingress 全混在一起说。</li>
+<li>Ingress 不是 Service，它们职责不同：<ul>
+<li>Service 解决集群内服务访问</li>
+<li>Ingress 解决集群外七层入口访问</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>Ingress 和 四层负载均衡有什么区别？<ul>
+<li>Ingress 更偏七层，能看 Host、Path、Header。</li>
+</ul>
+</li>
+<li>反向代理为什么能做灰度？<ul>
+<li>可以按路径、Header、Cookie、权重做转发策略。</li>
+</ul>
+</li>
+<li>若面试官继续追问，可延伸到：<ul>
+<li>Ingress Controller 工作原理</li>
+<li>配置下发</li>
+<li>动态 reload</li>
+<li>upstream 健康检查</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q8：WebSocket-和-HTTP-有什么关系？在运维场景中要注意什么？"><a href="#Q8：WebSocket-和-HTTP-有什么关系？在运维场景中要注意什么？" class="headerlink" title="Q8：WebSocket 和 HTTP 有什么关系？在运维场景中要注意什么？"></a>Q8：WebSocket 和 HTTP 有什么关系？在运维场景中要注意什么？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>WebSocket 建立过程通常先通过 HTTP&#x2F;HTTPS 发起升级握手，然后升级为全双工长连接。</li>
+<li>它适合实时通信场景，如：<ul>
+<li>在线聊天</li>
+<li>实时监控</li>
+<li>推送通知</li>
+</ul>
+</li>
+<li>在 K8s 中，如果经过 Ingress&#x2F;代理层，需要确认是否支持 Upgrade 头和长连接配置。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>WebSocket 不是完全独立于 HTTP 的起步协议。</li>
+<li>容易忽略代理层超时配置，导致连接被意外断开。</li>
+<li>容易把 WebSocket 和 SSE 混淆。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么 WebSocket 更适合实时推送？<ul>
+<li>服务端可主动推送数据。</li>
+</ul>
+</li>
+<li>经过 Nginx&#x2F;Ingress 时常见问题有哪些？<ul>
+<li>Upgrade 头未透传</li>
+<li>连接超时过短</li>
+<li>负载均衡导致会话漂移</li>
+</ul>
+</li>
+<li>如何排查？<ul>
+<li>浏览器开发者工具</li>
+<li>Nginx&#x2F;Ingress 日志</li>
+<li>连接数与超时配置检查</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q9：gRPC-是什么？为什么云原生里经常提到它？"><a href="#Q9：gRPC-是什么？为什么云原生里经常提到它？" class="headerlink" title="Q9：gRPC 是什么？为什么云原生里经常提到它？"></a>Q9：gRPC 是什么？为什么云原生里经常提到它？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>gRPC 是一种高性能 RPC 框架，通常基于 HTTP&#x2F;2。</li>
+<li>使用 Protocol Buffers 作为接口定义和序列化方式。</li>
+<li>支持：<ul>
+<li>一元调用</li>
+<li>服务端流</li>
+<li>客户端流</li>
+<li>双向流</li>
+</ul>
+</li>
+<li>在微服务、Service Mesh、内部服务通信中很常见。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>不要把 gRPC 简单等同于“就是 HTTP 接口”。</li>
+<li>不要忽略它对代理、网关、可观测性的要求更高。</li>
+<li>不要只谈性能，不谈调试复杂度和浏览器兼容问题。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>gRPC 为什么性能通常比 REST 更高？<ul>
+<li>Protobuf 更紧凑</li>
+<li>HTTP&#x2F;2 多路复用</li>
+</ul>
+</li>
+<li>为什么很多公网 API 不直接用 gRPC？<ul>
+<li>浏览器支持、生态、调试便利性等因素。</li>
+</ul>
+</li>
+<li>Ingress 转发 gRPC 需要注意什么？<ul>
+<li>是否支持 HTTP&#x2F;2</li>
+<li>超时配置</li>
+<li>流式请求支持</li>
+<li>错误码映射</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q10：应用层常见故障怎么排查？比如“服务能通-IP，但域名不通；HTTPS-握手失败；接口偶发-502”。"><a href="#Q10：应用层常见故障怎么排查？比如“服务能通-IP，但域名不通；HTTPS-握手失败；接口偶发-502”。" class="headerlink" title="Q10：应用层常见故障怎么排查？比如“服务能通 IP，但域名不通；HTTPS 握手失败；接口偶发 502”。"></a>Q10：应用层常见故障怎么排查？比如“服务能通 IP，但域名不通；HTTPS 握手失败；接口偶发 502”。</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>先分层排查：域名解析 -&gt; TCP 连通 -&gt; TLS 握手 -&gt; HTTP 状态码 -&gt; 应用日志。</li>
+<li>常见工具：<ul>
+<li><code>nslookup</code></li>
+<li><code>dig</code></li>
+<li><code>curl -v</code></li>
+<li><code>openssl s_client</code></li>
+<li><code>kubectl logs</code></li>
+<li><code>kubectl describe</code></li>
+</ul>
+</li>
+<li>502 常见于：<ul>
+<li>上游服务不可达</li>
+<li>端口配置错误</li>
+<li>探针异常导致无可用后端</li>
+<li>代理和后端协议不匹配</li>
+</ul>
+</li>
+<li>504 常见于：<ul>
+<li>上游响应超时</li>
+</ul>
+</li>
+<li>499 常见于：<ul>
+<li>客户端提前断开连接（Nginx 语境下）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>只盯着应用日志，不看代理层和 DNS。</li>
+<li>看见 502 就说是应用代码问题，实际上可能是网关配置问题。</li>
+<li>忽略 Service、Endpoints、Pod Ready 状态。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>如果域名不通但 IP 通，优先怀疑什么？<ul>
+<li>DNS 配置</li>
+<li>CoreDNS</li>
+<li>resolv.conf</li>
+<li>hosts</li>
+</ul>
+</li>
+<li>如果 HTTPS 失败但 HTTP 正常，优先查什么？<ul>
+<li>证书</li>
+<li>SNI</li>
+<li>TLS 版本</li>
+<li>代理配置</li>
+</ul>
+</li>
+<li>如果 Ingress 返回 502，排查顺序是什么？<ul>
+<li>Ingress 规则</li>
+<li>Service 端口</li>
+<li>Endpoints</li>
+<li>Pod 监听端口</li>
+<li>应用健康状态</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="速记笔记"><a href="#速记笔记" class="headerlink" title="速记笔记"></a>速记笔记</h2><ul>
+<li><p>DNS</p>
+<ul>
+<li>K8s 内部服务发现核心是 CoreDNS</li>
+<li>ClusterIP 返回虚拟 IP，Headless Service 返回 Pod IP 列表</li>
+</ul>
+</li>
+<li><p>HTTP&#x2F;HTTPS</p>
+<ul>
+<li>HTTP 明文；HTTPS &#x3D; HTTP + TLS</li>
+<li>HTTPS 解决：加密、完整性、身份认证</li>
+</ul>
+</li>
+<li><p>TLS</p>
+<ul>
+<li>非对称加密：身份验证&#x2F;密钥交换</li>
+<li>对称加密：真正传输数据</li>
+<li>常见问题：证书过期、域名不匹配、证书链不全</li>
+</ul>
+</li>
+<li><p>HTTP版本</p>
+<ul>
+<li>1.1：长连接，但存在队头阻塞</li>
+<li>2：二进制分帧、多路复用、头部压缩</li>
+<li>3：基于 QUIC&#x2F;UDP，弱网体验更好</li>
+</ul>
+</li>
+<li><p>接口设计</p>
+<ul>
+<li>幂等性非常关键，尤其是重试场景</li>
+<li>网关&#x2F;代理&#x2F;客户端都可能导致重复请求</li>
+</ul>
+</li>
+<li><p>鉴权</p>
+<ul>
+<li>Cookie 存客户端</li>
+<li>Session 存服务端</li>
+<li>Token&#x2F;JWT 更适合分布式部署</li>
+<li>JWT 方便扩展，但吊销困难</li>
+</ul>
+</li>
+<li><p>代理与入口</p>
+<ul>
+<li>正向代理代理客户端</li>
+<li>反向代理代理服务端</li>
+<li>Ingress 本质上是集群入口的七层反向代理</li>
+</ul>
+</li>
+<li><p>实时通信</p>
+<ul>
+<li>WebSocket：先 HTTP Upgrade，再全双工通信</li>
+<li>gRPC：基于 HTTP&#x2F;2，适合内部高性能服务调用</li>
+</ul>
+</li>
+<li><p>排障口诀</p>
+<ul>
+<li>先 DNS，再 TCP，再 TLS，再 HTTP，再应用</li>
+<li>先入口，再 Service，再 Endpoints，再 Pod，再日志</li>
+</ul>
+</li>
+</ul>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+        <a href="/2026/03/08/network4/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          计算机网络浏览器
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/03/08/network2/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          计算机网络传输协议
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
