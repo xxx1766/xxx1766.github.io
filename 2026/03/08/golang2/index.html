@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>go并发 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">go并发</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-03-08</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-03-08</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>4.2k words, 15 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/k8s/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        k8s
+      </a>
+    
+      <a href="/tags/intership/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        intership
+      </a>
+    
+      <a href="/tags/golang/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        golang
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <p><a target="_blank" rel="noopener" href="https://notes.kamacoder.com/bagu/2JZHSVDywAS">参考链接</a></p>
+<p>Go并发掌握下面内容</p>
+<ul>
+<li>goroutine、channel 等并发编程模型</li>
+<li>分段锁、原子操作、无锁优化的工程实践</li>
+<li>gRPC 通信、etcd 服务发现、SingleFlight 请求合并</li>
+<li>实现多种淘汰策略（LRU、LFU、ARC），理解各自优缺点</li>
+<li>设计两级缓存（本地+分布式），兼顾速度与一致性</li>
+<li>应对缓存穿透、击穿、雪崩三大问题<br>Raft&#x2F;一致性哈希保证节点数据分布均衡</li>
+<li>etcd 支撑动态节点管理与健康检查</li>
+<li>key 防护与缓存预热高并发下的热点</li>
+<li>GC 压力、细粒度锁 + 内存预分配，减少 GC 压力</li>
+<li>日志监控与优雅关闭，确保系统可观测与稳定性</li>
+<li>命中率、吞吐量、延迟等指标驱动的性能调优</li>
+</ul>
+<h3 id="一、Go并发基础与模型"><a href="#一、Go并发基础与模型" class="headerlink" title="一、Go并发基础与模型"></a>一、Go并发基础与模型</h3><ul>
+<li>Q1: 解释 goroutine 与操作系统线程的区别，以及 Go 的调度模型如何支撑并发？<ul>
+<li>要点提示：goroutine 是用户态的轻量级执行单元，由 Go 运行时调度管理；创建销毁成本低。调度器通过 GOMAXPROCS、G、M、P 等概念进行调度与工作分配，支持大规模并发执行。Go 运行时会尽量复用线程，多个 goroutine 共享同一个地址空间。</li>
+</ul>
+</li>
+<li>Q2: 什么是并发与并行的区别？在 Go 中如何实现“并发”和“并行”？<ul>
+<li>要点提示：并发强调“在同一时间段内切换执行多任务”，并行强调“在同一时刻确实同时执行多任务”。Go 的并行性通过多核执行（GOMAXPROCS&gt;1）实现，并发通过 goroutine&#x2F;通道的协作实现。</li>
+</ul>
+</li>
+<li>Q3: GOMAXPROCS、调度器和运行时对并发性能的影响有哪些常见坑？<ul>
+<li>要点提示：默认 GOMAXPROCS&#x3D;运行机器CPU核心数；调整时要考虑 IO&#x2F;计算密集型任务的平衡、锁竞争、CPU亲和性、GC 暴露等；过度并发可能带来调度开销与竞态条件。</li>
+</ul>
+</li>
+</ul>
+<h3 id="二、通道（Channel）与阻塞管理"><a href="#二、通道（Channel）与阻塞管理" class="headerlink" title="二、通道（Channel）与阻塞管理"></a>二、通道（Channel）与阻塞管理</h3><ul>
+<li>Q1: 无缓冲通道和有缓冲通道的区别及使用场景各自的优缺点是什么？<ul>
+<li>要点提示：无缓冲通道在发送端与接收端必须同步进行，容易导致阻塞等待对方就绪；有缓冲通道有容量限制，发送方在缓冲区未满时不阻塞，但接收方在缓冲区空时会阻塞。场景：需要即时通知 vs 需要异步缓冲的数据队列。</li>
+</ul>
+</li>
+<li>Q2: 什么时候使用 select？它在并发设计中的作用是什么？<ul>
+<li>要点提示：select 用于在多个通道操作之间做多路复用，处理多路并发事件、实现超时、取消、以及组合不同通道的工作流。应注意避免默认分支导致忙等待。</li>
+</ul>
+</li>
+<li>Q3: 如何通过 time.After、带超时的 context 等实现操作超时和避免永久阻塞？<ul>
+<li>要点提示：time.After 返回一个定时信道，便于超时判断；context.WithTimeout&#x2F;WithDeadline 提供全局取消信号，结合 select 实现超时&#x2F;取消退出。</li>
+</ul>
+</li>
+<li>Q4: 如何避免通道读写中的死锁或资源泄漏？<ul>
+<li>要点提示：确保所有发送&#x2F;接收路径都有匹配的对端、避免不必要的阻塞；对退出路径要有显式的关闭&#x2F;取消机制，避免 goroutine 永远阻塞在等待上游信号。</li>
+</ul>
+</li>
+</ul>
+<h3 id="三、同步原语与调度策略"><a href="#三、同步原语与调度策略" class="headerlink" title="三、同步原语与调度策略"></a>三、同步原语与调度策略</h3><ul>
+<li>Q1: Mutex 的基本用法与正确使用场景有哪些？为何要避免在临界区执行耗时操作？<ul>
+<li>要点提示：Mutex 用于保护共享数据的互斥访问，确保关键区段原子性。持锁时间应尽量短，避免阻塞其他 goroutine，导致吞吐下降和死锁风险。</li>
+</ul>
+</li>
+<li>Q2: RWMutex 的使用场景与注意点是什么？与 Mutex 的差异在哪？<ul>
+<li>要点提示：RWMutex 适合读多写少场景，读锁可并发；写锁独占。注意写锁与读锁的组合可能导致优先级反转、潜在的死锁条件。</li>
+</ul>
+</li>
+<li>Q3: Cond、原子操作（sync&#x2F;atomic）、以及在无锁场景下的并发控制要点？<ul>
+<li>要点提示：Cond 用于复杂的等待&#x2F;通知场景，原子操作用于无锁的简单计数&#x2F;标志位更新，需谨慎避免竞态条件和非原子性操作混用。</li>
+</ul>
+</li>
+<li>Q4: 互斥锁的模式与实现细节（如正常模式 vs 饥饿模式、状态字段等）对性能的影响？<ul>
+<li>要点提示：Go 的互斥锁有内部状态（如 mutexLocked、mutexWoken、mutexStarving、waitersCount等），不同模式对公平性和吞吐有影响。理解这些可以在高并发场景下做出设计取舍。</li>
+</ul>
+</li>
+</ul>
+<h3 id="四、共享数据结构的并发安全（切片、Map-等）"><a href="#四、共享数据结构的并发安全（切片、Map-等）" class="headerlink" title="四、共享数据结构的并发安全（切片、Map 等）"></a>四、共享数据结构的并发安全（切片、Map 等）</h3><ul>
+<li>Q1: 为什么切片在并发环境下不是并发安全的？常见的并发问题有哪些？<ul>
+<li>要点提示：切片可以共享底层数组，append 等扩容会重新分配，导致数据竞态和越界&#x2F;覆盖问题。并发读写可能引发数据竞争。</li>
+</ul>
+</li>
+<li>Q2: Go 的原生 map 在并发场景下为什么不安全？有哪些常见的解决策略？<ul>
+<li>要点提示：原生 map 不是并发安全的，多个 goroutine 同时读写会导致数据竞争和崩溃。解决策略：使用 sync.Mutex 或 sync.RWMutex 包裹访问、使用 sync.Map（性能和使用场景要点）、尽量让每个 goroutine 使用自己的 map 拷贝后通过通道传递。</li>
+</ul>
+</li>
+<li>Q3: sync.Map 的适用场景与局限性是什么？<ul>
+<li>要点提示：适合多读少写、需要并发读写的场景；相比普通 map，性能在高并发下可能更好，但对使用方式和数据类型约束较多，且不适合替代所有场景。</li>
+</ul>
+</li>
+<li>Q4: 提升并发安全的常用模式有哪些？如“共享-拷贝-传递”的策略？<ul>
+<li>要点提示：用锁保护共享结构、使用通道传递数据的拷贝、让每个 goroutine 拥有自己的数据副本、通过工作队列实现有序处理等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="五、Goroutine-生命周期、退出与协作模式"><a href="#五、Goroutine-生命周期、退出与协作模式" class="headerlink" title="五、Goroutine 生命周期、退出与协作模式"></a>五、Goroutine 生命周期、退出与协作模式</h3><ul>
+<li>Q1: 如何优雅地控制 goroutine 的生命周期？WaitGroup、Channel、Context 的角色分别是什么？<ul>
+<li>要点提示：WaitGroup 用于等待一组 goroutine 结束；channel 用于通知、信号传递；Context 提供取消、超时、请求级别的生命周期管理，是跨 API 边界传递取消信号的最佳实践。</li>
+</ul>
+</li>
+<li>Q2: 结合 context.WithCancel、WithTimeout、WithDeadline 的典型用法和区别？<ul>
+<li>要点提示：WithCancel 提供自定义取消信号，WithTimeout&#x2F;WithDeadline 提供自动超时；组合使用时，通常在接点贯穿使用 context，避免泄漏和僵死 goroutine。</li>
+</ul>
+</li>
+<li>Q3: 为什么在服务端代码中要尽量在请求链条内向下传递取消信号？如何实现跨层退出？<ul>
+<li>要点提示：避免后台 goroutine 不受控地继续工作，造成资源泄漏和不可控行为。通过上下游传递 context，结合 select 监听 Done 信号实现取消。</li>
+</ul>
+</li>
+</ul>
+<h3 id="六、内存管理与潜在的泄漏"><a href="#六、内存管理与潜在的泄漏" class="headerlink" title="六、内存管理与潜在的泄漏"></a>六、内存管理与潜在的泄漏</h3><ul>
+<li>Q1: Go 程序中常见的 goroutine 泄漏场景有哪些？如何防止？<ul>
+<li>要点提示：后台 goroutine 永不退出、阻塞在等待条件、定时器&#x2F;空轮询未清理、未关闭的通道等都可能引发泄漏。通过取消信号、清理资源、限定生命周期来防止。</li>
+</ul>
+</li>
+<li>Q2: 如何识别与排查 goroutine 泄漏？有哪些有效的实践？<ul>
+<li>要点提示：使用 pprof&#x2F;trace、查看 goroutine 堆栈、确保退出路径、用 context 统一控制、对长期背景工作设置超时和中止条件。</li>
+</ul>
+</li>
+<li>Q3: 如何设计“优雅退出”的后台工作流（如清理、持久化、重试）？<ul>
+<li>要点提示：确保退出时完成必要的清理、释放资源、写入持久状态、关闭通道&#x2F;取消上下文、避免在退出阶段引入新阻塞。</li>
+</ul>
+</li>
+</ul>
+<h3 id="七、运行时细节与阻塞原因分析"><a href="#七、运行时细节与阻塞原因分析" class="headerlink" title="七、运行时细节与阻塞原因分析"></a>七、运行时细节与阻塞原因分析</h3><ul>
+<li>Q1: 造成 goroutine 阻塞的常见原因有哪些？通道阻塞、系统调用、网络 IO 等？<ul>
+<li>要点提示：通道操作、互斥锁等待、系统调用、Netpoller 时代的 IO 等待都会导致阻塞。理解阻塞条件有助于设计非阻塞路径或使用超时&#x2F;取消。</li>
+</ul>
+</li>
+<li>Q2: 当 goroutine 阻塞时，调度器是如何进行切换和重新调度的？<ul>
+<li>要点提示：Go 调度器会将阻塞的 G（goroutine）从本地队列中移出，调度其它就绪 G；在通道就绪、定时器触发或 IO 就绪后重新进入执行分支。</li>
+</ul>
+</li>
+</ul>
+<h3 id="八、分布式-理论背景相关（作为拓展）"><a href="#八、分布式-理论背景相关（作为拓展）" class="headerlink" title="八、分布式&#x2F;理论背景相关（作为拓展）"></a>八、分布式&#x2F;理论背景相关（作为拓展）</h3><ul>
+<li>Q1: CAP 理论的三大属性分别是什么？为什么在分布式系统中不可能同时满足？<ul>
+<li>要点提示：一致性、可用性、分区容错性三者不可同时做到最强的一致性与高可用性，权衡取舍取决于业务需求。</li>
+</ul>
+</li>
+<li>Q2: 在并发环境下，切片、Map 等数据结构的并发安全性要怎么权衡设计？为何要避免共享状态过多？<ul>
+<li>要点提示：分区化、不可变数据、复制数据、通过消息传递来解耦以降低并发冲突，是常用的设计思路。</li>
+</ul>
+</li>
+</ul>
+<h3 id="九、与-Kubernetes-基础运维-Go-编写的实际应用场景（拓展）"><a href="#九、与-Kubernetes-基础运维-Go-编写的实际应用场景（拓展）" class="headerlink" title="九、与 Kubernetes 基础运维&#x2F;Go 编写的实际应用场景（拓展）"></a>九、与 Kubernetes 基础运维&#x2F;Go 编写的实际应用场景（拓展）</h3><ul>
+<li>Q1: 在 Kubernetes 控制循环中，如何设计并发工作模式以防止重复处理和提升吞吐？（如工作队列、限流、幂等性）<ul>
+<li>要点提示：使用工作队列、限速、幂等操作，结合 context 的取消信号和 Presenter&#x2F;Informer 的事件流，确保 worker 的并发任务可控。</li>
+</ul>
+</li>
+<li>Q2: 使用 informer + 工作队列在控制器中如何实现安全的并发处理？<ul>
+<li>要点提示：Informer 提供缓存和事件流，工作队列实现并发工作单元，结合 rate limiter、幂等性、错误重试策略，确保高并发下的稳定性。</li>
+</ul>
+</li>
+<li>Q3: 遇到长时间阻塞的后台工作（如外部 API 调用、网络 IO），如何通过协程设计避免影响主控流程？<ul>
+<li>要点提示：将阻塞操作放到独立的 worker 池，使用 context 取消、超时控制和错误回退策略，避免阻塞主控回路。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Go-并发速记笔记"><a href="#Go-并发速记笔记" class="headerlink" title="Go 并发速记笔记"></a>Go 并发速记笔记</h2><h3 id="1-基础概念与模型"><a href="#1-基础概念与模型" class="headerlink" title="1) 基础概念与模型"></a>1) 基础概念与模型</h3><ul>
+<li><strong>goroutine 与线程的区别</strong><ul>
+<li>goroutine 是由 Go 运行时调度管理的轻量级执行单元，创建销毁成本低，运行在同一进程的用户态。</li>
+<li>线程是操作系统调度的执行单元，切换成本高，资源开销大。</li>
+</ul>
+</li>
+<li><strong>并发 vs 并行</strong><ul>
+<li>并发：在同一时间段内对多个任务进行处理（通过切换实现）。</li>
+<li>并行：在同一时刻多任务实际同时执行（多核场景）。</li>
+</ul>
+</li>
+<li><strong>Go 的并发模型核心要素</strong><ul>
+<li>goroutine、channel、select、以及基本同步原语（Mutex、RWMutex、Cond、atomic）</li>
+<li>通过“共享数据通过通信来实现”来避免数据竞争</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-goroutine-生命周期与调度"><a href="#2-goroutine-生命周期与调度" class="headerlink" title="2) goroutine 生命周期与调度"></a>2) goroutine 生命周期与调度</h3><ul>
+<li><strong>创建与调度</strong><ul>
+<li><code>go someFunction()</code> 启动一个新的 goroutine。</li>
+<li>运行时调度器通过 GOMAXPROCS、G、M、P 等概念实现大规模并发调度。</li>
+</ul>
+</li>
+<li><strong>WaitGroup、Context、Channel 的角色</strong><ul>
+<li><code>sync.WaitGroup</code>：等待一组 goroutine 结束。</li>
+<li><code>context.Context</code>：跨 API 边界传递取消、超时、元数据等信号。</li>
+<li><code>channel</code>：信号传递与同步通知，常用于取消、结果传递等。</li>
+</ul>
+</li>
+<li><strong>优雅退出与生命周期管理要点</strong><ul>
+<li>将取消信号在请求链路中逐层向下传递，避免后台 goroutine 继续工作导致资源泄漏。</li>
+<li>使用 context 的 Done、超时、取消来驱动退出路径。</li>
+</ul>
+</li>
+</ul>
+<p>示例要点（概念性）：</p>
+<ul>
+<li>使用 <code>context.WithCancel</code>&#x2F;<code>WithTimeout</code> 组合，传递给下游调用。</li>
+<li>在需要等待多任务完成时，结合 <code>WaitGroup</code> 与 <code>context.Done()</code> 共同控制退出。</li>
+</ul>
+<h3 id="3-通道（Channel）与阻塞管理"><a href="#3-通道（Channel）与阻塞管理" class="headerlink" title="3) 通道（Channel）与阻塞管理"></a>3) 通道（Channel）与阻塞管理</h3><ul>
+<li><strong>无缓冲通道 vs 有缓冲通道</strong><ul>
+<li>无缓冲：发送和接收必须同步，对端就绪时才通过；容易导致阻塞。</li>
+<li>有缓冲：有容量限制，发送在缓冲未满时不阻塞，接收在缓冲为空时阻塞。</li>
+</ul>
+</li>
+<li><strong>Channel 的核心用途</strong><ul>
+<li>数据传递、同步执行、事件通知、以及实现多路复用（结合 <code>select</code>）。</li>
+</ul>
+</li>
+<li><strong>如何处理阻塞与超时</strong><ul>
+<li>使用缓冲通道缓解短时阻塞。</li>
+<li>使用 <code>select</code> + <code>time.After</code> 实现超时退出。</li>
+<li>使用 <code>context</code> 搭配 <code>select</code> 实现全局取消。</li>
+</ul>
+</li>
+<li><strong>关闭通道的语义</strong><ul>
+<li>关闭通道后，接收方可以从通道读取并得到默认值（ok&#x3D;false），用于广播结束信号等场景。</li>
+</ul>
+</li>
+<li><strong>避免死锁</strong><ul>
+<li>确保发送和接收路径都能在合理条件下退出，避免某一端永远等待另一端。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-超时与取消的设计（time-context）"><a href="#4-超时与取消的设计（time-context）" class="headerlink" title="4) 超时与取消的设计（time, context）"></a>4) 超时与取消的设计（time, context）</h3><ul>
+<li><strong>time 包超时相关</strong><ul>
+<li><code>time.After(d)</code>：在 d 之后返回一个只读通道，常用于超时判断。</li>
+<li><code>time.Ticker</code>：定时重复触发，用于节流、定时周期性任务。</li>
+</ul>
+</li>
+<li><strong>context 的核心用法</strong><ul>
+<li><code>context.WithCancel(parent)</code>：可取消信号，携带取消函数。</li>
+<li><code>context.WithTimeout</code>、<code>context.WithDeadline</code>：在一定时间自动取消。</li>
+<li>派生的 Context 应在调用边界向下传递， downstream goroutine 通过 <code>&lt;-ctx.Done()</code> 监听取消信号。</li>
+</ul>
+</li>
+<li><strong>场景要点</strong><ul>
+<li>请求链路中的取消信号统一管理，避免后台任务泄漏。</li>
+<li>超时控制应结合业务语义，而非简单硬性等待。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-同步原语与调度策略"><a href="#5-同步原语与调度策略" class="headerlink" title="5) 同步原语与调度策略"></a>5) 同步原语与调度策略</h3><ul>
+<li><strong>Mutex（互斥锁）</strong><ul>
+<li>主要用来保护共享数据的原子性访问，缩短临界区时间以降低锁竞争。</li>
+<li>注意：锁住的时间越长，越可能引发阻塞、死锁或性能下降。</li>
+</ul>
+</li>
+<li><strong>RWMutex（读写锁）</strong><ul>
+<li>读多写少场景下有显著收益，多个读锁可并发，但写锁独占。</li>
+<li>注意读锁、写锁的组合可能导致“写-读”饥饿问题，需谨慎设计。</li>
+</ul>
+</li>
+<li><strong>Cond（条件变量）与原子操作</strong><ul>
+<li>Cond 适用于复杂等待&#x2F;通知场景（事件触发、条件达成）。</li>
+<li>原子操作（<code>sync/atomic</code>）适用于简单计数、标志位更新，避免锁带来的开销。</li>
+</ul>
+</li>
+<li><strong>互斥锁的实现细节对性能的影响</strong><ul>
+<li>Go 的互斥锁在内部可能有不同模式（如普通模式、饥饿模式等），影响公平性与吞吐。</li>
+<li>设计时考虑锁的粒度、会不会出现争用热点以及是否需要更高层次的分段锁&#x2F;分区锁。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-共享数据结构的并发安全"><a href="#6-共享数据结构的并发安全" class="headerlink" title="6) 共享数据结构的并发安全"></a>6) 共享数据结构的并发安全</h3><ul>
+<li><strong>切片（slice）并发问题</strong><ul>
+<li>切片可能共享底层数组；<code>append</code> 等扩容可能重新分配、影响其他引用切片。</li>
+<li>多 goroutine 读写同一个切片会产生竞态，数据不一致或越界风险。</li>
+</ul>
+</li>
+<li><strong>Go 的 Map 并发安全</strong><ul>
+<li>原生 map 不是并发安全的，多个 goroutine 同时读写会崩溃或数据竞争。</li>
+</ul>
+</li>
+<li><strong>解决策略</strong><ul>
+<li>使用 <code>sync.Mutex</code> &#x2F; <code>sync.RWMutex</code> 包裹访问。</li>
+<li>使用 <code>sync.Map</code>（并发友好、适合多读少写场景），但并非在所有场景都比普通 map 更好。</li>
+<li>尽量让每个 goroutine 拥有自己的 map，数据通过通道传递。</li>
+<li>共享切片时可改为“拷贝后再操作”或通过通道传递切片副本。</li>
+</ul>
+</li>
+<li><strong>设计模式补充</strong><ul>
+<li>共享-拷贝-传递：避免直接共享可变状态，通过传递不可变副本或消息传递解耦。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-数据结构与并发安全的快速对比（速记要点）"><a href="#7-数据结构与并发安全的快速对比（速记要点）" class="headerlink" title="7) 数据结构与并发安全的快速对比（速记要点）"></a>7) 数据结构与并发安全的快速对比（速记要点）</h3><ul>
+<li>切片<ul>
+<li>并发安全性：非安全</li>
+<li>主要风险：并发读写、扩容导致的数据错位</li>
+<li>解决：锁保护、拷贝、通道传递</li>
+</ul>
+</li>
+<li>Map<ul>
+<li>并发安全性：非安全</li>
+<li>解决：Mutex&#x2F;RWMutex、sync.Map、数据分区&#x2F;拷贝</li>
+</ul>
+</li>
+<li>原子操作<ul>
+<li>应用场景：简单计数、状态标志、标记位的无锁更新</li>
+<li>注意：复杂结构请谨慎使用原子操作，必要时仍需锁</li>
+</ul>
+</li>
+</ul>
+<h3 id="8-常用并发设计模式与实践"><a href="#8-常用并发设计模式与实践" class="headerlink" title="8) 常用并发设计模式与实践"></a>8) 常用并发设计模式与实践</h3><ul>
+<li>Worker Pool（工作池）<ul>
+<li>限流、限并发，背压保护后端服务。</li>
+<li>通常结合 context、errgroup、WaitGroup 使用。</li>
+</ul>
+</li>
+<li>Fan-out&#x2F;Fan-in<ul>
+<li>将任务分发到多个 worker，再汇总结果。</li>
+</ul>
+</li>
+<li>Pipeline（流水线）<ul>
+<li>将任务分成多个阶段，每阶段在独立的 goroutine&#x2F;通道中处理，提升吞吐。</li>
+</ul>
+</li>
+<li>限流与幂等性<ul>
+<li>使用节流、令牌桶等策略，确保外部依赖稳定性。<br>并发设计中尽量减少全局共享状态，优先使用消息传递和不可变数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="9-Kubernetes-相关场景（拓展理解）"><a href="#9-Kubernetes-相关场景（拓展理解）" class="headerlink" title="9) Kubernetes 相关场景（拓展理解）"></a>9) Kubernetes 相关场景（拓展理解）</h3><ul>
+<li>Informer + WorkQueue<ul>
+<li>Informer 提供缓存和事件流，WorkQueue 控制并发任务、幂等性与错误重试。</li>
+</ul>
+</li>
+<li>合理的并发工作模式<ul>
+<li>控制重复处理、限流、任务幂等性、取消信号贯穿全链路。</li>
+</ul>
+</li>
+<li>长时阻塞操作<ul>
+<li>将阻塞逻辑封装成独立的 worker 池，使用 context 取消与超时控制，避免影响主控流程。</li>
+</ul>
+</li>
+</ul>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+        <a href="/2026/03/08/golang3/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          golang3
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/03/07/golang/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          golang
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
