@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>golang3 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">golang3</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-03-08</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-04-01</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>3.4k words, 12 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/k8s/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        k8s
+      </a>
+    
+      <a href="/tags/intership/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        intership
+      </a>
+    
+      <a href="/tags/golang/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        golang
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <p><a target="_blank" rel="noopener" href="https://notes.kamacoder.com/bagu/2JZHUc5d6Aa">参考链接</a></p>
+<h3 id="一、Go-Web-框架与路由设计"><a href="#一、Go-Web-框架与路由设计" class="headerlink" title="一、Go Web 框架与路由设计"></a>一、Go Web 框架与路由设计</h3><ul>
+<li><p>Q1. 你使用过哪些 Go 的 Web 框架？请对 Gin、net&#x2F;http、Chi、Echo 等做简要对比，分别合适的使用场景是什么？</p>
+<ul>
+<li>要点提示：关注性能、路由能力、中间件能力、社区&#x2F;生态、学习曲线、对大规模并发的适应性。</li>
+</ul>
+</li>
+<li><p>Q2. Gin 的路由机制是怎么实现的？请解释路由参数、通配符、路由分组、以及路由在处理 HTTP 方法时的分发逻辑。</p>
+<ul>
+<li>要点提示：路由树结构、参数匹配、分组路由的作用，以及如何提升可维护性和定位问题。</li>
+</ul>
+</li>
+<li><p>Q3. Gin 的拦截器&#x2F;中间件原理是什么？中间件如何注册、组合以及执行顺序？何时需要调用 c.Next()？</p>
+<ul>
+<li>要点提示：闭包、gin.Context 的传递、串联的执行链，错误处理点和中断链的影响。</li>
+</ul>
+</li>
+<li><p>Q4. 如何在 Gin&#x2F;Go Web 应用中处理请求与响应的序列化？JSON、XML 的绑定、返回格式、以及输入校验的常见做法。</p>
+<ul>
+<li>要点提示：c.JSON、c.XML、ShouldBind、binding 标签、统一的错误响应结构。</li>
+</ul>
+</li>
+<li><p>Q5. 讨论 gin.Context 的作用与使用场景，包括如何在不同中间件&#x2F;处理函数之间传递请求数据、超时和取消信号等。</p>
+<ul>
+<li>要点提示：Context 在请求生命周期中的传递、对并发操作的可控性、与 Go 标准库 context 的关系。</li>
+</ul>
+</li>
+</ul>
+<h3 id="二、中间件设计、错误处理与可观测性"><a href="#二、中间件设计、错误处理与可观测性" class="headerlink" title="二、中间件设计、错误处理与可观测性"></a>二、中间件设计、错误处理与可观测性</h3><ul>
+<li><p>Q1. 设计一个包含日志、鉴权、统一错误响应的中间件组合的思路。如何确保可重用、可组合、易测试？</p>
+<ul>
+<li>要点提示：职责单一、无副作用、可配置的错误码&#x2F;信息、链式执行和中断控制。</li>
+</ul>
+</li>
+<li><p>Q2. 如何在中间件链中实现统一的错误处理与响应格式？遇到错误后如何尽早返回并确保资源正确释放？</p>
+<ul>
+<li>要点提示：集中错误码体系、统一结构体返回、使用 c.AbortWithStatusJSON 等避免继续执行。</li>
+</ul>
+</li>
+<li><p>Q3. 中间件链的执行顺序对业务影响有哪些？如何排查顺序带来的副作用？遇到中间件阻塞时的处理策略是什么？</p>
+<ul>
+<li>要点提示：先后顺序对鉴权、日志、追踪等的影响，如何在测试中覆盖顺序影响。</li>
+</ul>
+</li>
+</ul>
+<h3 id="三、Context-与并发编程"><a href="#三、Context-与并发编程" class="headerlink" title="三、Context 与并发编程"></a>三、Context 与并发编程</h3><ul>
+<li><p>Q1. Go 的 context 在 Web 服务中的作用是什么？如何在不同 goroutine 之间传递请求相关数据和取消信号？</p>
+<ul>
+<li>要点提示：请求范围上下文、取消、超时、传递元数据的合理方式。</li>
+</ul>
+</li>
+<li><p>Q2. WithDeadline、WithTimeout、WithCancel、WithValue 的使用场景分别是什么？如何在 HTTP 请求处理链中正确应用？</p>
+<ul>
+<li>要点提示：区分“截止时间”、“取消信号”、“请求域名数据”等用途，以及避免在 context 中滥用 WithValue。</li>
+</ul>
+</li>
+<li><p>Q3. 如何在分布式请求链中通过 context 传播追踪信息与超时策略？请给出一个简要设计思路。</p>
+<ul>
+<li>要点提示：在服务边界传递 trace-id、span-id，结合 OpenTelemetry 等工具的基本思路。</li>
+</ul>
+</li>
+</ul>
+<h3 id="四、性能、调优与诊断"><a href="#四、性能、调优与诊断" class="headerlink" title="四、性能、调优与诊断"></a>四、性能、调优与诊断</h3><ul>
+<li><p>Q1. 面对高并发的 Go Web 服务，常用的性能诊断方法有哪些？如何通过 pprof、 tracing、runtime&#x2F;metrics 等工具定位瓶颈？</p>
+<ul>
+<li>要点提示：CPU&#x2F;内存分析、GC 暴露、热点函数、请求耗时分解。</li>
+</ul>
+</li>
+<li><p>Q2. GC 与内存分配方面的优化思路有哪些？在长期运行的服务中如何避免内存泄漏和高 GC 频率？</p>
+<ul>
+<li>要点提示：减少分配、对象池化、避免全局变量导致的引用、内存逃逸分析。</li>
+</ul>
+</li>
+<li><p>Q3. 如何设计高效的日志与指标收集以利于故障排查？哪些指标最值得先观测（如 P95&#x2F;吞吐、错误率、P50&#x2F;P99、GC 停顿时间等）？</p>
+<ul>
+<li>要点提示：日志结构化、分布式追踪、Prometheus&#x2F;Grafana 指标、采样策略。</li>
+</ul>
+</li>
+</ul>
+<h3 id="五、数据库访问与数据层设计（结合“分布式-微服务”场景）"><a href="#五、数据库访问与数据层设计（结合“分布式-微服务”场景）" class="headerlink" title="五、数据库访问与数据层设计（结合“分布式&#x2F;微服务”场景）"></a>五、数据库访问与数据层设计（结合“分布式&#x2F;微服务”场景）</h3><ul>
+<li><p>Q1. Go Web 应用常用的数据库访问模式有哪些？database&#x2F;sql 的连接池、事务处理、上下文绑定的实践要点？</p>
+<ul>
+<li>要点提示：连接复用、事务边界、上下文驱动的超时控制、sql.DB 的并发安全。</li>
+</ul>
+</li>
+<li><p>Q2. 你更偏向使用 ORM（如 GORM）还是手写 SQL（如 database&#x2F;sql + sqlx）？各自的适用场景、优缺点是什么？</p>
+<ul>
+<li>要点提示：开发效率 vs 控制粒度、性能、可维护性。</li>
+</ul>
+</li>
+<li><p>Q3. 面向高并发的分布式应用，如何设计幂等性、幂等密钥、幂等操作的幂等性保障策略？</p>
+<ul>
+<li>要点提示：幂等 token、幂等性键、幂等性在数据库&#x2F;消息队列中的实现要点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="六、微服务、分布式与-Kubernetes-相关的-Go-Web-实践"><a href="#六、微服务、分布式与-Kubernetes-相关的-Go-Web-实践" class="headerlink" title="六、微服务、分布式与 Kubernetes 相关的 Go Web 实践"></a>六、微服务、分布式与 Kubernetes 相关的 Go Web 实践</h3><ul>
+<li><p>Q1. 在 Kubernetes 上部署 Go Web 服务时，需要关注哪些运维要点（探针、资源请求&#x2F;限制、水平扩展、滚动更新等）？</p>
+<ul>
+<li>要点提示：liveness&#x2F;readiness 探针设计、容量规划、滚动更新无中断、健康检查对重新调度的影响。</li>
+</ul>
+</li>
+<li><p>Q2. 服务间通信模式选择（REST vs gRPC）及其在云原生环境中的优缺点？如何在微服务中处理幂等、重试、熔断？</p>
+<ul>
+<li>要点提示：编解码开销、流控、可观测性、跨语言调用等。</li>
+</ul>
+</li>
+<li><p>Q3. 观测性与追踪在分布式 Go Web 服务中的落地实践（如 OpenTelemetry、Prometheus、Zipkin&#x2F;Jaeger）。如何在应用中实现端到端追踪？</p>
+<ul>
+<li>要点提示：追踪上下文传递、采样策略、横切关注点的指标暴露。</li>
+</ul>
+</li>
+<li><p>Q4. 安全性与合规性在云原生 Go 应用中的要点（认证&#x2F;授权、API 安全、CSRF 保护、证书管理等）。</p>
+<ul>
+<li>要点提示： token 机制、JWT&#x2F;OAuth2、最小权限原则、证书轮换。</li>
+</ul>
+</li>
+</ul>
+<p>@ 七、实战设计题（面试常见的落地题型）</p>
+<ul>
+<li><p>Q1. 设计一个简单的 Gin API 项目骨架，包含以下接口：GET &#x2F;items、POST &#x2F;items、GET &#x2F;items&#x2F;:id、分页查询与字段校验，要求具备统一错误响应、日志、鉴权中间件、输入校验、合理的错误码设计。</p>
+<ul>
+<li>要点提示：接口设计的一致性、校验对外暴露的错误信息、异常处理、日志与追踪关联。</li>
+</ul>
+</li>
+<li><p>Q2. 给定一个分布式场景，设计一个可观测的服务链路，包括请求在服务之间的传递、超时控制、重试策略和幂等性保障思路。</p>
+<ul>
+<li>要点提示：上下文传递、超时上游&#x2F;下游设置、幂等性 token、失败回退策略。</li>
+</ul>
+</li>
+<li><p>Q3. 针对一个需要高并发读取、 occasional 写入的数据库密集型 API，给出 Golang Web 服务的性能优化要点和实现要点（连接池、缓存、查询优化、事务边界等）。</p>
+<ul>
+<li>要点提示：热点数据缓存策略、只读取必要字段、避免慢查询、事务的最小化锁持有时长。</li>
+</ul>
+</li>
+</ul>
+<h2 id="速记笔记"><a href="#速记笔记" class="headerlink" title="速记笔记"></a>速记笔记</h2><p>下面是一份基于你上传的资料梳理出的 Go Web &#x2F; Gin 速记笔记，便于快速备考与面试回顾。内容聚焦于 Gin 的路由、中间件、Context、以及 JSON&#x2F;XML 序列化等要点；并给出简短要点与示例代码，方便记忆和现场回答。</p>
+<p>Go Web &#x2F; Gin 速记笔记</p>
+<p>一、Go Web 框架概览</p>
+<ul>
+<li>Gin 是一个高性能、API 友好的 Go Web 框架，适合构建 RESTful API。</li>
+<li>关键特性（从资料中提到的要点）：<ul>
+<li>路由机制灵活，支持路径参数、通配符、分组路由等。</li>
+<li>支持中间件（拦截器），用于日志、鉴权、错误处理等横切关注点。</li>
+<li>提供便捷的请求&#x2F;响应序列化方法，如 c.JSON、c.XML，便于输出统一格式。</li>
+</ul>
+</li>
+</ul>
+<p>二、路由设计要点</p>
+<ul>
+<li>基本路由、带参数路由、通配符路由、路由分组（分组路由的作用在于提升可维护性和统一中间件&#x2F;前缀）。</li>
+<li>路由实现原理要点：<ul>
+<li>Gin 的路由由 gin.Engine 管理，该类型实现 http.Handler。</li>
+<li>路由树&#x2F;分发逻辑决定了不同 HTTP 方法的处理分发。</li>
+</ul>
+</li>
+</ul>
+<p>三、中间件（拦截器）原理与使用</p>
+<ul>
+<li>中间件是Gin中“拦截器”的实现方式，允许在处理函数前后执行逻辑。</li>
+<li>工作机制要点：<ul>
+<li>中间件是一个函数，接收 *gin.Context，通过 c.Next() 将控制权传递给下一个中间件或最终处理函数。</li>
+<li>注册方式：通过 r.Use(…) 将一个或多个中间件应用到路由或路由组。</li>
+<li>链式执行：可以通过连续使用多个中间件，形成中间件链，执行顺序按添加顺序。</li>
+<li>若某个中间件不调用 c.Next()，后续中间件和处理函数将不会执行，需谨慎设计以避免中断整个请求链。</li>
+</ul>
+</li>
+<li>示例要点（与资料中原理描述一致）：<ul>
+<li>定义中间件：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MyMiddleware</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 处理前逻辑</span></span><br><span class="line">    fmt.Println(<span class="string">&quot;Middleware: Before handling request&quot;</span>)</span><br><span class="line">    c.Next() <span class="comment">// 继续执行后续中间件和最终处理函数</span></span><br><span class="line">    <span class="comment">// 处理后逻辑</span></span><br><span class="line">    fmt.Println(<span class="string">&quot;Middleware: After handling request&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>注册中间件并形成链：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">r := gin.New()</span><br><span class="line">r.Use(MyMiddleware)</span><br><span class="line"><span class="comment">// 也可以同时使用多个中间件</span></span><br><span class="line"><span class="comment">// r.Use(M1, M2, M3)</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>重要点：中间件链中的执行顺序会影响鉴权、日志、追踪等的行为，应通过测试覆盖顺序变化的影响。</li>
+</ul>
+<p>四、gin.Context 的作用与实践</p>
+<ul>
+<li>gin.Context 贯穿请求生命周期，负责在中间件与处理函数之间传递数据、上下文信息、以及响应操作。</li>
+<li>常见用途：<ul>
+<li>数据传递：在中间件和处理函数之间通过 c.Set&#x2F;get 或 c.Keys（map[string]interface{}）传递信息。</li>
+<li>上下文与取消&#x2F;超时：结合 Go 的 context，实现跨 goroutine 的取消信号或超时控制。</li>
+<li>与标准库 context 的关系：Gin 的上下文与 go context 具备互操作性，通常在并发操作或外部调用时携带 context。</li>
+</ul>
+</li>
+<li>结合中间件的示例思路：<ul>
+<li>在中间件中设置键值：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.Set(<span class="string">&quot;user&quot;</span>, userObj)</span><br></pre></td></tr></table></figure></li>
+<li>在后续处理函数中获取：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> v, exists := c.Get(<span class="string">&quot;user&quot;</span>); exists &#123;</span><br><span class="line">    user := v.(User)</span><br><span class="line">    <span class="comment">// 使用 user</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p>五、请求与响应的序列化、绑定与校验</p>
+<ul>
+<li>JSON&#x2F;XML 序列化输出：<ul>
+<li>c.JSON(statusCode, data)</li>
+<li>c.XML(statusCode, data)</li>
+</ul>
+</li>
+<li>输入绑定与校验：<ul>
+<li>ShouldBind&#x2F;ShouldBindJSON 等绑定方法，用于把请求体绑定到结构体。</li>
+<li>结构体字段 tag，例如 json:”name”、binding:”required” 等，用于校验。</li>
+</ul>
+</li>
+<li>典型用法示例（简化版）：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name <span class="type">string</span> <span class="string">`json:&quot;name&quot; binding:&quot;required&quot;`</span></span><br><span class="line">    Age  <span class="type">int</span>    <span class="string">`json:&quot;age&quot; binding:&quot;gte=0,lte=130&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">createUser</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> u User</span><br><span class="line">    <span class="keyword">if</span> err := c.ShouldBindJSON(&amp;u); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        c.JSON(<span class="number">400</span>, gin.H&#123;<span class="string">&quot;error&quot;</span>: err.Error()&#125;)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 处理创建逻辑</span></span><br><span class="line">    c.JSON(<span class="number">201</span>, gin.H&#123;<span class="string">&quot;status&quot;</span>: <span class="string">&quot;created&quot;</span>, <span class="string">&quot;user&quot;</span>: u&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>处理不同格式输出的注意点：<ul>
+<li>根据客户端需求，优先支持 JSON（前端&#x2F;服务间通信常用）和 XML 两种输出。</li>
+</ul>
+</li>
+</ul>
+<p>六、Go Web 的 Context 与并发（简要提及）</p>
+<ul>
+<li>Go 的 context 在 Web 服务中的作用：<ul>
+<li>传递请求相关数据、取消信号、以及截止日期等，适用于跨 goroutine 的协作。</li>
+<li>通过 WithDeadline&#x2F;WithTimeout&#x2F;WithCancel 等来创建上下文副本并传递。</li>
+</ul>
+</li>
+<li>设计要点（简要）：<ul>
+<li>避免在 context 中滥用 WithValue，尽量传递元数据对上下文语义有意义的信息。</li>
+<li>在 HTTP 请求处理中，合理设置超时，确保请求下游调用能响应取消。</li>
+</ul>
+</li>
+</ul>
+<p>七、快速入门代码小样（便于记忆）</p>
+<ul>
+<li>Gin 应用骨架（最小化示例）：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MyMiddleware</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Middleware: Before handling request&quot;</span>)</span><br><span class="line">    c.Next()</span><br><span class="line">    fmt.Println(<span class="string">&quot;Middleware: After handling request&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    r := gin.New()</span><br><span class="line">    r.Use(MyMiddleware)</span><br><span class="line"></span><br><span class="line">    r.GET(<span class="string">&quot;/hello&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">        c.JSON(<span class="number">200</span>, gin.H&#123;<span class="string">&quot;message&quot;</span>: <span class="string">&quot;Hello Gin!&quot;</span>&#125;)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    r.Run() <span class="comment">// 默认监听 :8080</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>路由参数与分组示例：<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">r := gin.New()</span><br><span class="line">api := r.Group(<span class="string">&quot;/api&quot;</span>)</span><br><span class="line">v1 := api.Group(<span class="string">&quot;/v1&quot;</span>)</span><br><span class="line">v1.GET(<span class="string">&quot;/items/:id&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    id := c.Param(<span class="string">&quot;id&quot;</span>)</span><br><span class="line">    c.JSON(<span class="number">200</span>, gin.H&#123;<span class="string">&quot;id&quot;</span>: id&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>八、桌面化的“快速问答要点”模板（便于现场回答）</p>
+<ul>
+<li>Gin 路由机制是如何工作的？<ul>
+<li>Gin 使用路由树结构通过 gin.Engine 管理路由，支持参数、通配符和分组，路由分发基于 HTTP 方法和路径匹配。</li>
+</ul>
+</li>
+<li>中间件是如何工作的？如何控制执行顺序？<ul>
+<li>中间件是一组闭包形式的处理函数，注册通过 r.Use(…)，链式执行，调用 c.Next() 将控制权交给下一个中间件或最终处理函数；不调用 Next 会中断后续处理。</li>
+</ul>
+</li>
+<li>如何在处理函数之间共享数据？<ul>
+<li>使用 gin.Context 的 Set&#x2F;Get（或 c.Keys）在中间件和处理函数之间传递数据。</li>
+</ul>
+</li>
+<li>如何输出统一格式的 JSON 响应？<ul>
+<li>使用 c.JSON(status, payload)；必要时建立统一的错误响应结构并在中间件或统一处理逻辑中应用。</li>
+</ul>
+</li>
+<li>ShouldBind&#x2F;ShouldBindJSON 的作用和常见用法？<ul>
+<li>将请求体绑定到结构体并进行校验（通过 binding 标签定义规则），出错时返回标准化错误响应。</li>
+</ul>
+</li>
+</ul>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+        <a href="/2026/03/08/golang4/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          golang4
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/03/08/golang2/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          go并发
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>openclaw | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">openclaw</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-04-02</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-04-02</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>4.5k words, 17 min</span>
+            </span>
+            <!-- Categories -->
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <p>参考：<a target="_blank" rel="noopener" href="https://gist.github.com/royosherove/971c7b4a350a30ac8a8dad41604a95a0?ref=robotpaper.ai#file-openclaw-arch-deep-dive-md">https://gist.github.com/royosherove/971c7b4a350a30ac8a8dad41604a95a0?ref=robotpaper.ai#file-openclaw-arch-deep-dive-md</a></p>
+<p>OpenClaw 是一个开源、自托管的 AI 代理框架，它将大型语言模型（LLM）转变为持久化、能够使用工具并与现实世界集成的助手。与仅仅作为 API 调用代理的聊天机器人不同，OpenClaw 实现了一个完整的代理运行时，包括会话管理、记忆持久化、上下文窗口优化、多渠道消息传递、沙盒工具执行以及事件驱动的扩展性。</p>
+<p>本文深入探讨了 OpenClaw 的工作原理——不仅仅是它所运行的 AWS 基础设施，更重要的是那些让无状态 LLM 表现得像一个有状态、持续可用的助手的软件架构决策。</p>
+<h2 id="高层架构"><a href="#高层架构" class="headerlink" title="高层架构"></a>高层架构</h2><p>以下是 OpenClaw 的高层架构概览：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030029650-f0d02487-e2eb-4662-b61e-fe400b275bed.png"></p>
+<h2 id="网关——中央神经系统"><a href="#网关——中央神经系统" class="headerlink" title="网关——中央神经系统"></a>网关——中央神经系统</h2><p>网关是一个单独的、长期运行的 Node.js 守护进程，负责管理所有状态和连接。可以将其视为<strong>应用服务器</strong>——所有数据流都经过它。</p>
+<h3 id="WebSocket-优先协议"><a href="#WebSocket-优先协议" class="headerlink" title="WebSocket 优先协议"></a>WebSocket 优先协议</h3><p>网关在可配置端口（默认 <code>127.0.0.1:18789</code>）上暴露了一个类型化的 WebSocket API。所有客户端——macOS 应用、CLI、Web UI、移动节点和自动化——都通过这个单一的 WebSocket 进行连接。</p>
+<p><strong>有线协议：</strong></p>
+<ul>
+<li>传输：WebSocket，JSON payload 的文本帧</li>
+<li>第一个帧<strong>必须</strong>是 <code>connect</code> 握手</li>
+<li>请求：<code>&#123;type:&quot;req&quot;, id, method, params&#125;</code> → <code>&#123;type:&quot;res&quot;, id, ok, payload|error&#125;</code></li>
+<li>事件：<code>&#123;type:&quot;event&quot;, event, payload, seq?, stateVersion?&#125;</code></li>
+<li>对于有副作用的方法（<code>send</code>, <code>agent</code>），需要幂等键以实现安全重试</li>
+</ul>
+<p><strong>连接生命周期：</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030097084-fdbaa8c2-d90d-40b0-8a9a-44e03ed380a5.png"></p>
+<h3 id="设备配对与信任模型"><a href="#设备配对与信任模型" class="headerlink" title="设备配对与信任模型"></a>设备配对与信任模型</h3><p>所有 WebSocket 客户端在连接时都会声明一个<strong>设备身份</strong>。网关实现了信任模型：</p>
+<ul>
+<li><strong>本地连接</strong>（环回&#x2F;同一主机的 Tailnet）可以自动批准</li>
+<li><strong>非本地连接</strong>必须签署一个挑战随机数并需要明确批准</li>
+<li>配对后会颁发设备令牌，用于后续重连</li>
+<li>网关认证令牌（<code>OPENCLAW_GATEWAY_TOKEN</code>）适用于所有连接</li>
+</ul>
+<h3 id="渠道桥接"><a href="#渠道桥接" class="headerlink" title="渠道桥接"></a>渠道桥接</h3><p>网关维护与消息平台的持久连接：</p>
+<ul>
+<li><strong>WhatsApp</strong> 通过 Baileys（web 协议）</li>
+<li><strong>Telegram</strong> 通过 grammY</li>
+<li><strong>Discord</strong>、<strong>Slack</strong>、<strong>Signal</strong>、<strong>iMessage</strong> 通过各自的 SDK</li>
+<li><strong>WebChat</strong> 静态 UI 使用网关 WS API</li>
+</ul>
+<p>每个桥接器将平台特定的事件转换为标准化的内部信封。关键的架构洞察是：<strong>网关是唯一持有消息会话的进程</strong>——每个主机只有一个 WhatsApp 会话，一个 Telegram 机器人连接等。</p>
+<h2 id="代理循环——消息如何变为行动"><a href="#代理循环——消息如何变为行动" class="headerlink" title="代理循环——消息如何变为行动"></a>代理循环——消息如何变为行动</h2><p>当收到入站消息时，完整的生命周期如下：</p>
+<h3 id="接收与路由"><a href="#接收与路由" class="headerlink" title="接收与路由"></a>接收与路由</h3><p><code>Inbound message → Channel Bridge → Session Resolution → Command Queue → Agent Runtime</code></p>
+<p><code> 入站消息 → 渠道桥接 → 会话解析 → 命令队列 → 代理运行时</code></p>
+<ol>
+<li><strong>渠道桥接器</strong>标准化消息（发送者、内容、附件、线程上下文）</li>
+<li><strong>会话管理器</strong>根据 <code>dmScope</code> 规则解析会话键： <ul>
+<li><code>main</code>：所有私信共享一个会话（跨设备&#x2F;渠道的连续性）</li>
+<li><code>per-peer</code>：按发送者 ID 隔离</li>
+<li><code>per-channel-peer</code>：按渠道 + 发送者隔离（推荐用于多用户）</li>
+</ul>
+</li>
+<li><strong>命令队列</strong>序列化运行</li>
+</ol>
+<h3 id="命令队列"><a href="#命令队列" class="headerlink" title="命令队列"></a>命令队列</h3><p>这是一个支持车道的 FIFO 队列，用于防止并发代理运行冲突：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030395978-4c83fdd4-b6c9-4aa0-9d90-a4e963b6c469.png"></p>
+<p><strong>队列模式</strong>控制入站消息如何与活动运行交互：</p>
+<ul>
+<li><code>**collect**</code>（默认）：将排队的消息合并为一个后续回合</li>
+<li><code>**steer**</code>：注入当前运行，在下一个边界取消待处理的工具调用</li>
+<li><code>**followup**</code>：等待当前运行结束，然后开始新的回合</li>
+<li><code>**steer-backlog**</code>：立即转向，并为后续保存</li>
+</ul>
+<h3 id="提示词组装"><a href="#提示词组装" class="headerlink" title="提示词组装"></a>提示词组装</h3><p>OpenClaw 为每个代理运行构建一个<strong>自定义系统提示词</strong>。这并非静态字符串——它由多个来源组装而成：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030461139-45f39fbc-a163-4270-8ca8-35faafadbb01.png"></p>
+<p><strong>关键设计决策：</strong></p>
+<ul>
+<li>引导文件会在 <code>bootstrapMaxChars</code>（默认 20,000 字符）处<strong>截断</strong>，以保持提示词精简</li>
+<li>技能仅作为元数据列出（名称 + 描述 + 文件路径）——模型会根据需要 <code>read</code> 完整的 <code>SKILL.md</code></li>
+<li>工具 Schema（JSON）随附发送，但即使它们不是可见文本，也计入上下文</li>
+<li>时间仅包含时区（无动态时钟），以保持提示词在回合之间<strong>缓存稳定</strong></li>
+</ul>
+<h3 id="模型推理与流式传输"><a href="#模型推理与流式传输" class="headerlink" title="模型推理与流式传输"></a>模型推理与流式传输</h3><p>嵌入式运行时（<code>pi-mono</code>）处理实际的 LLM 交互：</p>
+<ol>
+<li>解析模型 + 认证配置文件</li>
+<li>通过每个会话 + 全局队列序列化运行</li>
+<li>将助手增量流式传输为 <code>event:agent</code> 帧</li>
+<li>工具调用在推理回合之间执行（代理循环）</li>
+<li>强制执行超时（默认 600 秒）</li>
+</ol>
+<p><strong>流式传输架构：</strong></p>
+<ul>
+<li>助手文本增量实时流式传输</li>
+<li>工具启动&#x2F;更新&#x2F;结束事件在单独的 <code>tool</code> 流上发出</li>
+<li>块流式传输可以在完成时立即发出已完成的块（可配置的块大小为 800-1200 字符，优先选择段落中断）</li>
+<li><code>NO_REPLY</code> 是从传出有效载荷中过滤掉的哨兵令牌（实现静默回合）</li>
+</ul>
+<h3 id="工具执行"><a href="#工具执行" class="headerlink" title="工具执行"></a>工具执行</h3><p>工具是代理的“手”。核心工具始终可用（受策略约束）：</p>
+<ul>
+<li><code>read</code> &#x2F; <code>write</code> &#x2F; <code>edit</code> — 文件操作</li>
+<li><code>exec</code> &#x2F; <code>process</code> — shell 命令执行 + 后台进程管理</li>
+<li><code>browser</code> — 浏览器自动化（基于 CDP）</li>
+<li><code>web_search</code> &#x2F; <code>web_fetch</code> — 网络访问</li>
+<li><code>message</code> — 跨渠道消息传递</li>
+<li><code>cron</code> — 定时任务管理</li>
+<li><code>memory_search</code> &#x2F; <code>memory_get</code> — 语义记忆检索</li>
+<li><code>sessions_spawn</code> &#x2F; <code>sessions_send</code> — 子代理编排</li>
+<li><code>nodes</code> — 配对设备控制（摄像头、屏幕、位置、运行）</li>
+<li><code>canvas</code> — UI 画布控制</li>
+<li><code>tts</code> — 文本转语音</li>
+<li><code>gateway</code> — 自我管理（重启、配置、更新）</li>
+</ul>
+<p><strong>工具策略</strong>是分层的允许&#x2F;拒绝系统：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Global deny → Per-agent deny → Global allow → Per-agent allow → Default</span><br><span class="line">全局拒绝 → 每个代理拒绝 → 全局允许 → 每个代理允许 → 默认</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="记忆架构——无状态模型如何记忆"><a href="#记忆架构——无状态模型如何记忆" class="headerlink" title="记忆架构——无状态模型如何记忆"></a>记忆架构——无状态模型如何记忆</h2><p>这可能是架构上最有趣的部分。LLM 没有持久记忆——每个会话都从零开始。OpenClaw 通过分层记忆系统解决了这个问题：</p>
+<h3 id="记忆栈"><a href="#记忆栈" class="headerlink" title="记忆栈"></a>记忆栈</h3><p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030536496-4e291ad3-8701-4f4a-afe5-83bbc6c96259.png"></p>
+<h3 id="作为记忆的工作区文件"><a href="#作为记忆的工作区文件" class="headerlink" title="作为记忆的工作区文件"></a>作为记忆的工作区文件</h3><p>记忆是<strong>代理工作区中的纯 Markdown 文件</strong>。这些文件是真相的来源；模型只“记住”写入磁盘的内容。</p>
+<ul>
+<li><code>**memory/YYYY-MM-DD.md**</code>：每日日志文件（仅追加）。会话开始时会读取今天和昨天的日志。</li>
+<li><code>**MEMORY.md**</code>：精选的长期记忆。仅在主私有会话中加载（从不在群组上下文中——安全边界）。</li>
+<li><code>**AGENTS.md**</code>：操作说明，每个会话都会注入。</li>
+<li><code>**SOUL.md**</code>：角色和边界，每个会话都会注入。</li>
+</ul>
+<p><strong>基本洞察</strong>：代理被指示在学习到值得记住的内容时写入这些文件。“心理笔记”不会在会话重启后存活——文件会。</p>
+<h3 id="向量记忆搜索（语义召回）"><a href="#向量记忆搜索（语义召回）" class="headerlink" title="向量记忆搜索（语义召回）"></a>向量记忆搜索（语义召回）</h3><p>OpenClaw 为记忆文件构建向量索引以进行语义搜索：</p>
+<p><strong>索引管道：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Markdown files → Chunking (~400 tokens, 80-token overlap)</span><br><span class="line">    → Embedding (OpenAI / Gemini / Local GGUF)</span><br><span class="line">    → SQLite storage (with optional sqlite-vec acceleration)</span><br><span class="line">    → File watcher (debounced 1.5s) for incremental updates</span><br></pre></td></tr></table></figure>
+
+<p><strong>混合搜索 (BM25 + Vector)：</strong></p>
+<ul>
+<li><strong>向量相似度</strong>：语义匹配（“Mac Studio gateway host”匹配“the machine running the gateway”）</li>
+<li><strong>BM25 关键词相关性</strong>：精确令牌匹配（ID、代码符号、错误字符串）</li>
+<li>分数组合：<code>finalScore = vectorWeight × vectorScore + textWeight × textScore</code></li>
+<li>默认权重：70% 向量，30% BM25</li>
+</ul>
+<p><strong>嵌入提供商</strong>（自动选择并带回退链）：</p>
+<ol>
+<li>通过 node-llama-cpp 的本地 GGUF 模型（约 0.6 GB）</li>
+<li>OpenAI <code>text-embedding-3-small</code></li>
+<li>Google Gemini <code>gemini-embedding-001</code></li>
+</ol>
+<p>**重新索引触发器：**索引存储嵌入提供商&#x2F;模型 + 端点指纹 + 分块参数。如果任何更改，OpenClaw 会自动重置并重新索引。</p>
+<p><strong>暴露给代理的工具：</strong></p>
+<ul>
+<li><code>memory_search</code> — 语义搜索，返回带有文件 + 行范围的片段</li>
+<li><code>memory_get</code> — 按路径读取特定的记忆文件内容</li>
+</ul>
+<h3 id="预压缩记忆刷新"><a href="#预压缩记忆刷新" class="headerlink" title="预压缩记忆刷新"></a>预压缩记忆刷新</h3><p>当会话接近自动压缩（上下文窗口即将满）时，OpenClaw 会触发一个<strong>静默的代理回合</strong>，提醒模型在上下文被总结之前将持久笔记写入磁盘：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Session approaching context limit</span><br><span class="line">    → Silent memory flush turn fires</span><br><span class="line">    → Model writes important context to memory/YYYY-MM-DD.md</span><br><span class="line">    → Model replies NO_REPLY (user never sees this turn)</span><br><span class="line">    → Auto-compaction proceeds safely</span><br></pre></td></tr></table></figure>
+
+<p>这由软阈值令牌控制，每个压缩周期最多运行一次。</p>
+<h2 id="会话管理——跨对话的连续性"><a href="#会话管理——跨对话的连续性" class="headerlink" title="会话管理——跨对话的连续性"></a>会话管理——跨对话的连续性</h2><h3 id="会话键与路由"><a href="#会话键与路由" class="headerlink" title="会话键与路由"></a>会话键与路由</h3><p>每个对话都映射到一个会话键：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Direct messages:  agent:&lt;agentId&gt;:&lt;mainKey&gt;         (dmScope: &quot;main&quot;)</span><br><span class="line">                  agent:&lt;agentId&gt;:dm:&lt;peerId&gt;       (dmScope: &quot;per-peer&quot;)</span><br><span class="line">                  agent:&lt;agentId&gt;:&lt;channel&gt;:dm:&lt;peerId&gt;  (dmScope: &quot;per-channel-peer&quot;)</span><br><span class="line"></span><br><span class="line">Group chats:      agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;</span><br><span class="line">Telegram topics:  agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;:topic:&lt;threadId&gt;</span><br><span class="line">Cron jobs:        cron:&lt;job.id&gt;</span><br><span class="line">Webhooks:         hook:&lt;uuid&gt;</span><br><span class="line">Sub-agents:       agent:&lt;agentId&gt;:subagent:&lt;uuid&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="会话生命周期"><a href="#会话生命周期" class="headerlink" title="会话生命周期"></a>会话生命周期</h3><p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030666323-fe47c5e2-724d-43b2-a956-93814fb797f0.png"></p>
+<ul>
+<li><strong>每日重置</strong>：默认当地时间凌晨 4:00</li>
+<li><strong>空闲重置</strong>：可选滑动窗口（<code>idleMinutes</code>）</li>
+<li><strong>手动重置</strong>：<code>/new</code> 或 <code>/reset</code> 开始新会话</li>
+</ul>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><ul>
+<li><strong>转录本</strong>：<code>~/.openclaw/agents/&lt;agentId&gt;/sessions/&lt;SessionId&gt;.jsonl</code> 中的 JSONL 文件</li>
+<li><strong>存储</strong>：<code>sessions.json</code>——一个 <code>sessionKey → &#123;sessionId, updatedAt, ...&#125;</code> 的映射</li>
+<li><strong>来源元数据</strong>：每个会话记录其来源（渠道、发送者、线程等）</li>
+</ul>
+<h3 id="上下文窗口与压缩"><a href="#上下文窗口与压缩" class="headerlink" title="上下文窗口与压缩"></a>上下文窗口与压缩</h3><p>每个模型都有有限的上下文窗口。当它填满时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Full conversation history</span><br><span class="line">    → Older messages summarized into a compact entry</span><br><span class="line">    → Recent messages kept intact</span><br><span class="line">    → Summary persisted in JSONL</span><br><span class="line">    → Future requests use: [summary] + [recent messages]</span><br></pre></td></tr></table></figure>
+
+<p><strong>压缩与修剪：</strong></p>
+<ul>
+<li><strong>压缩</strong>：总结并<strong>持久化</strong>在转录本中（永久）</li>
+<li><strong>会话修剪</strong>：每次请求时，<strong>内存中</strong>修剪旧的<strong>工具结果</strong>（非破坏性）</li>
+</ul>
+<h2 id="技能系统——教代理新技能"><a href="#技能系统——教代理新技能" class="headerlink" title="技能系统——教代理新技能"></a>技能系统——教代理新技能</h2><p>技能是代理的学习能力——用于特定工具和任务的结构化指令集。</p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030768605-0c1b5058-a8b3-4b82-91d2-95312e13881c.png"></p>
+<h3 id="延迟加载模式"><a href="#延迟加载模式" class="headerlink" title="延迟加载模式"></a>延迟加载模式</h3><p>技能不会注入到提示词中。只注入一个紧凑的元数据列表：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">available_skills</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">skill</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>weather<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Get current weather and forecasts<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">location</span>&gt;</span>/path/to/weather/SKILL.md<span class="tag">&lt;/<span class="name">location</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">skill</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">available_skills</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>模型被指示**仅当任务匹配时才 **<code>**read**``**SKILL.md**</code>。这使得提示词开销最小（每个技能约 97 字符 + 字段长度），同时仍能实现有针对性的工具使用。</p>
+<h3 id="7-3-门控（加载时过滤器）"><a href="#7-3-门控（加载时过滤器）" class="headerlink" title="7.3 门控（加载时过滤器）"></a>7.3 门控（加载时过滤器）</h3><p>技能可以在 YAML frontmatter 中声明要求：</p>
+<ul>
+<li><code>**requires.bins**</code>：PATH 上必须存在的二进制文件</li>
+<li><code>**requires.env**</code>：必须设置的环境变量</li>
+<li><code>**requires.config**</code>：必须为真的配置路径</li>
+<li><code>**os**</code>：平台限制（darwin, linux, win32）</li>
+</ul>
+<p>技能在会话开始时进行快照，并重用于后续回合（文件系统更改时热重载）。</p>
+<h2 id="子代理架构——并行工作"><a href="#子代理架构——并行工作" class="headerlink" title="子代理架构——并行工作"></a>子代理架构——并行工作</h2><p>子代理支持后台并行执行，而不会阻塞主对话。</p>
+<h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030838374-60cb3803-fcdb-432e-9113-057558c22a83.png"></p>
+<h3 id="关键设计决策"><a href="#关键设计决策" class="headerlink" title="关键设计决策"></a>关键设计决策</h3><ul>
+<li><strong>会话隔离</strong>：每个子代理获取 <code>agent:&lt;agentId&gt;:subagent:&lt;uuid&gt;</code></li>
+<li><strong>无嵌套</strong>：子代理不能生成子代理（防止扇出）</li>
+<li><strong>受限工具</strong>：默认情况下没有 <code>sessions_list</code>、<code>sessions_history</code>、<code>sessions_send</code>、<code>sessions_spawn</code></li>
+<li><strong>通知模式</strong>：结果会以状态、运行时、令牌使用和成本的形式发布回请求者聊天</li>
+<li><strong>自动归档</strong>：会话在可配置的超时后归档（默认 60 分钟）</li>
+<li><strong>并发性</strong>：专用车道，可配置最大值（默认 8）</li>
+<li><strong>成本控制</strong>：可以通过 <code>agents.defaults.subagents.model</code> 为子代理使用更便宜的模型</li>
+</ul>
+<h2 id="心跳与-Cron——主动行为"><a href="#心跳与-Cron——主动行为" class="headerlink" title="心跳与 Cron——主动行为"></a>心跳与 Cron——主动行为</h2><h3 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h3><p>心跳是主会话中周期性的代理回合。网关每隔 N 分钟（默认 30 分钟）会根据可配置的提示词发出一个心跳。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2026/png/43088792/1775030877052-823d53e9-7404-4205-8b51-6c47094a009e.png"></p>
+<p><strong>响应契约：</strong></p>
+<ul>
+<li><code>HEARTBEAT_OK</code> &#x3D; 无需关注（被抑制，从不传递）</li>
+<li>任何其他内容 &#x3D; 警报内容（传递到配置的渠道）</li>
+<li><code>HEARTBEAT.MD</code> 是代理在每次心跳时读取的可选工作区清单</li>
+</ul>
+<h3 id="Cron"><a href="#Cron" class="headerlink" title="Cron"></a>Cron</h3><p>对于需要精确时间或隔离的任务：</p>
+<ul>
+<li><strong>调度类型</strong>：一次性（<code>at</code>）、重复（<code>every</code>）、cron 表达式（<code>cron</code>）</li>
+<li><strong>Payload 类型</strong>：<code>systemEvent</code>（注入主会话）或 <code>agentTurn</code>（隔离会话）</li>
+<li><strong>传递</strong>：将结果通知到特定渠道&#x2F;收件人</li>
+<li>隔离的 cron 作业每次运行都会生成新的会话</li>
+</ul>
+<p><strong>何时使用：</strong></p>
+<table>
+<thead>
+<tr>
+<th>心跳</th>
+<th>Cron</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>批量检查</td>
+<td>需要精确时间</td>
+</tr>
+<tr>
+<td>需要主会话上下文</td>
+<td>需要隔离</td>
+</tr>
+<tr>
+<td>时间可能漂移</td>
+<td>不同的模型&#x2F;思考</td>
+</tr>
+<tr>
+<td>减少 API 调用</td>
+<td>一次性提醒</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="沙盒——减少爆炸半径"><a href="#沙盒——减少爆炸半径" class="headerlink" title="沙盒——减少爆炸半径"></a>沙盒——减少爆炸半径</h2><p>OpenClaw 可以在 Docker 容器内运行工具执行，以限制损害。</p>
+<h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><ul>
+<li><code>**off**</code>：工具直接在主机上运行</li>
+<li><code>**non-main**</code>：仅沙盒非主会话（群聊、子代理）</li>
+<li><code>**all**</code>：每个会话都在沙盒中运行</li>
+</ul>
+<h3 id="范围"><a href="#范围" class="headerlink" title="范围"></a>范围</h3><ul>
+<li><code>**session**</code>：每个会话一个容器</li>
+<li><code>**agent**</code>：每个代理一个容器</li>
+<li><code>**shared**</code>：所有沙盒会话共享一个容器</li>
+</ul>
+<h3 id="工作区访问"><a href="#工作区访问" class="headerlink" title="工作区访问"></a>工作区访问</h3><ul>
+<li><code>**none**</code>：工具看到一个沙盒工作区（无主机访问）</li>
+<li><code>**ro**</code>：主机工作区以只读方式挂载</li>
+<li><code>**rw**</code>：主机工作区以读写方式挂载</li>
+</ul>
+<h3 id="逃逸口"><a href="#逃逸口" class="headerlink" title="逃逸口"></a>逃逸口</h3><ul>
+<li><code>**tools.elevated**</code>：明确的主机执行绕过（针对授权发送者）</li>
+<li><strong>工具策略</strong>：在沙盒规则之前仍应用允许&#x2F;拒绝规则</li>
+<li><strong>自定义绑定挂载</strong>：暴露特定的主机目录</li>
+</ul>
+<h2 id="钩子与插件——可扩展性"><a href="#钩子与插件——可扩展性" class="headerlink" title="钩子与插件——可扩展性"></a>钩子与插件——可扩展性</h2><h3 id="钩子（事件驱动脚本）"><a href="#钩子（事件驱动脚本）" class="headerlink" title="钩子（事件驱动脚本）"></a>钩子（事件驱动脚本）</h3><p>当网关中发生事件时，钩子会被触发：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Event Types:</span><br><span class="line">├── command:new    — session reset</span><br><span class="line">├── command:reset  — session reset</span><br><span class="line">├── command:stop   — run aborted</span><br><span class="line">├── agent:bootstrap — before system prompt finalized</span><br><span class="line">└── gateway:startup — after channels start</span><br></pre></td></tr></table></figure>
+
+<p>钩子从三个目录（工作区 → 管理 → 捆绑）中发现，并通过 CLI 启用。它们是 TypeScript 处理程序，接收带有会话信息、工作区访问和消息推送数组的事件上下文。</p>
+<p><strong>捆绑钩子：</strong></p>
+<ul>
+<li><code>session-memory</code>：在 <code>/new</code> 上将会话上下文保存到内存</li>
+<li><code>command-logger</code>：所有命令的审计跟踪（JSONL）</li>
+<li><code>boot-md</code>：在网关启动时运行 <code>BOOT.md</code></li>
+<li><code>soul-evil</code>：用于乐趣的角色交换（可配置的几率 + 清除窗口）</li>
+</ul>
+<h3 id="插件（进程内扩展）"><a href="#插件（进程内扩展）" class="headerlink" title="插件（进程内扩展）"></a>插件（进程内扩展）</h3><p>插件是在运行时加载的 TypeScript 模块，可以注册：</p>
+<ul>
+<li>网关 RPC 方法和 HTTP 处理程序</li>
+<li>代理工具</li>
+<li>CLI 命令</li>
+<li>后台服务</li>
+<li>技能（通过清单）</li>
+<li>自动回复命令</li>
+</ul>
+<p>插件在网关进程内运行。它们具有生命周期钩子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">before_agent_start → agent_end</span><br><span class="line">before_compaction → after_compaction</span><br><span class="line">before_tool_call → after_tool_call</span><br><span class="line">tool_result_persist</span><br><span class="line">message_received → message_sending → message_sent</span><br><span class="line">session_start → session_end</span><br><span class="line">gateway_start → gateway_stop</span><br></pre></td></tr></table></figure>
+
+<h2 id="节点系统——物理世界集成"><a href="#节点系统——物理世界集成" class="headerlink" title="节点系统——物理世界集成"></a>节点系统——物理世界集成</h2><p>节点是配对设备（macOS、iOS、Android、无头设备），通过 <code>role: node</code> 连接 WebSocket。</p>
+<p><strong>能力：</strong></p>
+<ul>
+<li><code>camera.*</code> — 拍照、录制视频（前&#x2F;后）</li>
+<li><code>screen.record</code> — 屏幕录制</li>
+<li><code>location.get</code> — GPS 坐标</li>
+<li><code>system.run</code> — 在节点上执行命令</li>
+<li><code>canvas.*</code> — 在节点屏幕上显示 UI</li>
+</ul>
+<p>**配对：**基于设备的身份 → 批准 → 设备令牌颁发</p>
+<p>这使得代理能够与物理世界交互：拍照、检查位置、在远程机器上运行命令以及显示仪表板。</p>
+<h2 id="安全架构"><a href="#安全架构" class="headerlink" title="安全架构"></a>安全架构</h2><h3 id="分层安全模型"><a href="#分层安全模型" class="headerlink" title="分层安全模型"></a>分层安全模型</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────┐</span><br><span class="line">│  Layer 1: Gateway Auth (token-based)    │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  Layer 2: Device Pairing + Trust        │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  Layer 3: Channel Allowlists            │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  Layer 4: Tool Policy (allow/deny)      │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  Layer 5: Exec Approvals               │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  Layer 6: Sandbox (Docker isolation)    │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  Layer 7: Send Policy (outbound gates)  │</span><br><span class="line">└─────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="系统提示词安全"><a href="#系统提示词安全" class="headerlink" title="系统提示词安全"></a>系统提示词安全</h3><p>系统提示词包含咨询性防护措施：</p>
+<ul>
+<li>无独立目标（无自我保护、复制、资源获取）</li>
+<li>优先考虑安全和人工监督，而非完成任务</li>
+<li>遵守停止&#x2F;暂停&#x2F;审计请求</li>
+<li>不操纵以扩大访问权限</li>
+</ul>
+<p>这些是<strong>咨询性</strong>的（模型行为指导）。硬性强制执行使用工具策略、执行批准、沙盒和渠道白名单。</p>
+<h3 id="会话隔离"><a href="#会话隔离" class="headerlink" title="会话隔离"></a>会话隔离</h3><ul>
+<li><code>dmScope: &quot;per-channel-peer&quot;</code> 推荐用于多用户设置</li>
+<li><code>MEMORY.md</code> 仅在私有会话中加载（从不在群组上下文中）</li>
+<li>子代理获取受限工具集</li>
+<li>每个会话的沙盒防止跨会话文件系统访问</li>
+</ul>
+<h2 id="此架构的独到之处（对于架构师而言）"><a href="#此架构的独到之处（对于架构师而言）" class="headerlink" title="此架构的独到之处（对于架构师而言）"></a>此架构的独到之处（对于架构师而言）</h2><p><strong>有状态性问题</strong></p>
+<p>LLM 是无状态函数：<code>f(prompt) → response</code>。OpenClaw 的核心挑战是通过以下方式使其感觉有状态：</p>
+<pre><code>- **基于文件的记忆**，在进程重启后仍然存在
+- **会话转录本**（JSONL），重放对话历史记录
+- **预压缩记忆刷新**，在上下文丢失之前提取持久知识
+- **向量搜索**，实现跨会话的语义召回
+</code></pre>
+<p><strong>上下文窗口作为资源</strong></p>
+<p>上下文窗口是代理的“工作记忆”——有限且昂贵。OpenClaw 像缓存一样管理它：</p>
+<pre><code>- **压缩** = 带总结的逐出
+- **修剪** = 修剪低价值数据（旧工具结果）
+- **技能延迟加载** = 指令的按需分页
+- **引导截断** = 注入文件的尺寸限制
+</code></pre>
+<p><strong>单写入器架构</strong></p>
+<p>网关是每个会话的单写入器系统。命令队列确保：</p>
+<pre><code>- 每个会话一次只有一个代理运行
+- 无并发写入会话转录本
+- 多渠道消息的确定性排序
+</code></pre>
+<p><strong>工作区作为真相来源</strong></p>
+<p>代理工作区是<strong>一个可由 Git 管理的纯 Markdown 文件目录</strong>。这意味着：</p>
+<pre><code>- 记忆是人类可读和可编辑的
+- 版本控制提供审计跟踪
+- 无需管理数据库（SQLite 仅用于向量搜索）
+- 迁移是 `git clone` + 配置更新
+</code></pre>
+<p><strong>技能作为按需加载的指令</strong></p>
+<p>OpenClaw 不会将所有工具指令嵌入到每个提示词中（令牌开销大），而是将技能作为元数据列出，并让模型按需 <code>read</code> 它们。这类似于开发人员拥有一个带有文档的 IDE：您不会在启动时阅读所有文档，而是在需要时查找所需内容。</p>
+<h2 id="总结：构建模块"><a href="#总结：构建模块" class="headerlink" title="总结：构建模块"></a>总结：构建模块</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>实现</th>
+<th>重要性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>持久化</td>
+<td>Markdown 文件 + JSONL 转录本</td>
+<td>人类可读、可 Git 管理、无数据库</td>
+</tr>
+<tr>
+<td>记忆</td>
+<td>文件层 + 向量搜索 + 刷新</td>
+<td>无状态模型表现为有状态</td>
+</tr>
+<tr>
+<td>上下文管理</td>
+<td>压缩 + 修剪 + 延迟加载技能</td>
+<td>高效利用有限的令牌窗口</td>
+</tr>
+<tr>
+<td>并发</td>
+<td>基于车道的命令队列</td>
+<td>无锁的安全序列化</td>
+</tr>
+<tr>
+<td>可扩展性</td>
+<td>钩子 + 插件 + 技能</td>
+<td>无需分支即可修改行为</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>7 层模型（认证 → 沙盒）</td>
+<td>深度防御</td>
+</tr>
+<tr>
+<td>多渠道</td>
+<td>桥接模式 + 会话路由</td>
+<td>一个代理，多个界面</td>
+</tr>
+<tr>
+<td>主动行为</td>
+<td>心跳 + cron</td>
+<td>代理无需被要求即可行动</td>
+</tr>
+<tr>
+<td>并行工作</td>
+<td>带通知的子代理</td>
+<td>后台任务不阻塞聊天</td>
+</tr>
+<tr>
+<td>物理世界</td>
+<td>节点配对 + 设备命令</td>
+<td>代理超越屏幕进行交互</td>
+</tr>
+</tbody></table>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/04/01/hello-world/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          Hello World
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

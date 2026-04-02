@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>os文件系统 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">os文件系统</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-03-08</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-04-01</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>2.4k words, 8 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/intership/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        intership
+      </a>
+    
+      <a href="/tags/system/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        system
+      </a>
+    
+      <a href="/tags/os/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        os
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <p>考点</p>
+<ul>
+<li>文件系统基础：<code>inode</code>、目录项、数据块、超级块</li>
+<li>文件访问机制：文件描述符、VFS、页缓存（Page Cache）</li>
+<li>常见文件系统：<code>ext4</code>、<code>xfs</code>、<code>tmpfs</code>、<code>overlayfs</code></li>
+<li>链接机制：硬链接、软链接</li>
+<li>挂载与目录树：mount、bind mount、mount namespace</li>
+<li>权限模型：<code>rwx</code>、属主属组、<code>umask</code>、<code>setuid/setgid/sticky bit</code></li>
+<li>空间问题排查：<code>df</code> 与 <code>du</code> 不一致、inode 耗尽</li>
+<li>数据一致性：缓存落盘、<code>sync/fsync</code>、日志文件系统</li>
+<li>容器&#x2F;K8s 相关：容器根文件系统、镜像分层、<code>overlay2</code>、Volume 挂载</li>
+</ul>
+<hr>
+<h5 id="Q1：什么是-inode？inode-和文件名是什么关系？"><a href="#Q1：什么是-inode？inode-和文件名是什么关系？" class="headerlink" title="Q1：什么是 inode？inode 和文件名是什么关系？"></a>Q1：什么是 inode？inode 和文件名是什么关系？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li><code>inode</code> 是文件元数据的索引结构，保存文件权限、属主、时间戳、大小、数据块位置等信息。</li>
+<li>文件名不在 inode 中，文件名存放在目录项里，目录本质上是“文件名 -&gt; inode”的映射。</li>
+<li>一个文件删除，本质上是删除目录项引用；只有当链接数归零且没有进程打开时，空间才真正释放。</li>
+<li>K8s&#x2F;运维排障里，inode 耗尽会导致“磁盘看着还有空间，但不能创建文件”。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>误以为文件名保存在 inode 中。</li>
+<li>把“磁盘空间满”和“inode 满”混为一谈。</li>
+<li>认为 <code>rm</code> 后空间一定立即释放。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>如何查看 inode 使用情况：<code>df -i</code></li>
+<li>为什么小文件过多容易先耗尽 inode</li>
+<li>已删除但仍被进程占用的文件，如何排查：<code>lsof | grep deleted</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q2：硬链接和软链接有什么区别？"><a href="#Q2：硬链接和软链接有什么区别？" class="headerlink" title="Q2：硬链接和软链接有什么区别？"></a>Q2：硬链接和软链接有什么区别？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>硬链接：多个文件名指向同一个 inode。</li>
+<li>软链接：是一个独立文件，内容保存目标路径，类似快捷方式。</li>
+<li>硬链接不能跨文件系统，一般不能对目录创建。</li>
+<li>软链接可以跨文件系统，也可以指向目录。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为删除原文件后硬链接失效，实际上不会，只要还有硬链接，数据仍在。</li>
+<li>认为软链接和硬链接都共享 inode，这是错的，软链接有自己的 inode。</li>
+<li>不清楚“跨文件系统”为什么硬链接不行：因为 inode 号只在本文件系统内有意义。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li><code>ln</code> 和 <code>ln -s</code> 的底层差异</li>
+<li>为什么目录通常禁止硬链接：避免目录环，破坏文件系统遍历</li>
+<li>K8s 挂载配置文件时，为什么常会看到软链接结构</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q3：ext4、xfs、tmpfs-分别有什么特点？运维中怎么选？"><a href="#Q3：ext4、xfs、tmpfs-分别有什么特点？运维中怎么选？" class="headerlink" title="Q3：ext4、xfs、tmpfs 分别有什么特点？运维中怎么选？"></a>Q3：ext4、xfs、tmpfs 分别有什么特点？运维中怎么选？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li><code>ext4</code>：通用、稳定、兼容性好，传统 Linux 场景常用。</li>
+<li><code>xfs</code>：大文件、高并发、扩展性好，很多云环境和容器节点常用。</li>
+<li><code>tmpfs</code>：基于内存的临时文件系统，速度快，重启数据丢失。</li>
+<li>K8s 中：<ul>
+<li>宿主机数据盘常见 <code>xfs/ext4</code></li>
+<li><code>emptyDir</code> 可配置为内存型，底层常依赖 <code>tmpfs</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为 <code>tmpfs</code> 不占内存，实际上本质上使用内存&#x2F;交换空间。</li>
+<li>认为 <code>xfs</code> 一定比 <code>ext4</code> 好，实际要结合场景。</li>
+<li>不知道某些容器存储驱动对底层文件系统有要求。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li><code>xfs</code> 和 <code>ext4</code> 在 inode 分配方式上的差异</li>
+<li>为什么容器场景常见 <code>xfs</code></li>
+<li>如何查看文件系统类型：<code>df -T</code>、<code>mount</code>、<code>lsblk -f</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q4：为什么会出现-df-显示磁盘满了，但-du-看起来并没有那么大？"><a href="#Q4：为什么会出现-df-显示磁盘满了，但-du-看起来并没有那么大？" class="headerlink" title="Q4：为什么会出现 df 显示磁盘满了，但 du 看起来并没有那么大？"></a>Q4：为什么会出现 df 显示磁盘满了，但 du 看起来并没有那么大？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li><code>df</code> 看的是文件系统整体已分配空间。</li>
+<li><code>du</code> 看的是目录树下当前可见文件占用。</li>
+<li>常见原因是：文件已删除，但仍被进程打开，所以 <code>du</code> 看不到，<code>df</code> 仍统计占用。</li>
+<li>在日志场景、容器场景里非常常见。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>只会用 <code>du -sh /</code> 查目录，不会查已删除文件占用。</li>
+<li>误以为重启服务前没办法释放，实际上可以通过关闭文件句柄释放。</li>
+<li>误删日志后以为问题解决了。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>排查命令：<code>lsof | grep deleted</code></li>
+<li>为什么进程持有 fd 时，文件删除后空间不释放</li>
+<li>K8s 节点日志膨胀时，容器日志和宿主机文件的关系</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q5：文件系统中的-Page-Cache-是什么？对读写性能有什么影响？"><a href="#Q5：文件系统中的-Page-Cache-是什么？对读写性能有什么影响？" class="headerlink" title="Q5：文件系统中的 Page Cache 是什么？对读写性能有什么影响？"></a>Q5：文件系统中的 Page Cache 是什么？对读写性能有什么影响？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>Page Cache 是内核用于缓存文件数据的内存区域。</li>
+<li>读文件时，命中缓存可减少磁盘 IO；写文件时通常先写缓存，再异步刷盘。</li>
+<li>因此“应用写成功”不一定代表“数据已持久化到磁盘”。</li>
+<li>文件系统性能问题很多时候不是磁盘本身，而是缓存命中率、刷盘策略问题。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>把 Page Cache 和 Buffer Cache、应用缓存完全混为一谈。</li>
+<li>认为 <code>write()</code> 返回成功就一定落盘了。</li>
+<li>不理解为什么突然刷盘会引发 IO 抖动。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li><code>sync</code>、<code>fsync</code>、<code>fdatasync</code> 的区别</li>
+<li>脏页回写机制</li>
+<li>为什么数据库、中间件比普通应用更关注强制落盘</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q6：什么是日志文件系统？ext4-xfs-为什么恢复能力更强？"><a href="#Q6：什么是日志文件系统？ext4-xfs-为什么恢复能力更强？" class="headerlink" title="Q6：什么是日志文件系统？ext4&#x2F;xfs 为什么恢复能力更强？"></a>Q6：什么是日志文件系统？ext4&#x2F;xfs 为什么恢复能力更强？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>日志文件系统会先记录元数据或事务日志，再真正修改文件系统结构。</li>
+<li>宕机恢复时可通过日志回放，减少文件系统损坏。</li>
+<li><code>ext4</code>、<code>xfs</code> 都属于带日志能力的文件系统。</li>
+<li>日志主要保障一致性，不等于保证应用数据绝不丢失。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为有 journaling 就绝对不会丢数据。</li>
+<li>混淆“元数据一致性”和“用户数据持久化一致性”。</li>
+<li>认为日志文件系统不需要 <code>fsck</code> 或其他修复工具。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>metadata journaling 与 data journaling 的区别</li>
+<li>宕机后恢复流程大致是什么</li>
+<li>为什么数据库仍然需要自己的 WAL&#x2F;redo log</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q7：什么是-OverlayFS？为什么容器镜像和容器写层经常提到它？"><a href="#Q7：什么是-OverlayFS？为什么容器镜像和容器写层经常提到它？" class="headerlink" title="Q7：什么是 OverlayFS？为什么容器镜像和容器写层经常提到它？"></a>Q7：什么是 OverlayFS？为什么容器镜像和容器写层经常提到它？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li><code>OverlayFS</code> 是联合文件系统，可把多个目录层叠成一个统一视图。</li>
+<li>容器镜像通常是只读层，容器运行时再加一层可写层。</li>
+<li>Docker 常见存储驱动 <code>overlay2</code> 就基于此实现。</li>
+<li>容器内看起来是完整目录树，实际底层是多层叠加。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为容器对文件的修改会回写到镜像层，实际上通常写到容器可写层。</li>
+<li>不理解 copy-on-write 机制。</li>
+<li>忽略容器频繁写小文件对存储性能的影响。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>OverlayFS 的 lowerdir、upperdir、workdir、merged 分别是什么</li>
+<li>copy-up 在什么场景发生</li>
+<li>为什么数据库不建议直接把高性能持久数据写在容器可写层，而应挂 Volume</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q8：K8s-中-Volume-挂载到底和-Linux-挂载机制有什么关系？"><a href="#Q8：K8s-中-Volume-挂载到底和-Linux-挂载机制有什么关系？" class="headerlink" title="Q8：K8s 中 Volume 挂载到底和 Linux 挂载机制有什么关系？"></a>Q8：K8s 中 Volume 挂载到底和 Linux 挂载机制有什么关系？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>K8s 的 Volume 本质上最终还是落到 Linux 挂载机制上。</li>
+<li>容器运行时会把宿主机目录、块设备、网络存储等挂载到容器命名空间中。</li>
+<li>常见形式包括 bind mount、tmpfs、CSI 存储挂载。</li>
+<li>所以排查 K8s 存储问题，经常要回到宿主机看 <code>mount</code>、<code>findmnt</code>、<code>/proc/mounts</code>。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>只盯着 Pod YAML，不看宿主机实际挂载情况。</li>
+<li>不理解容器和宿主机看到的是不同 mount namespace。</li>
+<li>以为删除 Pod 就一定能清理所有挂载残留。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>mount namespace 的作用</li>
+<li>bind mount 和普通 mount 的区别</li>
+<li>CSI 挂载失败时通常从哪些层排查：K8s 事件、kubelet、容器运行时、宿主机挂载</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q9：文件权限除了-rwx，还应该关注哪些特殊权限位？"><a href="#Q9：文件权限除了-rwx，还应该关注哪些特殊权限位？" class="headerlink" title="Q9：文件权限除了 rwx，还应该关注哪些特殊权限位？"></a>Q9：文件权限除了 rwx，还应该关注哪些特殊权限位？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>基本权限：读 <code>r</code>、写 <code>w</code>、执行 <code>x</code></li>
+<li>特殊权限位：<ul>
+<li><code>setuid</code></li>
+<li><code>setgid</code></li>
+<li><code>sticky bit</code></li>
+</ul>
+</li>
+<li><code>sticky bit</code> 常见于 <code>/tmp</code>，表示目录下文件只能由文件所有者或 root 删除。</li>
+<li><code>umask</code> 决定新建文件&#x2F;目录的默认权限。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>把目录的 <code>rwx</code> 和文件的 <code>rwx</code> 理解成一样。</li>
+<li>不清楚目录上的 <code>x</code> 代表可进入&#x2F;遍历，而不是执行文件。</li>
+<li>忽略 <code>umask</code> 导致权限不符合预期。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么 <code>/tmp</code> 一般是 <code>1777</code></li>
+<li>setgid 目录对团队共享目录有什么作用</li>
+<li>ACL 和传统 rwx 权限模型的区别</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q10：inode-耗尽、磁盘耗尽、文件句柄耗尽，怎么快速区分？"><a href="#Q10：inode-耗尽、磁盘耗尽、文件句柄耗尽，怎么快速区分？" class="headerlink" title="Q10：inode 耗尽、磁盘耗尽、文件句柄耗尽，怎么快速区分？"></a>Q10：inode 耗尽、磁盘耗尽、文件句柄耗尽，怎么快速区分？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>磁盘空间耗尽：看 <code>df -h</code></li>
+<li>inode 耗尽：看 <code>df -i</code></li>
+<li>文件句柄耗尽：看进程 <code>ulimit -n</code>、系统 <code>file-max</code>、报错如 <code>too many open files</code></li>
+<li>三类问题现象类似，都会导致创建文件失败或服务异常，但定位方法不同。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>统一按“磁盘满了”处理。</li>
+<li>只清理大文件，不检查海量小文件。</li>
+<li>忽略进程级 fd 限制和系统级 fd 限制的区别。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li><code>/proc/sys/fs/file-max</code> 含义</li>
+<li>如何查看某个进程打开了多少 fd：<code>ls /proc/&lt;pid&gt;/fd | wc -l</code></li>
+<li>K8s 节点上哪些组件容易出现 fd 泄漏或日志文件过多问题</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="速记笔记"><a href="#速记笔记" class="headerlink" title="速记笔记"></a>速记笔记</h2><ul>
+<li>inode：存元数据，不存文件名；目录存“文件名 -&gt; inode”映射</li>
+<li>硬链接：同 inode；软链接：新文件，存路径</li>
+<li>df 看文件系统整体，du 看可见目录内容</li>
+<li>删文件不一定释放空间：进程还占着 fd</li>
+<li>Page Cache：提升性能，但写成功不等于已落盘</li>
+<li>fsync：更接近真正持久化</li>
+<li>ext4&#x2F;xfs：日志文件系统，恢复能力强</li>
+<li>tmpfs：内存文件系统，快但易失</li>
+<li>OverlayFS&#x2F;overlay2：容器镜像分层 + 可写层</li>
+<li>K8s Volume 本质还是 Linux 挂载</li>
+<li>排障三板斧：<ul>
+<li>空间：<code>df -h</code></li>
+<li>inode：<code>df -i</code></li>
+<li>删除未释放：<code>lsof | grep deleted</code></li>
+</ul>
+</li>
+</ul>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+        <a href="/2026/03/08/os6/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          os磁盘系统
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/03/08/os4/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          os存储系统
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

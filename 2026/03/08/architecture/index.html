@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>计算机组成原理 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">计算机组成原理</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-03-08</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-04-01</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>2.8k words, 9 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/intership/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        intership
+      </a>
+    
+      <a href="/tags/architecture/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        architecture
+      </a>
+    
+      <a href="/tags/system/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        system
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <p>考点：</p>
+<ul>
+<li>CPU 基础<ul>
+<li>CPU 由哪些部分组成</li>
+<li>指令执行过程</li>
+<li>用户态&#x2F;内核态</li>
+<li>上下文切换</li>
+<li>多核与并行</li>
+</ul>
+</li>
+<li>高速缓存<ul>
+<li>L1&#x2F;L2&#x2F;L3 Cache 的作用</li>
+<li>Cache 命中&#x2F;失效</li>
+<li>局部性原理</li>
+<li>伪共享</li>
+</ul>
+</li>
+<li>内存体系<ul>
+<li>虚拟内存与物理内存</li>
+<li>页表、TLB</li>
+<li>缺页异常</li>
+<li>内存对齐</li>
+<li>HugePage</li>
+</ul>
+</li>
+<li>I&#x2F;O 与中断<ul>
+<li>中断和轮询的区别</li>
+<li>DMA 的作用</li>
+<li>磁盘&#x2F;网卡 I&#x2F;O 基本链路</li>
+</ul>
+</li>
+<li>总线与数据传输<ul>
+<li>CPU、内存、外设之间如何协同</li>
+<li>带宽、延迟、吞吐量的区别</li>
+</ul>
+</li>
+<li>存储基础<ul>
+<li>顺序 I&#x2F;O 与随机 I&#x2F;O</li>
+<li>SSD 与 HDD 的差异</li>
+<li>页缓存 Page Cache</li>
+</ul>
+</li>
+<li>和运维场景结合<ul>
+<li>为什么容器 CPU 打满但机器不一定打满</li>
+<li>为什么 Pod 明明有空闲内存却 OOM</li>
+<li>为什么高并发时延抖动变大</li>
+<li>NUMA 对性能的影响</li>
+</ul>
+</li>
+</ul>
+<h5 id="Q1：CPU-的基本组成有哪些？指令大致是如何执行的？"><a href="#Q1：CPU-的基本组成有哪些？指令大致是如何执行的？" class="headerlink" title="Q1：CPU 的基本组成有哪些？指令大致是如何执行的？"></a>Q1：CPU 的基本组成有哪些？指令大致是如何执行的？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>CPU 常见组成包括：<ul>
+<li>运算器（ALU）</li>
+<li>控制器</li>
+<li>寄存器组</li>
+<li>高速缓存</li>
+</ul>
+</li>
+<li>指令执行通常可以概括为：<ul>
+<li>取指</li>
+<li>译码</li>
+<li>执行</li>
+<li>访存</li>
+<li>写回</li>
+</ul>
+</li>
+<li>寄存器速度最快，离计算核心最近。</li>
+<li>程序真正运行时，CPU 并不是“直接从磁盘执行”，而是先装入内存，再被 CPU 取指执行。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>把“内存”和“寄存器”混为一谈。</li>
+<li>以为 CPU 直接处理磁盘上的程序。</li>
+<li>只会背“冯诺依曼结构”，却说不清楚执行流程。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么寄存器比内存快？</li>
+<li>为什么现代 CPU 要做流水线？</li>
+<li>为什么 K8s 运维也要懂这个？<ul>
+<li>因为性能分析时，经常要判断瓶颈是在算力、访存还是 I&#x2F;O。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q2：什么是缓存层次结构？为什么需要-L1-L2-L3-Cache？"><a href="#Q2：什么是缓存层次结构？为什么需要-L1-L2-L3-Cache？" class="headerlink" title="Q2：什么是缓存层次结构？为什么需要 L1&#x2F;L2&#x2F;L3 Cache？"></a>Q2：什么是缓存层次结构？为什么需要 L1&#x2F;L2&#x2F;L3 Cache？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>CPU 速度远高于内存速度，所以需要多级缓存缓冲“速度鸿沟”。</li>
+<li>常见缓存层次：<ul>
+<li>L1：最小、最快</li>
+<li>L2：更大、稍慢</li>
+<li>L3：更大、通常多核共享</li>
+</ul>
+</li>
+<li>缓存利用的是 局部性原理：<ul>
+<li>时间局部性</li>
+<li>空间局部性</li>
+</ul>
+</li>
+<li>命中缓存时延低，未命中则要访问更下层存储，性能会明显下降。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为缓存越大一定越快。</li>
+<li>不区分“容量、延迟、命中率”之间的权衡。</li>
+<li>只知道缓存存在，不知道它和程序访问模式强相关。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>什么样的代码访问模式更容易 cache miss？</li>
+<li>为什么数组连续访问通常比链表随机访问更快？</li>
+<li>多核环境下缓存一致性为什么重要？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q3：什么是虚拟内存？页表、TLB、缺页异常分别是什么？"><a href="#Q3：什么是虚拟内存？页表、TLB、缺页异常分别是什么？" class="headerlink" title="Q3：什么是虚拟内存？页表、TLB、缺页异常分别是什么？"></a>Q3：什么是虚拟内存？页表、TLB、缺页异常分别是什么？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>虚拟内存是操作系统给每个进程提供的独立地址空间抽象。</li>
+<li>CPU 实际访问的是虚拟地址，需要通过页表映射到物理地址。</li>
+<li>TLB 是页表项的高速缓存，用来加速地址转换。</li>
+<li>如果访问的页不在内存中，可能触发 缺页异常。</li>
+<li>这套机制带来：<ul>
+<li>进程隔离</li>
+<li>更灵活的内存管理</li>
+<li>按需加载</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>把“虚拟内存”理解成“磁盘空间”。</li>
+<li>认为缺页异常一定是错误。</li>
+<li>不清楚 TLB 缓存的对象是“地址映射关系”。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>缺页异常分哪几类？</li>
+<li>TLB miss 会带来什么性能影响？</li>
+<li>在 K8s 场景下，为什么内存访问抖动可能和页表、TLB、HugePage 有关？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q4：用户态和内核态有什么区别？为什么系统调用比普通函数调用更重？"><a href="#Q4：用户态和内核态有什么区别？为什么系统调用比普通函数调用更重？" class="headerlink" title="Q4：用户态和内核态有什么区别？为什么系统调用比普通函数调用更重？"></a>Q4：用户态和内核态有什么区别？为什么系统调用比普通函数调用更重？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>用户态权限低，不能直接执行特权操作。</li>
+<li>内核态权限高，可以操作硬件、管理内存、中断、进程调度等。</li>
+<li>应用访问文件、网络、设备时，往往要通过 系统调用 进入内核态。</li>
+<li>系统调用更重，是因为涉及：<ul>
+<li>特权级切换</li>
+<li>保存&#x2F;恢复上下文</li>
+<li>内核路径执行</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>以为所有函数调用成本差不多。</li>
+<li>把“用户态&#x2F;内核态”与“用户进程&#x2F;内核进程”混淆。</li>
+<li>认为 CPU 使用率高就一定是用户态高。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li><code>top</code> 里的 user&#x2F;system CPU 分别反映什么？</li>
+<li>为什么频繁 syscall 会影响高并发服务性能？</li>
+<li>容器里的系统调用本质上最终是谁在执行？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q5：什么是上下文切换？为什么上下文切换多会导致系统变慢？"><a href="#Q5：什么是上下文切换？为什么上下文切换多会导致系统变慢？" class="headerlink" title="Q5：什么是上下文切换？为什么上下文切换多会导致系统变慢？"></a>Q5：什么是上下文切换？为什么上下文切换多会导致系统变慢？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>上下文切换指 CPU 从一个执行单元切到另一个执行单元时，需要保存和恢复运行现场。</li>
+<li>可能发生在：<ul>
+<li>进程切换</li>
+<li>线程切换</li>
+<li>中断处理</li>
+</ul>
+</li>
+<li>上下文切换会带来额外开销：<ul>
+<li>调度开销</li>
+<li>寄存器保存恢复</li>
+<li>cache&#x2F;TLB 局部性被破坏</li>
+</ul>
+</li>
+<li>在高并发场景中，切换过多会让 CPU “忙于切换而不是忙于干活”。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为线程一定比进程切换便宜很多，忽略实际场景差异。</li>
+<li>只关注 CPU 使用率，不看切换次数。</li>
+<li>误以为协程会完全消除切换成本。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么上下文切换会影响 cache 命中率？</li>
+<li>什么是自愿切换与非自愿切换？</li>
+<li>K8s 中 CPU limit 设置不合理为什么可能增加调度抖动？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q6：中断、轮询、DMA-分别是什么？它们在-I-O-中起什么作用？"><a href="#Q6：中断、轮询、DMA-分别是什么？它们在-I-O-中起什么作用？" class="headerlink" title="Q6：中断、轮询、DMA 分别是什么？它们在 I&#x2F;O 中起什么作用？"></a>Q6：中断、轮询、DMA 分别是什么？它们在 I&#x2F;O 中起什么作用？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>轮询：CPU 不断主动询问设备是否准备好。</li>
+<li>中断：设备准备好后通知 CPU 处理。</li>
+<li>DMA：设备可在不大量占用 CPU 搬运数据的情况下，直接与内存交换数据。</li>
+<li>对高性能 I&#x2F;O 来说：<ul>
+<li>小量快速事件可考虑中断</li>
+<li>高频场景下可能结合轮询</li>
+<li>大块数据搬运依赖 DMA 提升效率</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为 DMA 是“完全不需要 CPU”。</li>
+<li>认为中断一定优于轮询。</li>
+<li>把“中断通知”和“数据搬运”混成一件事。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么高包速网络场景下中断太多会导致 CPU 压力大？</li>
+<li>网卡收包大致链路能不能讲清楚？</li>
+<li>为什么运维排查网络抖动时会关注软中断？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q7：什么是顺序-I-O-和随机-I-O？为什么它们的性能差异很大？"><a href="#Q7：什么是顺序-I-O-和随机-I-O？为什么它们的性能差异很大？" class="headerlink" title="Q7：什么是顺序 I&#x2F;O 和随机 I&#x2F;O？为什么它们的性能差异很大？"></a>Q7：什么是顺序 I&#x2F;O 和随机 I&#x2F;O？为什么它们的性能差异很大？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>顺序 I&#x2F;O：数据访问位置连续。</li>
+<li>随机 I&#x2F;O：数据访问位置离散。</li>
+<li>在 HDD 上，随机 I&#x2F;O 性能差主要因为：<ul>
+<li>寻道</li>
+<li>旋转延迟</li>
+</ul>
+</li>
+<li>SSD 没有机械寻址，但随机 I&#x2F;O 仍通常比顺序 I&#x2F;O 成本更高。</li>
+<li>运维场景中，日志、备份、流式读取偏顺序；数据库索引查找更偏随机。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为 SSD 上顺序和随机 I&#x2F;O 没区别。</li>
+<li>只看带宽，不看 IOPS 和延迟。</li>
+<li>不了解业务类型和 I&#x2F;O 模式的关系。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>吞吐量、IOPS、时延分别适合描述什么？</li>
+<li>为什么数据库更关注随机 I&#x2F;O 性能？</li>
+<li>为什么容器共享存储时，一个 Pod 的随机写可能影响其他业务？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q8：什么是-NUMA？为什么它会影响容器和节点性能？"><a href="#Q8：什么是-NUMA？为什么它会影响容器和节点性能？" class="headerlink" title="Q8：什么是 NUMA？为什么它会影响容器和节点性能？"></a>Q8：什么是 NUMA？为什么它会影响容器和节点性能？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>NUMA 指非一致性内存访问架构。</li>
+<li>多路 CPU 机器中，不同 CPU 访问“本地内存”和“远程内存”的延迟不同。</li>
+<li>如果线程跑在一个 NUMA 节点，内存却分配在另一个节点，性能可能下降。</li>
+<li>对高性能业务、低延迟业务、DPDK、数据库、JVM、大内存应用影响更明显。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>认为所有服务器都是“统一内存访问成本”。</li>
+<li>只看 CPU 核数，不关注 CPU 与内存拓扑。</li>
+<li>认为容器调度只要资源够就行，不用考虑亲和性。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>为什么跨 NUMA 访问会变慢？</li>
+<li>K8s 中 CPU Manager、Topology Manager 是想解决什么问题？</li>
+<li>哪些业务最怕 NUMA 不友好？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q9：什么是伪共享？它为什么会让多线程性能变差？"><a href="#Q9：什么是伪共享？它为什么会让多线程性能变差？" class="headerlink" title="Q9：什么是伪共享？它为什么会让多线程性能变差？"></a>Q9：什么是伪共享？它为什么会让多线程性能变差？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>伪共享是指多个线程虽然操作不同变量，但这些变量恰好落在同一个 cache line 上。</li>
+<li>一个线程修改变量会导致另一个线程缓存失效，产生额外一致性流量。</li>
+<li>结果是：<ul>
+<li>CPU cache 频繁失效</li>
+<li>多线程扩展性变差</li>
+<li>吞吐上不去</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>只知道“共享变量会竞争”，不知道“不共享变量也可能互相影响”。</li>
+<li>把锁竞争和伪共享混为一谈。</li>
+<li>忽略 cache line 粒度这一关键点。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>cache line 一般多大？</li>
+<li>如何从代码结构上减少伪共享？</li>
+<li>为什么监控采集、高频计数器这类场景容易踩坑？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="Q10：为什么会出现“CPU-不高，但程序还是很慢”？"><a href="#Q10：为什么会出现“CPU-不高，但程序还是很慢”？" class="headerlink" title="Q10：为什么会出现“CPU 不高，但程序还是很慢”？"></a>Q10：为什么会出现“CPU 不高，但程序还是很慢”？</h5><ul>
+<li><p>核心要点</p>
+<ul>
+<li>程序慢不一定是算力不足，可能卡在：<ul>
+<li>内存访问</li>
+<li>cache miss</li>
+<li>锁竞争</li>
+<li>I&#x2F;O 等待</li>
+<li>上下文切换</li>
+<li>网络延迟</li>
+</ul>
+</li>
+<li>从组成原理角度看，CPU 的大部分时间可能在“等数据”，而不是“做计算”。</li>
+<li>所以性能分析不能只看 CPU 使用率。</li>
+</ul>
+</li>
+<li><p>易错点</p>
+<ul>
+<li>看到 CPU 不高就判断“机器没问题”。</li>
+<li>不区分 CPU busy 和 CPU stalled。</li>
+<li>把所有性能问题都归因于代码逻辑。</li>
+</ul>
+</li>
+<li><p>深挖点</p>
+<ul>
+<li>如何区分是 CPU 瓶颈、内存瓶颈还是 I&#x2F;O 瓶颈？</li>
+<li>为什么高负载不一定代表高 CPU？</li>
+<li>K8s 节点排障时该联想到哪些指标：<ul>
+<li>load average</li>
+<li>iowait</li>
+<li>context switch</li>
+<li>page fault</li>
+<li>softirq</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="速记笔记"><a href="#速记笔记" class="headerlink" title="速记笔记"></a>速记笔记</h2><ul>
+<li>CPU 执行流程：取指 → 译码 → 执行 → 访存 → 写回</li>
+<li>速度层次：寄存器 &gt; Cache &gt; 内存 &gt; 磁盘</li>
+<li>Cache 核心：利用局部性原理，命中快，miss 慢</li>
+<li>虚拟内存核心：虚拟地址通过页表映射到物理地址，TLB 用来加速映射</li>
+<li>缺页异常：不一定是错误，可能是正常的按需调页</li>
+<li>用户态&#x2F;内核态：系统调用会触发特权级切换，成本高于普通函数调用</li>
+<li>上下文切换：切换多会破坏 cache&#x2F;TLB 局部性，影响吞吐</li>
+<li>I&#x2F;O 机制：中断负责通知，DMA 负责高效搬运</li>
+<li>磁盘性能：顺序 I&#x2F;O 看带宽，随机 I&#x2F;O 更看 IOPS 和时延</li>
+<li>NUMA：本地内存访问快，跨节点访问慢，影响高性能容器业务</li>
+<li>伪共享：不同线程改不同变量，也可能因为同一 cache line 互相拖慢</li>
+<li>面试回答思路：定义 → 原理 → 性能影响 → Linux&#x2F;K8s 场景落地</li>
+</ul>
+<h2 id="临场答题建议"><a href="#临场答题建议" class="headerlink" title="临场答题建议"></a>临场答题建议</h2><ul>
+<li>回答时尽量带上 “为什么”，不要只背定义。</li>
+<li>最好能把知识点和这些场景关联：<ul>
+<li>Pod CPU 打满</li>
+<li>节点 load 高</li>
+<li>iowait 高</li>
+<li>容器延迟抖动</li>
+<li>大内存应用性能异常</li>
+</ul>
+</li>
+<li>如果面试官继续追问，优先往这几个方向展开：<ul>
+<li>性能影响</li>
+<li>Linux 指标</li>
+<li>K8s 场景</li>
+<li>排障方法</li>
+</ul>
+</li>
+</ul>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+        <a href="/2026/03/14/intership/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          面试准备
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/03/08/network5/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          计算机网络安全
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
