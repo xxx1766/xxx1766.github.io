@@ -609,7 +609,7 @@
             <!-- Word count -->
             <span class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
-              <span>864 words, 3 min</span>
+              <span>1.5k words, 5 min</span>
             </span>
             <!-- Categories -->
             
@@ -679,18 +679,24 @@
   <!-- content -->
   <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
     <p>总结：Plugin 更像 Claude 的能力封装与分发层，Skill 是其中的具体能力，MCP 是底层工具接入协议，而 Agent 是调用这些东西来完成任务的执行主体。</p>
-<h3 id="定义1-技术实现角度：agent-model-harness"><a href="#定义1-技术实现角度：agent-model-harness" class="headerlink" title="定义1 技术实现角度：agent&#x3D;model+harness"></a>定义1 技术实现角度：agent&#x3D;model+harness</h3><p>链接：<a target="_blank" rel="noopener" href="https://x.com/Vtrivedy10/status/2031408954517971368">https://x.com/Vtrivedy10/status/2031408954517971368</a></p>
+<h3 id="定义1-技术实现角度：agent-model-harness-memory"><a href="#定义1-技术实现角度：agent-model-harness-memory" class="headerlink" title="定义1 技术实现角度：agent&#x3D;model+harness+memory"></a>定义1 技术实现角度：agent&#x3D;model+harness+memory</h3><p>链接：<a target="_blank" rel="noopener" href="https://x.com/Vtrivedy10/status/2031408954517971368">https://x.com/Vtrivedy10/status/2031408954517971368</a></p>
 <ul>
 <li>model：语言模型，提供智能能力</li>
-<li>harness：设计环境-设计标准-建立反馈，提供结构化的交互和执行环境。具体包括，系统提示词、工具、文件系统、沙箱、编排逻辑、各种检查机制。<br><img src="/2026/04/10/agent-def/model-harness.png" alt="model+harness"></li>
+<li>harness：设计环境-设计标准-建立反馈，提供结构化的交互和执行环境。具体包括，系统提示词、工具、文件系统、沙箱、编排逻辑、各种检查机制。</li>
+<li>momery：包括单个项目的上下文记忆和跨项目的长期记忆，提供信息存储和浓缩总结能力。</li>
 </ul>
+<p><img src="/2026/04/10/agent-def/model-harness.png" alt="model+harness"></p>
 <p>这是从技术实现角度的定义，model是智能的引擎，harness是智能的车架。model提供AI干什么活，harness提供AI在哪儿干活（整理文件结构和规范），怎么干活（设定验收标准），干完了检查结果对不对（建立反馈机制）。</p>
 <p>ps. 看起来harness像是mcp+skill+env+…的统一抽象</p>
-<h3 id="定义2-目标角度：agent-能通过多轮操作独立完成特定任务的智能系统"><a href="#定义2-目标角度：agent-能通过多轮操作独立完成特定任务的智能系统" class="headerlink" title="定义2 目标角度：agent&#x3D;能通过多轮操作独立完成特定任务的智能系统"></a>定义2 目标角度：agent&#x3D;能通过多轮操作独立完成特定任务的智能系统</h3><p><img src="/2026/04/10/agent-def/agent-workflow.png" alt="agent-workflow"><br>Google Cloud的定义是“AI 智能体是使用 AI 来实现目标并代表用户完成任务的软件系统”</p>
+<h3 id="定义2-目标角度：agent-能通过多轮操作独立完成特定任务的智能系统"><a href="#定义2-目标角度：agent-能通过多轮操作独立完成特定任务的智能系统" class="headerlink" title="定义2 目标角度：agent&#x3D;能通过多轮操作独立完成特定任务的智能系统"></a>定义2 目标角度：agent&#x3D;能通过多轮操作独立完成特定任务的智能系统</h3><p><img src="/2026/04/10/agent-def/agent-workflow.png" alt="agent-workflow"><br><a target="_blank" rel="noopener" href="https://cloud.google.com/discover/what-are-ai-agents?hl=zh-CN">Google Cloud的定义</a>是“AI 智能体是使用 AI 来实现目标并代表用户完成任务的软件系统”。</p>
 <p>这个定义的重点在于AI agent的操作自主性和任务导向性的反应架构。不断地通过多轮操作独立完成特定任务，能在执行过程中根据环境反馈调整策略，最终达到预期目标。<br>ps. 感觉agent的终极目标是像人，从不完美&#x2F;欠缺的人升级到完美的人，像moss。</p>
 <!-- LLM动态决定自己的处理过程和工具使用的系统 -->
 <h3 id="定义3-决策问题角度：agent-能动态决定自己的处理过程和工具使用的逻辑链"><a href="#定义3-决策问题角度：agent-能动态决定自己的处理过程和工具使用的逻辑链" class="headerlink" title="定义3 决策问题角度：agent&#x3D;能动态决定自己的处理过程和工具使用的逻辑链"></a>定义3 决策问题角度：agent&#x3D;能动态决定自己的处理过程和工具使用的逻辑链</h3><p>参考：Anthropic的文章《Building effective agents》<br>这个定义强调了agent对开放问题的决策能力和适应性。一个真正的agent应该能够根据任务需求和环境变化动态调整自己的处理过程和工具使用，而不是预先设定好一套固定的流程。</p>
-<h3 id="定义4-系统角度：agent-跑在各种应用-服务上的智能系统"><a href="#定义4-系统角度：agent-跑在各种应用-服务上的智能系统" class="headerlink" title="定义4 系统角度：agent&#x3D;跑在各种应用&#x2F;服务上的智能系统"></a>定义4 系统角度：agent&#x3D;跑在各种应用&#x2F;服务上的智能系统</h3><p>这个定义强调了agent作为一个系统的角色，能够对接各种应用和服务。在不同的机器结构、操作系统环境下都可以执行的</p>
+<h3 id="定义4-系统角度：agent-跑在各种应用-服务上的智能系统"><a href="#定义4-系统角度：agent-跑在各种应用-服务上的智能系统" class="headerlink" title="定义4 系统角度：agent&#x3D;跑在各种应用&#x2F;服务上的智能系统"></a>定义4 系统角度：agent&#x3D;跑在各种应用&#x2F;服务上的智能系统</h3><p>这个定义强调了agent作为一个系统的角色，能够对接各种应用和服务。在不同的机器结构、操作系统环境下都可以执行的。<br>agent需要具备良好的兼容性和适应性，能够在不同的环境中运行，并且能够与各种应用和服务进行交互。</p>
+<h3 id="定义5-形式化角度，agent-由基础模型驱动，其不确定性和非预定义逻辑的运行机制，为开发者带来了全新的应用开发和运维范式。"><a href="#定义5-形式化角度，agent-由基础模型驱动，其不确定性和非预定义逻辑的运行机制，为开发者带来了全新的应用开发和运维范式。" class="headerlink" title="定义5 形式化角度，agent&#x3D;由基础模型驱动，其不确定性和非预定义逻辑的运行机制，为开发者带来了全新的应用开发和运维范式。"></a>定义5 形式化角度，agent&#x3D;由基础模型驱动，其不确定性和非预定义逻辑的运行机制，为开发者带来了全新的应用开发和运维范式。</h3><p>参考：<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/china/agentive-ai-infrastructure-practice-series-1/">Agentic AI基础设施实践经验系列</a><br><img src="/2026/02/25/DRA/t-def/Agent-architecture.png" alt="Agent系统架构与基础设施单元"><br>Agent 系统的架构可以抽象为四个核心模块的协同工作：<br>（1）推理引擎，推理引擎是Agent的“大脑”，通常基于大语言模型实现。它负责理解用户意图、制定执行计划、任务执行。在开发层面，这意味着我们需要精心设计提示词模板、优化推理链路、控制推理成本。推理引擎的质量直接决定了Agent的智能水平。</p>
+<p>（2）记忆系统，记忆系统赋予Agent“学习”和“成长”的能力。可以简单分为短期记忆和长期记忆两个大类：短期记忆维护当前会话的上下文状态，类似于人类的工作记忆；长期记忆存储用户偏好、历史交互、知识积累等信息，需要智能的信息抽取和压缩机制。在开发实践中，我们需要设计合理的存储架构、实现高效的检索算法、建立智能的信息更新策略。</p>
+<p>（3）编排模块，规划与执行模块负责协调其他三个组件的工作，管理Agent的整体执行流程。它承担任务分解、执行计划制定、工具调用编排等职责。在开发层面，这涉及到工作流设计、异常处理策略、并发控制、状态管理等技术挑战。不同的Agent框架对这一模块有不同的实现方式，如Strands Agents的任务编排器、LangGraph的图执行器等。</p>
+<p>（4）工具接口，工具接口是Agent与外部世界交互的“手脚”。一个Agent可能需要调用数十种不同的API、数据库、外部服务。开发挑战在于：如何标准化不同工具的接入方式、如何实现工具的智能选择和组合、如何处理工具调用的异常和重试、如何确保工具调用的安全性和权限控制。</p>
 <h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><table>
 <thead>
 <tr>
