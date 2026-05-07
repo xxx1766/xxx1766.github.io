@@ -599,7 +599,7 @@
             </div>
             <div class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
-              Edited: <time class="w-max">2026-04-16</time>
+              Edited: <time class="w-max">2026-04-21</time>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
@@ -609,7 +609,7 @@
             <!-- Word count -->
             <span class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
-              <span>389 words, 1 min</span>
+              <span>3.1k words, 11 min</span>
             </span>
             <!-- Categories -->
             
@@ -699,7 +699,25 @@
   <!-- content -->
   <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
     <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><!-- 模型文件特点 -->
-<p>大模型文件体积巨大（数十 GB 到 TB 级），集中式拉取（从 Registry 或 NFS）会在冷启动时造成严重带宽瓶颈。P2P 分发将模型文件的传输分散到集群内各节点，类似 BitTorrent 协议。</p>
+<h3 id="大体积镜像文件"><a href="#大体积镜像文件" class="headerlink" title="大体积镜像文件"></a>大体积镜像文件</h3><p>大模型文件体积巨大（数十 GB 到 TB 级），集中式拉取（从 Registry 或 NFS）会在冷启动时造成严重带宽瓶颈。</p>
+<h3 id="场景以及问题"><a href="#场景以及问题" class="headerlink" title="场景以及问题"></a>场景以及问题</h3><ol>
+<li><p>大规模下载问题<br>如果同时大量机器需要拉取同一个模型文件，打向同一镜像源，请求压力和时延压力↑。</p>
+</li>
+<li><p>远距离传输问题<br>主要跨地域跨国际的传输，国际网络延时高且不稳定</p>
+</li>
+<li><p>带宽成本问题</p>
+</li>
+<li><p>安全传输问题</p>
+</li>
+</ol>
+<p>解决的问题：镜像源的带宽瓶颈</p>
+<p>解决的方案：</p>
+<ol>
+<li>提高带宽上限-&gt;网络硬件升级、CDN 加速</li>
+<li>尽量少的加载资源-&gt;镜像瘦身、懒加载、按需加载</li>
+<li>利用集群内节点闲置带宽-&gt;P2P 分发</li>
+</ol>
+<h3 id="P2P-优势"><a href="#P2P-优势" class="headerlink" title="P2P 优势"></a>P2P 优势</h3><p>P2P 模式不再把所有的下载压力丢给服务器，服务器只负责传递文件元数据，真正的文件下载连接建立在客户机与客户机之间。同时一个文件可以被分片为多个块，同一个文件中不同的块可以在不同的客户机之上下载，使得下载文件在 P2P 网络中动态流通。</p>
 <h2 id="典型方案"><a href="#典型方案" class="headerlink" title="典型方案"></a>典型方案</h2><!-- - **Dragonfly（阿里 + CNCF）**：P2P 文件/镜像分发，支持懒加载（Nydus）；
 - **Kraken（Uber）**：专为容器镜像分发设计的 P2P 系统；
 - **自研 Tracker + Peer 模式**：节点先下载部分 chunk，同时向其他节点提供已有 chunk。
@@ -707,12 +725,93 @@
 <h3 id="Dragonfly"><a href="#Dragonfly" class="headerlink" title="Dragonfly"></a>Dragonfly</h3><blockquote>
 <p>提供高效、稳定和安全的数据分发和加速，基于P2P技术，并配备可选的内容可寻址文件系统，加速OCI容器启动。它由云原生计算基金会(CNCF)作为毕业项目托管。</p>
 </blockquote>
-<h3 id="核心机制"><a href="#核心机制" class="headerlink" title="核心机制"></a>核心机制</h3><ol>
-<li><strong>Chunk 切分</strong>：大文件按固定大小切分（如 4MB），每个 chunk 独立传输；</li>
-<li><strong>Tracker</strong>：维护 chunk 的分布图（哪个节点有哪些 chunk）；</li>
-<li><strong>Peer 交换</strong>：节点边下载边上传，热数据自动扩散，冷启动时间随节点数增加而缩短；</li>
-<li><strong>种子节点（Seed）</strong>：Registry 或 NFS 作为初始 Seeder，保证数据可达性。</li>
+<p>Dragonfly 结合 C&#x2F;S 架构与 P2P 架构的优点。它提供面向客户的 C&#x2F;S 架构下载模式。同时它也提供面向服务器集群的 P2P 回源模式，与传统 P2P 不同的是，对等网络建立在 Scheduler 内部，目标是最大化 P2P 内部下载效率。<br>Dragonfly 针对的是大规模文件，但不是专门为模型文件设计的。Dragonfly 与容器技术兼容。<br><img src="/model-P2P/core.png"><br>Dragonfly services可以分为四类：</p>
+<ol>
+<li>Manager： 管理集群之间的关系，提供动态配置管理和数据收集能力。并为用户提供可视化前端操作集群<ul>
+<li>对于维护集群整体稳定性 Manager 和各个服务保持 Keepalive 保证能够在实例异常情况下将异常实例进行剔除。</li>
+<li>动态配置管理可以在 Manager 上面操作各个组件的控制单元，比如控制 Peer 和 Seed Peer 的负载数，Scheduler 调度 Parent 的个数等</li>
+</ul>
+</li>
+<li>Scheduler： 为每个下载的Peer节点选择最佳的父节点，必要时触发Seed Peer节点或Peer节点直接从源下载。<ul>
+<li>Scheduler 的核心就是选取一组最优 Parent 节点供当前下载 Peer 进行下载。Scheduler 面向 Task，一次 Task 就是一次完整的下载任务，在 Scheduler 中存储 Task 信息和相应 P2P 下载网络的 DAG。</li>
+<li>调度过程是首先过滤异常 Parent 节点，根据多维度进行过滤，比如判断该 Peer 是否是 BadNode，判断逻辑为假设每个节点的响应时长都遵循正态分布，若一个节点目前的响应时长处于 6σ 范围之外，那么认为该节点是 BadNode，剔除该节点。再根据历史下载特征值对剩余待定 Parent 节点进行打分，返回一组分数最高的 Parent 提供给当前 Peer 进行下载。</li>
+</ul>
+</li>
+<li>Seed Peer： 在P2P网络中作为根节点，提供上传和下载能力，可以被Scheduler主动触发，从源下载数据并提供给其他Peer节点。</li>
+<li>Peer： 作为P2P网络中的节点，提供上传和下载能力。<ul>
+<li>Peer 和 Seed Peer 的关系不是固定的，一个 Peer 可以通过回源使自己成为 Seed Peer，Seed Peer 也可以改动运行状态变为 Peer，Scheduler 会动态地对相应 DAG 进行改动。</li>
+<li>Seed Peer 和 Peer 都需要参与调度下载过程当中，Scheduler 可能会选取 Seed Peer 或者 Peer 作为父节点向其他 Peer 提供下载功能。</li>
+</ul>
+</li>
 </ol>
+<p><img src="/./model-P2P/dragonfly-arch.png" alt="dragonfly-arch"></p>
+<p>Dragonfly的规模，假设有10000个机器的场景：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>K8s 部署方式</th>
+<th>部署位置</th>
+<th>每台机器几个？</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Manager</strong></td>
+<td>Deployment</td>
+<td>独立的管理节点</td>
+<td>通常独占或与 Scheduler 共存</td>
+</tr>
+<tr>
+<td><strong>Scheduler</strong></td>
+<td>Deployment</td>
+<td>独立的调度节点</td>
+<td>通常独占</td>
+</tr>
+<tr>
+<td><strong>Seed Peer</strong></td>
+<td>StatefulSet &#x2F; 独立节点</td>
+<td>高带宽高存储的专用节点</td>
+<td>独占，需要大磁盘和大带宽</td>
+</tr>
+<tr>
+<td><strong>Peer (dfdaemon)</strong></td>
+<td><strong>DaemonSet</strong></td>
+<td><strong>每个工作节点</strong></td>
+<td><strong>每台机器恰好 1 个</strong></td>
+</tr>
+</tbody></table>
+<p>ps. Seed Peer 和 Peer 底层用的是同一个二进制（dfdaemon），只是运行模式不同。<br>10000台机器可以分布在2~4个机房</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">                    ┌─────────────────────┐</span><br><span class="line">                    │   Manager (全局)     │</span><br><span class="line">                    │   2~3 副本 (HA)      │</span><br><span class="line">                    └──────────┬──────────┘</span><br><span class="line">                               │ 管理多个 P2P 集群</span><br><span class="line">            ┌──────────────────┼──────────────────┐</span><br><span class="line">            ▼                  ▼                  ▼</span><br><span class="line">   ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐</span><br><span class="line">   │  P2P 集群 A      │ │  P2P 集群 B      │ │  P2P 集群 C    │</span><br><span class="line">   │  (机房/AZ-1)     │ │  (机房/AZ-2)     │ │  (机房/AZ-3)   │</span><br><span class="line">   │  ~3,500 台机器   │ │  ~3,500 台机器   │ │  ~3,000 台机器  │</span><br><span class="line">   └─────────────────┘ └─────────────────┘ └─────────────────┘</span><br><span class="line">单个 P2P 集群内部:</span><br><span class="line">    ┌─────────────────────────────────────────────────────┐</span><br><span class="line">    │                  P2P 集群 A（机房 1）                 │</span><br><span class="line">    │                                                     │</span><br><span class="line">    │   ┌───────────┐  ┌───────────┐  ┌───────────┐      │</span><br><span class="line">    │   │Scheduler 1│  │Scheduler 2│  │Scheduler 3│      │</span><br><span class="line">    │   │  (4C 8G)  │  │  (4C 8G)  │  │  (4C 8G)  │      │</span><br><span class="line">    │   └─────┬─────┘  └─────┬─────┘  └─────┬─────┘      │</span><br><span class="line">    │         └───────────────┼───────────────┘            │</span><br><span class="line">    │                         │ 调度指令                    │</span><br><span class="line">    │   ┌──────────┐  ┌──────────┐  ┌──────────┐          │</span><br><span class="line">    │   │Seed Peer1│  │Seed Peer2│  │Seed Peer3│          │</span><br><span class="line">    │   │SSD+10Gbps│  │SSD+10Gbps│  │SSD+10Gbps│          │</span><br><span class="line">    │   └────┬─────┘  └────┬─────┘  └────┬─────┘          │</span><br><span class="line">    │        └──────────────┼──────────────┘               │</span><br><span class="line">    │                       │ P2P 数据流                    │</span><br><span class="line">    │   ┌──────┐┌──────┐┌──────┐┌──────┐     ┌──────┐    │</span><br><span class="line">    │   │Peer 1││Peer 2││Peer 3││Peer 4│ ... │Peer  │    │</span><br><span class="line">    │   │Worker││Worker││Worker││Worker│     │ 3500 │    │</span><br><span class="line">    │   │Node 1││Node 2││Node 3││Node 4│     │      │    │</span><br><span class="line">    │   └──────┘└──────┘└──────┘└──────┘     └──────┘    │</span><br><span class="line">    │   ← ← ← ← ← 3,500 台工作节点 → → → → →            │</span><br><span class="line">    └─────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<p>一台机器上可以有多个组件吗？<br><img src="/model-P2P/table.png"></p>
+<p>Dragonfly 工作流：<br>当一个 K8s 节点需要拉取镜像时，Dragonfly 通过 P2P 帮它拿到数据的流程如下：</p>
+<ol>
+<li>发起请求：Node A的容器运行时需要拉取一个image，镜像请求被Node A本地的Peer&#x2F;Proxy拦截。也就是容器引擎以为自己在请求仓库，其实请求的是本机的代理。</li>
+<li>注册任务：Node A的本机Peer收到请求后，如果本地已经缓存了所需片段则直接组装并返回文件，否则向云端的Scheduler查询网络中是否有该image。</li>
+<li>触发回源：云端的Scheduler如果发现网络中没有该image，就会触发Seed Peer从源仓库下载image，并将任务分割为若干份（？怎么分也是一个工作）。</li>
+<li>调度分配：云端的Scheduler统筹全局后，告诉Node A的Peer可以从哪些Peer节点下载image。</li>
+<li>P2P下载：Node A的Peer从其他Peer节点下载image片段，下载完成后，Node A的容器引擎就可以使用这个image了。<br><img src="/./model-P2P/workflow.png" alt="workflow"></li>
+</ol>
+<p>使用教程: <a target="_blank" rel="noopener" href="https://d7y.io/docs/next/getting-started/quick-start/kubernetes/">Dragonfly 文档</a></p>
+<h3 id="Nydus"><a href="#Nydus" class="headerlink" title="Nydus"></a>Nydus</h3><p>Nydus是dragonfly的子项目。Nydus 主要职责是镜像的去重、压缩，并且在镜像启动、运行过程当中进行按需加载，可以将端到端的启动速度从分钟级提升到秒级。<br><img src="/model-P2P/Nydus.png" alt="Nydus"></p>
+<p>传统 OCI 容器镜像（比如我们常用的 Docker 镜像）在启动前，必须要把整个镜像所有层的 tar.gz 包全部下载到本地并解压后，容器才能启动。但这其中通常有 60% 以上的文件在容器生命周期内根本不会被访问到，这造成了极大的网络带宽和启动时间的浪费。</p>
+<p>Nydus 实现“懒加载（Lazy Loading）”的具体机制如下：</p>
+<ol>
+<li>镜像格式转换：分离与分块<br>在构建 Nydus 镜像时，Nydus 会将传统的镜像层转换为两种不同的组件（就是图中中间蓝色框里的两部分）：<ul>
+<li>Nydus Bootstrap（元数据）： 它包含了整个文件系统的“目录树”。你可以把它想象成一本书的目录，里面记录了所有的文件名、目录结构、权限信息，以及这个文件的真实数据存放在哪个“页码”（即对应的 Blob 里的位置）。Bootstrap 文件通常非常小（几 MB）。</li>
+<li>Nydus Blob（数据块）： 文件的真实内容被切分成固定大小的数据块（Chunks），打包存储在 Blob 文件中。</li>
+</ul>
+</li>
+<li>容器启动阶段：秒级“假装”就绪<br>当 Kubernetes（K8S Pod）需要拉取并启动容器时，Nydus 只下载极小的 Bootstrap（元数据）文件 到本地。</li>
+</ol>
+<p>因为 Bootstrap 很小，下载通常在毫秒级或秒级完成。<br>下载完成后，Nydus 立即向 K8S 报告“镜像已拉取完毕”。容器随之瞬间启动。<br>此时，在容器内部看来，所有的文件和目录似乎都已经存在了（因为目录树构建好了），但实际上文件内容（Blob）依然远在图右侧的 Remote Storage（Registry &#x2F; OSS） 中。<br>3. 运行阶段：按需加载（On-Demand Read）<br>真正的“懒加载”发生在容器内部的进程开始运行并尝试读取文件的瞬间：</p>
+<p>拦截读取请求： 当容器内应用试图打开并读取某个文件（比如 Python 脚本或 .so 动态库）时，由于实际数据不在本地，这个 I&#x2F;O 请求会被图表左侧的 FUSE（用户态文件系统）、EROFS 或 VirtioFS 模块拦截。<br>查询元数据： 拦截下的请求会转发给运行在宿主机上的 Nydus 守护进程（nydusd）。nydusd 查找之前下载好的 Bootstrap 目录树，精确定位到该文件数据对应的 Blob 块索引。<br>远程精准拉取： nydusd 发起 HTTP Range 请求，跨过网络去 Remote Storage 里，只下载被请求的那个特定数据块，而不是整个文件，更不是整个镜像。<br>返回给容器并缓存： 下载回来的数据块一方面返回给容器让应用继续执行，另一方面会被缓存在宿主机本地。下一次读取这块数据时，直接从本地缓存读取，速度与本地文件系统无异。</p>
+<h3 id="Kraken"><a href="#Kraken" class="headerlink" title="Kraken"></a>Kraken</h3><p>Kraken 是 Uber 开源的一个专为容器镜像分发设计的 P2P 系统。它的设计目标是优化大规模容器镜像分发，特别是在跨地域和跨云环境中。Kraken 通过分布式哈希表（DHT）和分块传输机制，实现了高效的 P2P 镜像分发。Kraken 的核心组件包括 Tracker（跟踪器）、Peer（节点）和 Seed（种子节点）。Tracker 负责维护镜像块的分布信息，Peer 负责下载和上传镜像块，Seed 作为初始数据源提供完整的镜像。Kraken 还支持镜像的增量更新和版本控制。<br><img src="/model-P2P/Kraken.png"></p>
+<h2 id="机制对比"><a href="#机制对比" class="headerlink" title="机制对比"></a>机制对比</h2><blockquote>
+<p>Kraken &#x3D;&#x3D; &gt; 提高数据中心的吞吐量<br>Dragonfly + Nydus &#x3D;&#x3D; &gt; 提高容器启动速度<br>Uber Kraken纯粹的网络传输加速器（P2P Registry）<br>定位：一个支持 P2P 的 Docker Registry 分发层。<br>痛点：解决标准 Docker 镜像在几千甚至上万台机器并发拉取时，Registry（如 Harbor&#x2F;Docker Hub）被打挂、网络带宽跑满的问题。<br>局限：Kraken 在文档的 Limitations 中明确承认：“切换到 Kraken 并不会神奇地加速你的 docker pull，因为 docker pull 大部分时间花在了解压数据上。” 也就是说，Kraken 仍然需要把整个镜像层下载完、解压完，容器才能启动。</p>
+</blockquote>
+<p>Dragonfly + Nydus：端到端的容器启动加速方案（P2P + 按需加载）<br>定位：网络传输加速 (Dragonfly) + 镜像运行时加速 (Nydus)。<br>痛点：不仅解决网络分发拥堵，还要解决**“镜像太大导致容器启动慢”**的根本问题。<br>优势：Nydus 彻底改变了镜像格式（元数据与数据分离）。容器启动时只需极小的元数据，瞬间即可启动（Lazy Pulling），实际读取文件时，再通过 Dragonfly P2P 网络按需拉取数据块。<br><strong>Kraken 的工作流</strong>：<br>Containerd&#x2F;Docker -&gt; 发起 Pull 请求 -&gt; 本机的 Kraken Agent -&gt; Kraken P2P 网络下载完整 Layer -&gt; 返回给 Containerd -&gt; 全量解压 -&gt; 启动容器。</p>
+<p><strong>Dragonfly + Nydus 的工作流</strong>：<br>Containerd -&gt; 发现是 Nydus 镜像 -&gt; 挂载 Nydus Snapshotter 瞬间启动容器 -&gt; 容器内部进程读取某个文件 -&gt; 触发缺页中断 -&gt; Nydus 守护进程向 本机的 Dragonfly Peer 请求对应的数据块 -&gt; Dragonfly P2P 网络拉取该块 -&gt; 返回给应用。</p>
+<p><img src="/model-P2P/dragonfly+Nydus.png" alt="Dragonfly+Nydus"></p>
 <h3 id="与模型推理冷启动的关系"><a href="#与模型推理冷启动的关系" class="headerlink" title="与模型推理冷启动的关系"></a>与模型推理冷启动的关系</h3><ul>
 <li>减少首个推理请求的等待时间（模型加载延迟）；</li>
 <li>配合懒加载（EROFS + Nydus），可做到按需拉取，不必全量下载再启动；</li>
@@ -723,9 +822,12 @@
 <li>Chunk 大小如何权衡（太小：元数据开销大；太大：并行度低）？</li>
 <li>如何保证 P2P 分发的数据完整性（哈希校验）？</li>
 <li>Dragonfly 与 Kraken 的架构差异是什么？</li>
+<li>(我的问题)Nydus怎么切分镜像层？</li>
 </ul>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://d7y.io/">Dragonfly 官方</a></li>
+<li><a target="_blank" rel="noopener" href="https://d7y.io/docs/next/">Dragonfly 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/50401744">深度解读Dragonfly</a></li>
 </ul>
 
   </article>
@@ -736,6 +838,18 @@
     gap-2 text-[var(--c-50)]
   ">
     <div>
+      
+        <a href="/2026/04/17/ruflo-architecture-notes/"
+          class="
+            transition-all
+            flex justify-center
+            hover:-translate-x-1
+            hover:text-[var(--c-80)]
+          ">
+          <iconify-icon width="20" icon="mingcute:left-fill" data-inline="false">
+          </iconify-icon>
+          Ruflo 架构学习笔记
+        </a>
       
     </div>
     <div>
