@@ -735,8 +735,8 @@
 </div>
 <script>
 function switchLang(lang) {
-  document.querySelectorAll('.lang-py').forEach(el => el.style.display = lang==='py'?'':'none');
-  document.querySelectorAll('.lang-go').forEach(el => el.style.display = lang==='go'?'':'none');
+  document.querySelectorAll('.lang-py').forEach(el => el.style.display = lang==='py'?'block':'none');
+  document.querySelectorAll('.lang-go').forEach(el => el.style.display = lang==='go'?'block':'none');
   document.querySelectorAll('.lang-btn').forEach((btn,i) => btn.classList.toggle('active', (lang==='py'&&i===0)||(lang==='go'&&i===1)));
 }
 </script>
