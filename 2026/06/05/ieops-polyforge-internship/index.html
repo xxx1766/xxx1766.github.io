@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>我的 ieops × polyforge 之旅 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./career" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:briefcase-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Career</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./career" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:briefcase-fill" width="22">
+      </iconify-icon>
+      <p>
+        Career
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">我的 ieops × polyforge 之旅</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-06-05</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-06-05</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>2.7k words, 10 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Career/">Career</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/internship/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        internship
+      </a>
+    
+      <a href="/tags/QA-Infra/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        QA-Infra
+      </a>
+    
+      <a href="/tags/AI/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        AI
+      </a>
+    
+      <a href="/tags/DevOps/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        DevOps
+      </a>
+    
+      <a href="/tags/E2E/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        E2E
+      </a>
+    
+      <a href="/tags/CI-CD/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        CI/CD
+      </a>
+    
+      <a href="/tags/Kubernetes/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        Kubernetes
+      </a>
+    
+      <a href="/tags/GPU-Scheduling/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        GPU-Scheduling
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <blockquote>
+<p><strong>2026 年 4 月 – 6 月</strong> · AnneXu2026 · <code>anne.x@gmicloud.ai</code><br>平台质量工程 (QA-Infra) + AI 研发平台 &#x2F; DX</p>
+</blockquote>
+<p>这段时间，我横跨两个生态做同一件事——<strong>把脆弱、隐式、不可信的系统，变成可声明、可门禁、可交接的体系。</strong> 在全球 GPU 调度平台 <code>ieops-v2</code>，我把 E2E 测试重构成可复用的声明式契约、把结构性永红的 CI 修成可信门禁、并按审计严重度逐条加固分布式深水区的缺陷；在 AI 研发平台 <code>polyforge</code>，我补齐了让 agent 自主驱动研发生命周期的架构地基——单一事实源、执行可观测、权限边界与入职体系。两条线由一个共享的场景契约 <code>.scenario.md</code> 连接。</p>
+<hr>
+<h2 id="代码足迹"><a href="#代码足迹" class="headerlink" title="代码足迹"></a>代码足迹</h2><p>以合入主干计（已去 PR squash 重复）。69 次提交，净增 5,072 行，散布在四个仓库、约 35 万行代码的海洋里。</p>
+<table>
+<thead>
+<tr>
+<th>仓库</th>
+<th>提交</th>
+<th>+ 新增</th>
+<th>− 删除</th>
+<th>净增</th>
+<th>文件</th>
+<th>仓库总量(行&#x2F;文件)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ieops-v2</strong></td>
+<td>32</td>
+<td>7,009</td>
+<td>4,814</td>
+<td>+2,195</td>
+<td>94</td>
+<td>175,978 &#x2F; 987</td>
+</tr>
+<tr>
+<td><strong>marketplace</strong></td>
+<td>21</td>
+<td>1,454</td>
+<td>391</td>
+<td>+1,063</td>
+<td>34</td>
+<td>103,749 &#x2F; 543</td>
+</tr>
+<tr>
+<td><strong>aihub</strong></td>
+<td>9</td>
+<td>1,260</td>
+<td>115</td>
+<td>+1,145</td>
+<td>11</td>
+<td>69,264 &#x2F; 338</td>
+</tr>
+<tr>
+<td><strong>polyforge-coding</strong></td>
+<td>7</td>
+<td>770</td>
+<td>101</td>
+<td>+669</td>
+<td>10</td>
+<td>2,738 &#x2F; 28</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>69</strong></td>
+<td><strong>10,493</strong></td>
+<td><strong>5,421</strong></td>
+<td><strong>+5,072</strong></td>
+<td><strong>149</strong></td>
+<td><strong>351,729 &#x2F; 1,896</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="仓库关系：用”工厂”造”产品”"><a href="#仓库关系：用”工厂”造”产品”" class="headerlink" title="仓库关系：用”工厂”造”产品”"></a>仓库关系：用”工厂”造”产品”</h2><p>我触达的 4 个仓库分属两个生态，由一个共享的”场景仓” <code>polyforge-coding</code> 桥接。</p>
+<h3 id="生态一：polyforge-——-AI-原生研发平台（”工厂”）"><a href="#生态一：polyforge-——-AI-原生研发平台（”工厂”）" class="headerlink" title="生态一：polyforge —— AI 原生研发平台（”工厂”）"></a>生态一：polyforge —— AI 原生研发平台（”工厂”）</h3><p>经典三层分工：服务端 &#x2F; 客户端运行时 &#x2F; 内容。</p>
+<ul>
+<li><strong>aihub</strong>（Go + PostgreSQL 服务端）：work item &#x2F; 记忆 &#x2F; MCP &#x3D; <strong>唯一事实源</strong>。用 <code>scenario_ref</code> 把 wi SHA-pin 到场景仓某次提交。</li>
+<li><strong>marketplace</strong>（Claude Code 插件市场）：托管 polyforge 插件（<code>/pf-*</code> skills、hooks、statusline）&#x3D; <strong>agent 客户端运行时</strong>。</li>
+<li><strong>polyforge-coding</strong>（场景仓）：agent 执行的”程序”，同时是<strong>两个项目</strong>的 scenario 仓。我的 E2E + <code>await_ci</code> 契约就住在这里，被两个生态复用。</li>
+</ul>
+<h3 id="生态二：ieops-——-被开发的产品（”流水线上的产品”）"><a href="#生态二：ieops-——-被开发的产品（”流水线上的产品”）" class="headerlink" title="生态二：ieops —— 被开发的产品（”流水线上的产品”）"></a>生态二：ieops —— 被开发的产品（”流水线上的产品”）</h3><ul>
+<li><strong>ieops-v2</strong>（K8s-native 全球 GPU 智能调度与推理平台）：CRD + controller-runtime，10 个独立服务进程。我在这里做 E2E 体系 &#x2F; CI 绿化 &#x2F; 后端健壮性与审计整改。</li>
+</ul>
+<p>配套仓库：ieops-karmada、ieops-titan、ieops-utils、ieops-kube、ieops-clouds、ieops-doc、proxy-server</p>
+<hr>
+<h2 id="两条工作主线"><a href="#两条工作主线" class="headerlink" title="两条工作主线"></a>两条工作主线</h2><p>同一套”声明式场景即契约”的思想，在两个平台上各自落地，最终交汇。</p>
+<h3 id="主线一-·-全球-GPU-调度平台的可信交付防线"><a href="#主线一-·-全球-GPU-调度平台的可信交付防线" class="headerlink" title="主线一 · 全球 GPU 调度平台的可信交付防线"></a>主线一 · 全球 GPU 调度平台的可信交付防线</h3><p><strong>ieops-v2</strong> · 质量保障 + 分布式健壮性</p>
+<p><strong>为什么做：</strong> GPU 跨集群调度的致命 bug 潜伏在 K8s 声明式 API + 分布式时序里，code review 抓不到——必须有真实环境 E2E 才能暴露；但旧 E2E 硬编码、CI 结构性永红，门禁立不起来。</p>
+<ul>
+<li>测试从代码降维成声明式契约；映射反转 <code>O(files×scenarios)→O(services)</code></li>
+<li>修结构性永红 CI：区分”解析期崩溃 vs 测试失败”</li>
+<li>按审计严重度逐条加固：agent panic-safety、部署阻断、Draining 状态合并正确性</li>
+<li>反向捞出 finalizer 竞争泄漏 &#x2F; condition.reason 正则 &#x2F; gpunode CRD 腐烂</li>
+</ul>
+<h3 id="主线二-·-让-AI-agent-自主驱动研发生命周期"><a href="#主线二-·-让-AI-agent-自主驱动研发生命周期" class="headerlink" title="主线二 · 让 AI agent 自主驱动研发生命周期"></a>主线二 · 让 AI agent 自主驱动研发生命周期</h3><p><strong>polyforge</strong> (aihub · marketplace · polyforge-coding)</p>
+<p><strong>为什么做：</strong> agent 要自主跑 wi 全生命周期，但当时架构有”双事实源”（服务端 graph vs scenario .md）必然漂移、执行黑盒不可观测、门禁错误耦合到可选的 branch-protection。</p>
+<ul>
+<li>单一事实源坍缩：<code>DROP</code> 服务端 step graph，scenario .md (SHA-pin) 成唯一 SoT</li>
+<li>status-only 上报，让黑盒执行可观测</li>
+<li>门禁解耦到显式 check 白名单，不依赖可选配置</li>
+<li>agent 自治有界：不抢 merge、不抢资源、不盲目 auto-fix</li>
+</ul>
+<hr>
+<h2 id="五类工作-·-按含金量排序"><a href="#五类工作-·-按含金量排序" class="headerlink" title="五类工作 · 按含金量排序"></a>五类工作 · 按含金量排序</h2><p>维度：技术深度 × 影响范围 × 是否建体系&#x2F;可复用 × 是否触核心。🏁 标为收尾可交接。</p>
+<h3 id="🥇-ieops-v2-E2E-测试体系建设与契约工程化"><a href="#🥇-ieops-v2-E2E-测试体系建设与契约工程化" class="headerlink" title="🥇 ieops-v2 E2E 测试体系建设与契约工程化"></a>🥇 ieops-v2 E2E 测试体系建设与契约工程化</h3><p>把测试降维成声明式契约，三层正交解耦、跨仓复用，并反向捞出多个分布式潜伏 bug；最后做成 validator + CI 门 + 模板 + scaffold 的<strong>机器自强制、可交接</strong>体系（#54&#x2F;#56）。</p>
+<ul>
+<li>✅ 建体系 &#x2F; 可复用</li>
+<li>✅ 跨仓打通</li>
+<li>🏁 收尾可交接</li>
+<li>⚠️ E2E 执行本身仍未进 CI</li>
+</ul>
+<h3 id="🥈-ieops-v2-后端健壮性加固与审计整改"><a href="#🥈-ieops-v2-后端健壮性加固与审计整改" class="headerlink" title="🥈 ieops-v2 后端健壮性加固与审计整改"></a>🥈 ieops-v2 后端健壮性加固与审计整改</h3><p>系统性按审计严重度整改（最后阶段 #13&#x2F;#25&#x2F;#29 逐条收口）：agent watch 循环 panic-safety、每个 Helm-default 部署启动即失败的部署阻断缺陷、Draining 状态合并正确性、finalizer 竞争泄漏、CRD 退役——触近核心、高影响。</p>
+<ul>
+<li>✅ 命中崩溃 &#x2F; 部署阻断 &#x2F; 状态正确性</li>
+<li>✅ 每项补回归测试</li>
+<li>🏁 收尾可交接</li>
+<li>⚠️ 未触核心调度算法</li>
+</ul>
+<h3 id="🥉-ieops-v2-CI-CD-工程化与绿化"><a href="#🥉-ieops-v2-CI-CD-工程化与绿化" class="headerlink" title="🥉 ieops-v2 CI&#x2F;CD 工程化与绿化"></a>🥉 ieops-v2 CI&#x2F;CD 工程化与绿化</h3><p>定位 GHA context 求值时序、required-check 与 on.paths 死锁等结构性永红；brslet SA5011 欠债以一条 config 级规则解套（含一次自我 revert 的工程判断，#53）。</p>
+<ul>
+<li>✅ 解析期崩溃 vs 测试失败</li>
+<li>✅ 外科手术式规则</li>
+<li>🏁 收尾可交接</li>
+<li>⚠️ 救火式修复偏多</li>
+</ul>
+<h3 id="4️⃣-polyforge-插件生态-agent-执行可观测性"><a href="#4️⃣-polyforge-插件生态-agent-执行可观测性" class="headerlink" title="4️⃣ polyforge 插件生态 + agent 执行可观测性"></a>4️⃣ polyforge 插件生态 + agent 执行可观测性</h3><p>单 SoT 坍缩、status-only 上报、把”全白 chain”准确定性为渲染生命周期 bug（而非数据 bug），用 refreshInterval 修复。</p>
+<ul>
+<li>✅ 端到端覆盖插件全栈</li>
+<li>⚠️ 改动碎、小 PR 多</li>
+</ul>
+<h3 id="5️⃣-polyforge-CLI-init-与入职体系"><a href="#5️⃣-polyforge-CLI-init-与入职体系" class="headerlink" title="5️⃣ polyforge CLI&#x2F;init 与入职体系"></a>5️⃣ polyforge CLI&#x2F;init 与入职体系</h3><p>可见≠授权的安全门控（callerHasRole）；结构化 per-repo 描述作为 AI 机读 repo map + staleness 刷新闭环；新人入职指南。</p>
+<ul>
+<li>✅ 安全 + DX 双修</li>
+<li>⚠️ 权限逻辑反复打补丁</li>
+</ul>
+<hr>
+<h2 id="重要-Bug-档案"><a href="#重要-Bug-档案" class="headerlink" title="重要 Bug 档案"></a>重要 Bug 档案</h2><p>挑出印象最深的几个——多数不在业务逻辑表面，而潜伏在分布式时序、K8s API 约束、CI 求值时序、渲染生命周期里。</p>
+<h3 id="🔴-CI-永久卡死-·-secrets-context-not-in-if"><a href="#🔴-CI-永久卡死-·-secrets-context-not-in-if" class="headerlink" title="🔴 CI 永久卡死 · secrets context not in if"></a>🔴 CI 永久卡死 · secrets context not in if</h3><p><strong>类型：</strong> Critical · ieops-v2</p>
+<p><strong>发现：</strong> 自 PR #185 起每次触发都生成一个 <code>conclusion=failure</code> 且 jobs 为空的 run，无法 re-run，test&#x2F;lint&#x2F;test-e2e 三个必需检查永久红、PR 根本无法合并。根因：<code>secrets</code> context 在 <code>if:</code> 条件中不可用，workflow 在解析期就崩溃（而非运行期失败）。</p>
+<p><strong>处理：</strong> 把 secret 映射进 step 的 <code>env:</code>（那里可求值），判空逻辑挪进 <code>run:</code> shell；保留合法的 <code>needs.*</code> 在 <code>if:</code> 中。</p>
+<blockquote>
+<p><code>14279fe</code> · ieops#42 区</p>
+</blockquote>
+<hr>
+<h3 id="🔴-每个-Helm-default-部署启动即失败-·-gpunode"><a href="#🔴-每个-Helm-default-部署启动即失败-·-gpunode" class="headerlink" title="🔴 每个 Helm-default 部署启动即失败 · gpunode"></a>🔴 每个 Helm-default 部署启动即失败 · gpunode</h3><p><strong>类型：</strong> Critical · ieops-v2</p>
+<p><strong>发现：</strong> 审计 C1&#x2F;H8——<code>newGPUDataSource()</code> 的 switch 从不处理 <code>&quot;gpunode&quot;</code>，但 <code>DefaultGPUDataSource</code> 与所有 Helm bff values 默认全是 gpunode，于是每个用 Helm 默认值的 BFF 一启动就走 error 分支挂掉。根因：GPUNode CRD 已在 IEBE-1546 删除、状态迁到 VNode，默认配置没跟上。</p>
+<p><strong>处理：</strong> 标准化到 <code>vnode</code>、退役 gpunode：改 <code>business.go</code> 默认值 + 3 份 values.yaml + flag help，并加”gpunode 现在显式报错”的回归测试。</p>
+<blockquote>
+<p><code>659c8ab</code> · ieops#13</p>
+</blockquote>
+<hr>
+<h3 id="🟠-故障恢复控制环静默瘫痪-·-condition-reason-正则"><a href="#🟠-故障恢复控制环静默瘫痪-·-condition-reason-正则" class="headerlink" title="🟠 故障恢复控制环静默瘫痪 · condition.reason 正则"></a>🟠 故障恢复控制环静默瘫痪 · condition.reason 正则</h3><p><strong>类型：</strong> High · ieops-v2</p>
+<p><strong>发现：</strong> 由 E2E full-suite scenario 04 跑出来——MD 永远卡在 <code>Deploying</code>、<code>RetryExhausted</code> 状态机永不触发。根因：CRD 给 <code>Condition.reason</code> 的正则不允许 <code>.</code>，而 VK node 名永远含 <code>.</code>；旧代码拼 reason 时只把 <code>-</code> 换成 <code>_</code>、漏了 <code>.</code>，导致每次 status patch 都被 API server 拒。</p>
+<p><strong>处理：</strong> 抽 <code>sanitizeNodeID</code>，用 <code>strings.NewReplacer</code> 同时替换 <code>- / .</code>；加 <code>TestProviderFailedReasonMatchesCRDRegex</code> 正则回归。</p>
+<blockquote>
+<p><code>8a54953</code> · IEBE-1607</p>
+</blockquote>
+<hr>
+<h3 id="🟠-孤儿资源泄漏-·-finalizer-时序竞争"><a href="#🟠-孤儿资源泄漏-·-finalizer-时序竞争" class="headerlink" title="🟠 孤儿资源泄漏 · finalizer 时序竞争"></a>🟠 孤儿资源泄漏 · finalizer 时序竞争</h3><p><strong>类型：</strong> High · ieops-v2</p>
+<p><strong>发现：</strong> ScaleDown 时 vk-node 的 Deployment + NodePort Service + K8s Node 三者泄漏成孤儿，<code>DeleteDeployment(&quot;&quot;)</code> 报 “resource name may not be empty”。根因：MD finalizer 先于 NodeAutoscaler 删了 sub-cluster Node 对象，<code>extractProvisionedInfo</code> 早退、拿不到编码在 Node 名里的 groupID，删除目标名留空。</p>
+<p><strong>处理：</strong> 利用命名约定里已有的冗余——直接从 <code>nodeName</code> 的 <code>.</code> 后缀解析出 groupID 做无状态恢复，让既有删除逻辑照常工作（不依赖任何外部存储）。</p>
+<blockquote>
+<p><code>e2ca94e</code> · IEBE-1617</p>
+</blockquote>
+<hr>
+<h3 id="🟠-agent-watch-循环崩溃-·-MustParse-panic"><a href="#🟠-agent-watch-循环崩溃-·-MustParse-panic" class="headerlink" title="🟠 agent watch 循环崩溃 · MustParse panic"></a>🟠 agent watch 循环崩溃 · MustParse panic</h3><p><strong>类型：</strong> High · ieops-v2</p>
+<p><strong>发现：</strong> 审计 H1——畸形&#x2F;恶意 NetworkVolume 的 <code>spec.size</code> 会让 <code>resource.MustParse</code> panic，直接打挂整个 agent watch 循环（createPV&#x2F;createPVC）。</p>
+<p><strong>处理：</strong> 换成 <code>parseVolumeSize</code>（<code>ParseQuantity</code>）对畸形输入返错不崩；nil sub-cluster client 在四条路径全部加 guard；补错误路径 table test。</p>
+<blockquote>
+<p><code>2f25362</code> · ieops#25</p>
+</blockquote>
+<hr>
+<h3 id="🟠-删除中途被翻回-Running-·-状态合并"><a href="#🟠-删除中途被翻回-Running-·-状态合并" class="headerlink" title="🟠 删除中途被翻回 Running · 状态合并"></a>🟠 删除中途被翻回 Running · 状态合并</h3><p><strong>类型：</strong> High · ieops-v2</p>
+<p><strong>发现：</strong> 审计 H4&#x2F;M1——<code>updateMergedPhase</code> 会把 Running&#x2F;Deploying 盖到正在 teardown 的相位上，draining 中的 mdep 若有瞬时 Ready pod 就被翻回 Running，删除流程错乱。</p>
+<p><strong>处理：</strong> 加 <code>isTeardownModelDeploymentPhase</code> guard（Draining&#x2F;Drained&#x2F;Failed），只在 teardown 相位拦截、正常 Deploying→Running 仍前进；加 Draining-preserved 测试。</p>
+<blockquote>
+<p><code>2f25362</code> · ieops#25</p>
+</blockquote>
+<hr>
+<h3 id="🟡-“全白-chain”-不是数据-bug-·-渲染生命周期"><a href="#🟡-“全白-chain”-不是数据-bug-·-渲染生命周期" class="headerlink" title="🟡 “全白 chain” 不是数据 bug · 渲染生命周期"></a>🟡 “全白 chain” 不是数据 bug · 渲染生命周期</h3><p><strong>类型：</strong> Medium · polyforge</p>
+<p><strong>发现：</strong> statusline 进度链全白冻结，第一反应是数据错——但一查 <code>.chain.json</code> 数据完全正确。根因：Claude Code 只在会话”有消息更新”时才重跑 statusLine；<code>/pf-execute</code> 在后台 subagent 里跑、主会话整段 idle → 零 re-render → 卡在 claim 时刻的快照。是渲染&#x2F;生命周期问题，不是逻辑问题。</p>
+<p><strong>处理：</strong> 给 pf-init 接管写 <code>statusLine.refreshInterval:3</code>（让它在定时器上也重跑），并对旧安装 back-fill——不改任何逻辑。</p>
+<blockquote>
+<p><code>5b7bf16</code> · marketplace</p>
+</blockquote>
+<hr>
+<h3 id="🟡-orphan-chain-json-·-终止事件时序"><a href="#🟡-orphan-chain-json-·-终止事件时序" class="headerlink" title="🟡 orphan chain.json · 终止事件时序"></a>🟡 orphan chain.json · 终止事件时序</h3><p><strong>类型：</strong> Medium · polyforge</p>
+<p><strong>发现：</strong> wi 结束后 chain.json 偶发泄漏成孤儿、清不掉。根因：<code>pf_complete_attempt</code> 在 PostToolUse hook 跑之前就把 state file 删了，hook 的 <code>findActiveState</code> 因此找不到 wi。</p>
+<p><strong>处理：</strong> <code>resolveWiId</code>——终止事件改从 <code>toolInput.work_item_id</code> 直接取 wi，不再依赖已被删除的 state file。</p>
+<blockquote>
+<p><code>c06a9aa</code> · marketplace</p>
+</blockquote>
+<hr>
+<h3 id="🔵-越权克隆-·-可见-≠-授权"><a href="#🔵-越权克隆-·-可见-≠-授权" class="headerlink" title="🔵 越权克隆 · 可见 ≠ 授权"></a>🔵 越权克隆 · 可见 ≠ 授权</h3><p><strong>类型：</strong> Security · aihub</p>
+<p><strong>发现：</strong> <code>polyforge init</code> 会把 caller 根本没有任何 role 的 public-only 项目（如 <code>tether</code>）也自动克隆进工作区。根因：<code>GET /v1/projects</code> 同时返回 public+member+owned，旧 init 只检查 <code>Visible</code> 就克隆——把”在列表里可见”误当成”同意克隆”。</p>
+<p><strong>处理：</strong> 加 <code>callerHasRole</code> 谓词（owner 或 members 命中才克隆），并 thread 进 <code>writeMemberPolyforgeYAML</code>；空 uid 保留 legacy 行为，避免 whoami 失败时静默产空 yaml。</p>
+<blockquote>
+<p><code>96af08f</code> · aihub#129&#x2F;#144</p>
+</blockquote>
+<hr>
+<h2 id="贯穿始终的三条原则"><a href="#贯穿始终的三条原则" class="headerlink" title="贯穿始终的三条原则"></a>贯穿始终的三条原则</h2><p>不是零散任务的堆叠，而是一个统一工程思想在两个领域的落地。</p>
+<ol>
+<li><strong>单一事实源</strong>：凡有第二个会腐烂的同步源（服务端粗 graph、fine→coarse 映射、branch-protection required set、glob→scenario 表、散落的 <code>//nolint</code>），一律砍掉或收成一处。</li>
+<li><strong>解耦语义不同的耦合</strong>：可见 ≠ 授权、绿 ≠ merge、wrap 信号 ≠ merge 强制。</li>
+<li><strong>优雅降级、无静默错误</strong>：畸形 CRD 不 panic 而返错、拒绝静默不可选的场景、CI 红 pause 给人带日志——绝不盲目 auto-fix、绝不静默吞错。</li>
+</ol>
+<hr>
+<blockquote>
+<p><em>“我把调度平台的质量保障从不可维护、不可复用、不可信，重构成可声明、可复用、可门禁、可交接的体系——离开时，系统是干净的。”</em></p>
+</blockquote>
+<p>AnneXu2026 · ieops × polyforge · 2026 年 4 月 – 6 月 · 共 69 次提交合入主干，净增 5,072 行<br>🙏 鸣谢 Mentor · wangxiaokang · hongyijie</p>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/05/31/hello-world/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          Hello World
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
