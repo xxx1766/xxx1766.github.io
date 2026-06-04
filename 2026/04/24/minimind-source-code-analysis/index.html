@@ -599,7 +599,7 @@
             </div>
             <div class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
-              Edited: <time class="w-max">2026-06-03</time>
+              Edited: <time class="w-max">2026-06-04</time>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
@@ -609,7 +609,7 @@
             <!-- Word count -->
             <span class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
-              <span>7k words, 28 min</span>
+              <span>11.4k words, 46 min</span>
             </span>
             <!-- Categories -->
             
@@ -970,11 +970,274 @@
 <li><strong>中频段</strong>：作为过渡区域，根据公式进行加权混合。</li>
 </ul>
 <h4 id="熵理论与温度缩放（Temperature-Scaling）"><a href="#熵理论与温度缩放（Temperature-Scaling）" class="headerlink" title="熵理论与温度缩放（Temperature Scaling）"></a>熵理论与温度缩放（Temperature Scaling）</h4><p>研究发现，当上下文被暴力拉长时，注意力机制（Attention）的分布熵会发生改变，导致 Softmax 后的概率分布变得异常（过尖或过平），使得模型患上“Lost in the Middle”综合征（忘记长文本中间的信息）。</p>
-<p>YaRN 引入了一个**温度系数 $t$（Temperature）**来对点积的模长进行修正：<br>$$Attention (Q,K) &#x3D; Softmax \left( \frac{QK^T}{t \sqrt{d_k}} \right)$$<br>（或者直接将 Embedding 乘以 $1&#x2F;t$）。</p>
+<p>YaRN 引入了一个温度系数 $t$（Temperature）来对点积的模长进行修正：<br>$$Attention (Q,K) &#x3D; Softmax \left( \frac{QK^T}{t \sqrt{d_k}} \right)$$<br>（或者直接将 Embedding 乘以 $1&#x2F;t$）。</p>
 <p>这里的 $t$ 是一个根据扩展倍数s计算出的经验公式（$1&#x2F;t &#x3D; 0.1 \ln(s) + 1$）。通过这种温度缩放操作，它升高了 Attention Logits 的数值，使得注意力分布在超长文本下依然保持尖锐，从而<strong>恢复模型对关键信息的聚焦能力</strong>。</p>
 <h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>Llama 3 基频参数 base 调高到 500,000。<br>Mistral 7B 使用Sliding Window Attention (SWA) 降低计算attention的复杂度。<br>M-RoPE 利用RoPE维度分块独立的特性，将Embedding向量切分为时间、高度、宽度三部分。<br>DeepSeek-V2 引用了MLA（Multi-Head Latent Attention）以极大地压缩KV Cache。然而，MLA采用了低秩压缩（Low-Rank Compression），这导致RoPE无法直接应用于压缩后的Latent Vector（因为旋转会破坏压缩后的语义空间）。解决方案是解耦RoPE（Decoupled RoPE），将Query和Key向量显式地拆分为语义向量和位置向量。</p>
 <h3 id="minimind"><a href="#minimind" class="headerlink" title="minimind"></a>minimind</h3><p><a target="_blank" rel="noopener" href="https://github.com/jingyaogong/minimind/blob/master/model/model_minimind.py#L217">model_minimind.py</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预计算 RoPE (Rotary Position Embedding) 的频率矩阵</span></span><br><span class="line"><span class="comment"># RoPE 通过旋转矩阵将位置信息编码到 Query 和 Key 中，使模型能够理解 token 的相对位置。</span></span><br><span class="line"><span class="comment"># 本函数预计算所有位置的 cos 和 sin 值，避免在每次前向传播时重复计算。</span></span><br><span class="line"><span class="comment">#支持 YaRN 外推方法，可以处理超过训练时最大长度的序列。</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">precompute_freqs_cis</span>(<span class="params">dim: <span class="built_in">int</span>, end: <span class="built_in">int</span> = <span class="built_in">int</span>(<span class="params"><span class="number">32</span> * <span class="number">1024</span></span>), rope_base: <span class="built_in">float</span> = <span class="number">1e6</span>, rope_scaling: <span class="built_in">dict</span> = <span class="literal">None</span></span>):</span><br><span class="line">    <span class="comment"># dim: 每一个注意力头(Head)的特征维度大小</span></span><br><span class="line">    <span class="comment"># end: 预计算的最大长度，比如支持最多 32K 个token</span></span><br><span class="line">    <span class="comment"># rope_base: 决定旋转频率变化的基数（通常很大，如1e6，用于控制长周期的波长）</span></span><br><span class="line">    <span class="comment"># rope_scaling: 扩展长文本的配置字典（如果是长文本扩展YaRN才会用到）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 基础频率计算</span></span><br><span class="line">    <span class="comment"># 公式：theta_i = 1.0 / (rope_base ^ (2i / dim))</span></span><br><span class="line">    <span class="comment"># 生成一系列从快到慢变化的频率。高维转得慢，低维转得快。</span></span><br><span class="line">    freqs, attn_factor = <span class="number">1.0</span> / (rope_base ** (torch.arange(<span class="number">0</span>, dim, <span class="number">2</span>)[: (dim // <span class="number">2</span>)].<span class="built_in">float</span>() / dim)), <span class="number">1.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 如果开启了长文本扩展（YaRN 技术）</span></span><br><span class="line">    <span class="keyword">if</span> rope_scaling <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>: </span><br><span class="line">        <span class="comment"># YaRN: 通过温度插值，解决大模型在超出训练长度时的“分布漂移”问题</span></span><br><span class="line">        orig_max, factor, beta_fast, beta_slow, attn_factor = (</span><br><span class="line">            rope_scaling.get(<span class="string">&quot;original_max_position_embeddings&quot;</span>, <span class="number">2048</span>), <span class="comment"># 原本训练的最大长度</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;factor&quot;</span>, <span class="number">16</span>),                             <span class="comment"># 准备拉伸多少倍</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;beta_fast&quot;</span>, <span class="number">32.0</span>),                        <span class="comment"># YaRN高频参数</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;beta_slow&quot;</span>, <span class="number">1.0</span>),                         <span class="comment"># YaRN低频参数</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;attention_factor&quot;</span>, <span class="number">1.0</span>)                   <span class="comment"># 注意力缩放温度（热力学修正）</span></span><br><span class="line">        )</span><br><span class="line">        <span class="comment"># 如果要求推理的长度超过了原本的训练长度，就开始魔法操作</span></span><br><span class="line">        <span class="keyword">if</span> end / orig_max &gt; <span class="number">1.0</span>:</span><br><span class="line">            <span class="comment"># 这是一个根据公式计算在不同频率区间应该怎么“插值”的函数</span></span><br><span class="line">            inv_dim = <span class="keyword">lambda</span> b: (dim * math.log(orig_max / (b * <span class="number">2</span> * math.pi))) / (<span class="number">2</span> * math.log(rope_base))</span><br><span class="line">            <span class="comment"># 找到低频和高频的边界</span></span><br><span class="line">            low, high = <span class="built_in">max</span>(math.floor(inv_dim(beta_fast)), <span class="number">0</span>), <span class="built_in">min</span>(math.ceil(inv_dim(beta_slow)), dim // <span class="number">2</span> - <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 计算一个渐变系数 ramp (斜坡函数)，从 0 平滑过渡到 1</span></span><br><span class="line">            ramp = torch.clamp((torch.arange(dim // <span class="number">2</span>, device=freqs.device).<span class="built_in">float</span>() - low) / <span class="built_in">max</span>(high - low, <span class="number">0.001</span>), <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 根据 YaRN 原理混合：高频不插值，低频线性插值，中间混合</span></span><br><span class="line">            freqs = freqs * (<span class="number">1</span> - ramp + ramp / factor)</span><br><span class="line">            </span><br><span class="line">    <span class="comment"># 3. 得到每个位置对应的旋转角度矩阵</span></span><br><span class="line">    <span class="comment"># t 是位置索引：[0, 1, 2, ..., end-1]</span></span><br><span class="line">    t = torch.arange(end, device=freqs.device)</span><br><span class="line">    <span class="comment"># torch.outer(t, freqs) 计算 t_m * theta_i：得出每个位置、每个维度的实际旋转弧度</span></span><br><span class="line">    freqs = torch.outer(t, freqs).<span class="built_in">float</span>()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 4. 把刚刚算出来的弧度转换成 余弦(cos) 和 正弦(sin)</span></span><br><span class="line">    <span class="comment"># 并在最后一个维度复制拼接一次，因为复数旋转操作要同时作用在实部和虚部（代码里是用特征前后两半实现的）</span></span><br><span class="line">    freqs_cos = torch.cat([torch.cos(freqs), torch.cos(freqs)], dim=-<span class="number">1</span>) * attn_factor</span><br><span class="line">    freqs_sin = torch.cat([torch.sin(freqs), torch.sin(freqs)], dim=-<span class="number">1</span>) * attn_factor</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回预先计算好的 cos 和 sin 矩阵</span></span><br><span class="line">    <span class="keyword">return</span> freqs_cos, freqs_sin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 应用旋转位置编码（RoPE）到 Query 和 Key</span></span><br><span class="line"><span class="comment"># RoPE 通过复数旋转将位置信息编码到 Q 和 K 中：</span></span><br><span class="line"><span class="comment"># R_θ(x) = [x_0*cos(θ) - x_1*sin(θ), x_0*sin(θ) + x_1*cos(θ)]</span></span><br><span class="line"><span class="comment"># 在实现中，将复数旋转分解为实部和虚部的线性组合，使用 rotate_half 函数实现。</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">apply_rotary_pos_emb</span>(<span class="params">q, k, cos, sin, unsqueeze_dim=<span class="number">1</span></span>):</span><br><span class="line">    <span class="comment"># q: Query 向量 (比如形状: [批次, 句子长度, 头数, 维度])</span></span><br><span class="line">    <span class="comment"># k: Key 向量 </span></span><br><span class="line">    <span class="comment"># cos, sin: 刚刚预计算好的角度矩阵</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 一个内部函数：把向量切成前后两半，并把前半部分取反移到后面</span></span><br><span class="line">    <span class="comment"># 比如输入是 [x1, x2, x3, x4]，切半变成 [x1, x2] 和 [x3, x4]</span></span><br><span class="line">    <span class="comment"># 返回 [-x3, -x4, x1, x2]。这就是二维复数乘法在实数域的等价矩阵变化。</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rotate_half</span>(<span class="params">x</span>): </span><br><span class="line">        <span class="keyword">return</span> torch.cat((-x[..., x.shape[-<span class="number">1</span>] // <span class="number">2</span>:], x[..., : x.shape[-<span class="number">1</span>] // <span class="number">2</span>]), dim=-<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 对 Query 实施旋转 (复数乘法公式：(a+bi)(cosθ+isinθ) = (a·cosθ - b·sinθ) + i(a·sinθ + b·cosθ))</span></span><br><span class="line">    <span class="comment"># 这里通过刚才定义的 rotate_half 非常巧妙地实现了上面括号里的推导</span></span><br><span class="line">    <span class="comment"># unsqueeze_dim=1 是为了把 cos/sin 的维度跟 q 对齐 (比如扩充出批次或多头的维度)</span></span><br><span class="line">    q_embed = ((q * cos.unsqueeze(unsqueeze_dim)) + (rotate_half(q) * sin.unsqueeze(unsqueeze_dim))).to(q.dtype)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 对 Key 实施同样的旋转</span></span><br><span class="line">    k_embed = ((k * cos.unsqueeze(unsqueeze_dim)) + (rotate_half(k) * sin.unsqueeze(unsqueeze_dim))).to(k.dtype)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回融入了绝对位置信息的 q 和 k</span></span><br><span class="line">    <span class="comment"># 稍后 q 和 k 做点积相乘时，数学特性会自动让他们只关注相对距离！</span></span><br><span class="line">    <span class="keyword">return</span> q_embed, k_embed</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预计算 RoPE (Rotary Position Embedding) 的频率矩阵</span></span><br><span class="line"><span class="comment"># RoPE 通过旋转矩阵将位置信息编码到 Query 和 Key 中，使模型能够理解 token 的相对位置。</span></span><br><span class="line"><span class="comment"># 本函数预计算所有位置的 cos 和 sin 值，避免在每次前向传播时重复计算。</span></span><br><span class="line"><span class="comment">#支持 YaRN 外推方法，可以处理超过训练时最大长度的序列。</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">precompute_freqs_cis</span>(<span class="params">dim: <span class="built_in">int</span>, end: <span class="built_in">int</span> = <span class="built_in">int</span>(<span class="params"><span class="number">32</span> * <span class="number">1024</span></span>), rope_base: <span class="built_in">float</span> = <span class="number">1e6</span>, rope_scaling: <span class="built_in">dict</span> = <span class="literal">None</span></span>):</span><br><span class="line">    <span class="comment"># dim: 每一个注意力头(Head)的特征维度大小</span></span><br><span class="line">    <span class="comment"># end: 预计算的最大长度，比如支持最多 32K 个token</span></span><br><span class="line">    <span class="comment"># rope_base: 决定旋转频率变化的基数（通常很大，如1e6，用于控制长周期的波长）</span></span><br><span class="line">    <span class="comment"># rope_scaling: 扩展长文本的配置字典（如果是长文本扩展YaRN才会用到）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 基础频率计算</span></span><br><span class="line">    <span class="comment"># 公式：theta_i = 1.0 / (rope_base ^ (2i / dim))</span></span><br><span class="line">    <span class="comment"># 生成一系列从快到慢变化的频率。高维转得慢，低维转得快。</span></span><br><span class="line">    freqs, attn_factor = <span class="number">1.0</span> / (rope_base ** (torch.arange(<span class="number">0</span>, dim, <span class="number">2</span>)[: (dim // <span class="number">2</span>)].<span class="built_in">float</span>() / dim)), <span class="number">1.0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 如果开启了长文本扩展（YaRN 技术）</span></span><br><span class="line">    <span class="keyword">if</span> rope_scaling <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>: </span><br><span class="line">        <span class="comment"># YaRN: 通过温度插值，解决大模型在超出训练长度时的“分布漂移”问题</span></span><br><span class="line">        orig_max, factor, beta_fast, beta_slow, attn_factor = (</span><br><span class="line">            rope_scaling.get(<span class="string">&quot;original_max_position_embeddings&quot;</span>, <span class="number">2048</span>), <span class="comment"># 原本训练的最大长度</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;factor&quot;</span>, <span class="number">16</span>),                             <span class="comment"># 准备拉伸多少倍</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;beta_fast&quot;</span>, <span class="number">32.0</span>),                        <span class="comment"># YaRN高频参数，决定了哪些“极高频”的维度应该保持完全不动（不进行插值/压缩）。在这个频率以上的维度，模型直接进行外推（Extrapolation），完全不损失分辨率。</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;beta_slow&quot;</span>, <span class="number">1.0</span>),                         <span class="comment"># YaRN低频参数，决定了哪些“极低频”的维度必须进行完全的线性插值（完全压缩）。在这个频率以下的维度，必须老老实实地按扩展倍数（factor）进行线性插值，确保所有角度都落在模型见过的范围内。</span></span><br><span class="line">            rope_scaling.get(<span class="string">&quot;attention_factor&quot;</span>, <span class="number">1.0</span>)                   <span class="comment"># 注意力缩放温度（热力学修正）</span></span><br><span class="line">        )</span><br><span class="line">        <span class="comment"># 如果要求推理的长度超过了原本的训练长度，就开始魔法操作</span></span><br><span class="line">        <span class="keyword">if</span> end / orig_max &gt; <span class="number">1.0</span>:</span><br><span class="line">            <span class="comment"># 这是一个根据公式计算在不同频率区间应该怎么“插值”的函数</span></span><br><span class="line">            inv_dim = <span class="keyword">lambda</span> b: (dim * math.log(orig_max / (b * <span class="number">2</span> * math.pi))) / (<span class="number">2</span> * math.log(rope_base))</span><br><span class="line">            <span class="comment"># 找到低频和高频的边界</span></span><br><span class="line">            low, high = <span class="built_in">max</span>(math.floor(inv_dim(beta_fast)), <span class="number">0</span>), <span class="built_in">min</span>(math.ceil(inv_dim(beta_slow)), dim // <span class="number">2</span> - <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 计算一个渐变系数 ramp (斜坡函数)，从 0 平滑过渡到 1</span></span><br><span class="line">            ramp = torch.clamp((torch.arange(dim // <span class="number">2</span>, device=freqs.device).<span class="built_in">float</span>() - low) / <span class="built_in">max</span>(high - low, <span class="number">0.001</span>), <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 根据 YaRN 原理混合：高频不插值，低频线性插值，中间混合</span></span><br><span class="line">            freqs = freqs * (<span class="number">1</span> - ramp + ramp / factor)</span><br><span class="line">            </span><br><span class="line">    <span class="comment"># 3. 得到每个位置对应的旋转角度矩阵</span></span><br><span class="line">    <span class="comment"># t 是位置索引：[0, 1, 2, ..., end-1]</span></span><br><span class="line">    t = torch.arange(end, device=freqs.device)</span><br><span class="line">    <span class="comment"># torch.outer(t, freqs) 计算 t_m * theta_i：得出每个位置、每个维度的实际旋转弧度</span></span><br><span class="line">    freqs = torch.outer(t, freqs).<span class="built_in">float</span>()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 4. 把刚刚算出来的弧度转换成 余弦(cos) 和 正弦(sin)</span></span><br><span class="line">    <span class="comment"># 并在最后一个维度复制拼接一次，因为复数旋转操作要同时作用在实部和虚部（代码里是用特征前后两半实现的）</span></span><br><span class="line">    freqs_cos = torch.cat([torch.cos(freqs), torch.cos(freqs)], dim=-<span class="number">1</span>) * attn_factor</span><br><span class="line">    freqs_sin = torch.cat([torch.sin(freqs), torch.sin(freqs)], dim=-<span class="number">1</span>) * attn_factor</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回预先计算好的 cos 和 sin 矩阵</span></span><br><span class="line">    <span class="keyword">return</span> freqs_cos, freqs_sin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 应用旋转位置编码（RoPE）到 Query 和 Key</span></span><br><span class="line"><span class="comment"># RoPE 通过复数旋转将位置信息编码到 Q 和 K 中</span></span><br><span class="line"><span class="comment"># 在实现中，将复数旋转分解为实部和虚部的线性组合，使用 rotate_half 函数实现。</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">apply_rotary_pos_emb</span>(<span class="params">q, k, cos, sin, unsqueeze_dim=<span class="number">1</span></span>):</span><br><span class="line">    <span class="comment"># q: Query 向量 (比如形状: [批次, 句子长度, 头数, 维度])</span></span><br><span class="line">    <span class="comment"># k: Key 向量 </span></span><br><span class="line">    <span class="comment"># cos, sin: 刚刚预计算好的角度矩阵</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 一个内部函数：把向量切成前后两半，并把前半部分取反移到后面</span></span><br><span class="line">    <span class="comment"># 比如输入是 [x1, x2, x3, x4]，切半变成 [x1, x2] 和 [x3, x4]</span></span><br><span class="line">    <span class="comment"># 返回 [-x3, -x4, x1, x2]。这就是二维复数乘法在实数域的等价矩阵变化。</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rotate_half</span>(<span class="params">x</span>): </span><br><span class="line">        <span class="keyword">return</span> torch.cat((-x[..., x.shape[-<span class="number">1</span>] // <span class="number">2</span>:], x[..., : x.shape[-<span class="number">1</span>] // <span class="number">2</span>]), dim=-<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 对 Query 实施旋转 (复数乘法公式：(a+bi)(cosθ+isinθ) = (a·cosθ - b·sinθ) + i(a·sinθ + b·cosθ))</span></span><br><span class="line">    <span class="comment"># 这里通过刚才定义的 rotate_half 非常巧妙地实现了上面括号里的推导</span></span><br><span class="line">    <span class="comment"># unsqueeze_dim=1 是为了把 cos/sin 的维度跟 q 对齐 (比如扩充出批次或多头的维度)</span></span><br><span class="line">    q_embed = ((q * cos.unsqueeze(unsqueeze_dim)) + (rotate_half(q) * sin.unsqueeze(unsqueeze_dim))).to(q.dtype)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 对 Key 实施同样的旋转</span></span><br><span class="line">    k_embed = ((k * cos.unsqueeze(unsqueeze_dim)) + (rotate_half(k) * sin.unsqueeze(unsqueeze_dim))).to(k.dtype)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回融入了绝对位置信息的 q 和 k</span></span><br><span class="line">    <span class="comment"># 稍后 q 和 k 做点积相乘时，数学特性会自动让他们只关注相对距离！</span></span><br><span class="line">    <span class="keyword">return</span> q_embed, k_embed</span><br></pre></td></tr></table></figure>
+
+<h2 id="Normalization-归一化"><a href="#Normalization-归一化" class="headerlink" title="Normalization 归一化"></a>Normalization 归一化</h2><p>要解决的核心问题是：内部协变量偏移（Internal Covariate Shift）。在训练过程中，由于前层参数不断更新，每一层网络的输入数据分布在每个 mini-batch 之间持续发生变化，导致后续各层需要不断重新适应新的输入分布。</p>
+<p>背景：为什么 NLP 摒弃了 Batch Normalization？</p>
+<ul>
+<li>变长序列的处理难题：文本数据的长度是不固定的。在 Batch 训练中，短序列通常需要通过 Padding 补齐。如果使用 BN，Padding Token 的存在会严重扭曲均值和方差的统计量，导致归一化参数产生偏差。虽然可以通过掩码（Masking）技术部分缓解，但实现复杂度较高且效率低下 。</li>
+<li>小 Batch Size 的统计不稳定性：LLM 的训练通常受限于显存容量，导致每个 GPU 上的 Micro-Batch Size 非常小（甚至为 1）。在这种情况下，BN 估算的样本均值和方差具有极大的噪声，无法代表真实的数据分布，导致模型训练震荡甚至发散 。</li>
+<li>序列维度的独立性需求：在 NLP 任务中，每个 Token 的语义往往依赖于其上下文，但不同样本之间的 Token 并没有直接的对应关系（例如，Batch 中第 i 个样本的第 5 个词与第 j 个样本的第 5 个词可能完全无关）。BN 强制在 Batch 维度上进行统计，破坏了 Token 级特征的独立性 。</li>
+</ul>
+<p>Layer Normalization 应运而生。LN 沿着特征维度（Feature Dimension）对单个样本进行归一化，其统计量的计算仅依赖于当前样本自身，完全独立于 Batch Size 和序列长度。这一特性使其成为处理变长序列数据和 RNN&#x2F;Transformer 架构的天然选择 。</p>
+<h3 id="Layer-Normalization-LN"><a href="#Layer-Normalization-LN" class="headerlink" title="Layer Normalization (LN)"></a>Layer Normalization (LN)</h3><p>对于一个维度为 $d$ 的输入向量 $\mathbf{x} &#x3D; (x_1, x_2, \ldots, x_d)$，LayerNorm 分两步计算：标准化（Normalization）和仿射变换（Affine Transformation）。</p>
+<p><strong>第一步：计算均值与方差</strong><br>$$\mu &#x3D; \frac{1}{d} \sum_{i&#x3D;1}^{d} x_i$$<br>$$\sigma^2 &#x3D; \frac{1}{d} \sum_{i&#x3D;1}^{d} (x_i - \mu)^2$$</p>
+<p><strong>第二步：标准化</strong><br>$$\hat{x}_i &#x3D; \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}$$<br>其中 $\epsilon$（如 $1 \times 10^{-5}$）用于防止分母为零带来的数值不稳定。</p>
+<p><strong>第三步：仿射变换（恢复表达能力）</strong><br>$$y_i &#x3D; \gamma_i \hat{x}_i + \beta_i$$<br>引入可学习的缩放参数 $\gamma$（Gain）和偏置参数 $\beta$（Bias），防止归一化操作过度压缩模型的表达能力。<strong>初始化</strong>时通常令 $\gamma &#x3D; 1, \beta &#x3D; 0$，使初始状态下 LayerNorm 近似为恒等变换。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">manual_layer_norm</span>(<span class="params">x, gamma, beta, eps=<span class="number">1e-5</span></span>):</span><br><span class="line">    <span class="comment"># 1. 计算均值，在特征维度（最后一维）上计算</span></span><br><span class="line">    mu = x.mean(dim=-<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 计算方差（总体方差，对应公式中的 1/d）</span></span><br><span class="line">    var = x.var(dim=-<span class="number">1</span>, unbiased=<span class="literal">False</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 3. 标准化</span></span><br><span class="line">    x_hat = (x - mu) / torch.sqrt(var + eps)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 4. 仿射变换</span></span><br><span class="line">    y = gamma * x_hat + beta</span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 验证 ---</span></span><br><span class="line">d = <span class="number">5</span></span><br><span class="line">x = torch.randn(<span class="number">2</span>, d)</span><br><span class="line">gamma = torch.ones(d)</span><br><span class="line">beta = torch.zeros(d)</span><br><span class="line"></span><br><span class="line">y_manual = manual_layer_norm(x, gamma, beta)</span><br><span class="line">y_official = nn.LayerNorm(d)(x)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;手动实现与官方API误差是否极小: <span class="subst">&#123;torch.allclose(y_manual, y_official, atol=<span class="number">1e-6</span>)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>LayerNorm 为模型带来了两个关键的不变性属性：</p>
+<ul>
+<li><p>重中心化不变性（Re-centering Invariance）：对任意常数 $\delta$，有 $LN(\mathbf{x} + \delta) &#x3D; LN(\mathbf{x})$。模型对输入数据的绝对偏移不敏感，有助于处理不同偏置的输入。</p>
+</li>
+<li><p>重缩放不变性（Re-scaling Invariance）：对任意缩放因子 $\lambda$，有 $LN(\lambda\mathbf{x}) &#x3D; LN(\mathbf{x})$。权重矩阵的模长不会影响输出值的幅度。在反向传播中，梯度的大小与权重的模长成反比，隐式起到了类似**学习率衰减（Learning Rate Decay）**的调节作用，防止权重无限增长。</p>
+</li>
+</ul>
+<blockquote>
+<p>尽管 LayerNorm 表现优异，但计算均值的减法操作（Mean Subtraction）在硬件层面引入了额外开销。后续的 <strong>RMSNorm</strong> 正是基于对”均值计算是否真正必要”的反思而提出的——通过消融实验发现，LayerNorm 的成功主要归功于<strong>重缩放不变性</strong>，而非重中心化，因此 RMSNorm 直接省去均值计算，大幅降低了计算复杂度。</p>
+</blockquote>
+<h3 id="Post-Norm-与-Pre-Norm-的博弈"><a href="#Post-Norm-与-Pre-Norm-的博弈" class="headerlink" title="Post-Norm 与 Pre-Norm 的博弈"></a>Post-Norm 与 Pre-Norm 的博弈</h3><h4 id="Post-Norm：经典但脆弱"><a href="#Post-Norm：经典但脆弱" class="headerlink" title="Post-Norm：经典但脆弱"></a>Post-Norm：经典但脆弱</h4><p>原始 Transformer（《Attention Is All You Need》）和 BERT 采用 <strong>Post-Norm</strong>，LN 放在残差连接（Residual Connection）<strong>之后</strong>：</p>
+<p>$$x_{l+1} &#x3D; LN(x_l + \text{Sublayer}(x_l))$$</p>
+<p>核心问题：</p>
+<ul>
+<li>梯度不稳定：反向传播时梯度需穿越多个 LN 层，浅层易梯度消失&#x2F;爆炸。</li>
+<li>必须 Warm-up：训练初期学习率必须极小，否则直接发散。</li>
+<li>性能上限略高：每层输入都被标准化，非线性表达能力更充分——代价是训练困难。</li>
+</ul>
+<h4 id="Pre-Norm：现代大模型的标配"><a href="#Pre-Norm：现代大模型的标配" class="headerlink" title="Pre-Norm：现代大模型的标配"></a>Pre-Norm：现代大模型的标配</h4><p>GPT-2&#x2F;3、LLaMA、PaLM 等转向 <strong>Pre-Norm</strong>，LN 放在子层<strong>输入端</strong>：</p>
+<p>$$x_{l+1} &#x3D; x_l + \text{Sublayer}(LN(x_l))$$</p>
+<p>核心优势：</p>
+<ul>
+<li>Highway 效应：主干路径 $x_{l+1} &#x3D; x_l + \cdots$ 构成一条”恒等高速公路”，梯度可直接无损传到底层。</li>
+<li>无需 Warm-up：梯度流稳定，可使用激进学习率，对 175B 级大模型训练成本极关键。</li>
+</ul>
+<p>隐患——“深度诅咒”：主干 $x_l$ 的方差随层数线性累积，而残差分支经 LN 后方差归 1，深层残差对主干贡献被隐式压缩至约 $1&#x2F;L$，<strong>深层网络可能退化为恒等映射</strong>。</p>
+<h4 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h4><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Post-Norm (BERT)</th>
+<th>Pre-Norm (LLaMA)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公式</td>
+<td>$LN(x + \text{Sub}(x))$</td>
+<td>$x + \text{Sub}(LN(x))$</td>
+</tr>
+<tr>
+<td>训练稳定性</td>
+<td>差，需 Warm-up</td>
+<td>优，可无 Warm-up</td>
+</tr>
+<tr>
+<td>梯度流</td>
+<td>易爆炸&#x2F;消失</td>
+<td>主干直通，稳定</td>
+</tr>
+<tr>
+<td>深层贡献</td>
+<td>均衡</td>
+<td>随深度衰减</td>
+</tr>
+<tr>
+<td>最终性能</td>
+<td>理论上限略高</td>
+<td>略低但更易训练</td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：Pre-Norm 已成为当今 LLM 默认选择；为弥补其深层退化问题，DeepNorm 等方案应运而生（将残差主干乘以 $\alpha &gt; 1$ 后再做 Post-Norm，兼顾两者优点）。</p>
+<h3 id="Root-Mean-Square-Normalization-RMSNorm"><a href="#Root-Mean-Square-Normalization-RMSNorm" class="headerlink" title="Root Mean Square Normalization (RMSNorm)"></a>Root Mean Square Normalization (RMSNorm)</h3><p>核心理念：去中心化的归一化。</p>
+<blockquote>
+<p><strong>真正有用的是重缩放（Re-scaling）不变性，而非重中心化（Re-centering）不变性。</strong></p>
+</blockquote>
+<p>深度网络的激活值均值本来就在 0 附近游荡，强制减去均值的收益微乎其微，但这一步却引入了额外的”规约”（Reduction）计算。于是，<strong>砍掉均值，只留均方根缩放</strong>，RMSNorm 诞生了。</p>
+<p><strong>LayerNorm（对比参考）：</strong><br>$$\bar{x}_i &#x3D; \frac{x_i - \mu}{\sigma} \cdot \gamma_i + \beta_i$$</p>
+<p><strong>RMSNorm（砍掉均值和偏置）：</strong><br>$$\text{RMS}(\mathbf{x}) &#x3D; \sqrt{\frac{1}{d}\sum_{i&#x3D;1}^{d} x_i^2 + \epsilon}$$<br>$$\bar{x}_i &#x3D; \frac{x_i}{\text{RMS}(\mathbf{x})} \cdot \gamma_i$$</p>
+<p>变化一目了然：去掉了 $\mu$、去掉了 $\beta$，只剩下一次平方→均值→开根→缩放。</p>
+<p>关键实现细节：</p>
+<ol>
+<li><strong>无偏置项 $\beta$</strong>：LLaMA、Mistral 的 RMSNorm 均不带 $\beta$，只保留可学习的缩放因子 $\gamma$，参数量更少。</li>
+<li><strong>$\epsilon$ 的位置</strong>：必须加在”平方求均值之后、开根之前”，即 $\sqrt{\cdots + \epsilon}$，防止分母为零，典型取值 $1\text{e-}6$。</li>
+<li><strong>Gemma 的微调</strong>：将输出改为 $\text{RMSNorm}(x) \times (1 + \gamma)$，初始化时 $\gamma \approx 0$，输出趋近恒等映射，保留了 Pre-Norm 的”直通”特性，有利于深层信号传播。</li>
+</ol>
+<p>为什么实际快了 10%~40%？表面上 FLOPs 减少不多（矩阵乘法才是大头），但关键在于：LayerNorm 是内存带宽受限（Memory-Bandwidth Bound）操作</p>
+<ul>
+<li>LayerNorm 需要<strong>两次</strong>全向量扫描：第一次算 $\mu$，第二次才能算 $\sigma^2$（因为 $\sigma^2$ 依赖 $\mu$），中间还需同步屏障。</li>
+<li>RMSNorm 只需<strong>一次</strong>扫描算平方和，显存读写次数减半，同步屏障消失。</li>
+</ul>
+<p>在推理阶段显存带宽是瓶颈的背景下，这个优化被放大；加上 RMSNorm 结构简单，更容易做<strong>算子融合（Kernel Fusion）</strong>，在 FlashAttention、vLLM 等框架中收益进一步扩大。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>LayerNorm</th>
+<th>RMSNorm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公式</td>
+<td>$(x-\mu)&#x2F;\sigma \cdot \gamma + \beta$</td>
+<td>$x&#x2F;\text{RMS}(x) \cdot \gamma$</td>
+</tr>
+<tr>
+<td>均值计算</td>
+<td>需要</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>偏置 $\beta$</td>
+<td>有</td>
+<td>无</td>
+</tr>
+<tr>
+<td>显存扫描次数</td>
+<td>2次</td>
+<td>1次</td>
+</tr>
+<tr>
+<td>代表模型</td>
+<td>BERT, T5</td>
+<td>LLaMA, Gemma, Mistral</td>
+</tr>
+<tr>
+<td>推理速度</td>
+<td>基准</td>
+<td>快 10%~40%</td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：RMSNorm 以极小的精度代价，换来了显著的工程效率提升，成为现代 LLM 的标配归一化方案。</p>
+<h3 id="DeepNorm-：Post-Norm-Pre-Norm"><a href="#DeepNorm-：Post-Norm-Pre-Norm" class="headerlink" title="DeepNorm ：Post-Norm + Pre-Norm"></a>DeepNorm ：Post-Norm + Pre-Norm</h3><p>Pre-Norm 解决了基本稳定性问题，但其”深度诅咒”（Curse of Depth）导致深层层对主干贡献随深度衰减，<strong>限制了模型扩展到 1000 层以上的潜力</strong>。<br>Microsoft Research 提出的 DeepNorm 目标是：<strong>结合 Post-Norm 的高性能 + Pre-Norm 的稳定性</strong>，让模型无论多深，每步权重更新幅度的期望值都被约束在一个常数范围内。</p>
+<p>DeepNorm 本质是<strong>改进的 Post-Norm</strong>，在残差主干上乘以缩放系数 $\alpha$：<br>$$x_{l+1} &#x3D; LN(\alpha \cdot x_l + G_l(x_l, \theta_l))$$</p>
+<ul>
+<li>$G_l$：第 $l$ 层子层函数（Attention 或 FFN）</li>
+<li>$\alpha &gt; 1$：主干放大系数</li>
+</ul>
+<p>为什么 $\alpha &gt; 1$ 能稳定训练？放大主干 $x_l$ 相对于子层输出 $G_l$ 的幅度，使 $G_l$ 的相对贡献被压缩，从而<strong>控制了梯度方差</strong>，避免标准 Post-Norm 的梯度爆炸。</p>
+<p>初始化规则很重要！$\alpha$ 和权重缩放系数 $\beta$ 必须随总层数动态调整：</p>
+<p><strong>Encoder-only（如 BERT），共 $N$ 层：</strong><br>$$\alpha &#x3D; (2N)^{1&#x2F;4}, \quad \beta &#x3D; (8N)^{-1&#x2F;4}$$</p>
+<p><strong>Decoder-only（如 GPT），共 $M$ 层：</strong><br>$$\alpha &#x3D; (2M)^{1&#x2F;4}, \quad \beta &#x3D; (8M)^{-1&#x2F;4}$$</p>
+<p><strong>Encoder-Decoder（如 T5），Encoder $N$ 层 + Decoder $M$ 层：</strong></p>
+<p>Encoder 部分：<br>$$\alpha &#x3D; 0.81(N^4 M)^{1&#x2F;16}, \quad \beta &#x3D; 0.87(N^4 M)^{-1&#x2F;16}$$</p>
+<p>Decoder 部分：<br>$$\alpha &#x3D; (3M)^{1&#x2F;4}, \quad \beta &#x3D; (12M)^{-1&#x2F;4}$$</p>
+<p>$\beta$ 用于<strong>缩小子层权重的初始化幅度</strong>，是一个”一次性”的缩放操作，不是运行时公式的一部分，让$G_l$的初始输出幅度变小。施加对象：</p>
+<ul>
+<li>FFN 的所有权重矩阵</li>
+<li>Attention 的 $W_V$（Value Projection）和 $W_O$（Output Projection）</li>
+</ul>
+<p>⚠️ <strong>$W_Q$ 和 $W_K$ 不做 $\beta$ 缩放</strong>，避免影响注意力分数的计算尺度。</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$\alpha \cdot x_l$（放大主干）</td>
+<td>梯度有稳定的”高速公路”，不易消失</td>
+</tr>
+<tr>
+<td>$\beta$ 缩小权重初始化</td>
+<td>子层输出初始幅度小，不会一开始就”乱喷”梯度</td>
+</tr>
+<tr>
+<td>最后套 LN</td>
+<td>保持 Post-Norm 的表达能力优势</td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：DeepNorm 是当你需要堆到 1000+ 层时的选择，通过数学推导而非经验调参来保证训练稳定性，是超深 Transformer（DeepNet）的核心支撑技术。</p>
+<h3 id="QK-Norm-处理注意力熵坍塌"><a href="#QK-Norm-处理注意力熵坍塌" class="headerlink" title="QK-Norm 处理注意力熵坍塌"></a>QK-Norm 处理注意力熵坍塌</h3><p>在训练 ViT-22B、PaLM-540B 这类超大模型时，研究人员发现 Attention Logits（即 $Q \cdot K^T$ 的值）会随训练进行膨胀到 $10^4$ 量级。<br>极大的 Logits 让 Softmax 进入饱和区，输出趋近于 One-hot 分布（某一位置概率≈1，其余≈0），这就是<strong>注意力熵坍塌</strong>。后果：</p>
+<ul>
+<li>Softmax 饱和区梯度≈0 → 梯度消失</li>
+<li>模型停止学习，甚至训练发散</li>
+</ul>
+<p>QK-Norm的解决方法是在计算点积<strong>之前</strong>，分别对 Query 和 Key 做归一化：<br>$$q’ &#x3D; LN(q), \quad k’ &#x3D; LN(k)$$<br>$$\text{Attention}(q,k,v) &#x3D; \text{Softmax}\left(\frac{q’(k’)^T}{\sqrt{d}}\right)v$$</p>
+<p><strong>为什么有效？</strong> 根据柯西-施瓦茨不等式，点积上界由两个向量的模长乘积决定：</p>
+<p>$$|q’ \cdot k’| \leq |q’| \cdot |k’|$$</p>
+<p>LN 强制约束了 $q’$ 和 $k’$ 的模长，Logits 的数值范围被直接卡死，无法随深度或训练步数无限增长。<br>部分研究还对 V 向量归一化，或结合 <strong>Softmax Capping</strong>（将 Logits 截断在 $[-30, 30]$ 区间），提供双重保险。Mistral AI 的最新模型也采用了类似 Softmax Capping 技术。</p>
+<h3 id="异构归一化方案"><a href="#异构归一化方案" class="headerlink" title="异构归一化方案"></a>异构归一化方案</h3><ol>
+<li>Sandwich-Norm（三明治归一化）<br> <strong>背景</strong>：清华大学开发 CogView（文生图模型）时发现，即使用了 Pre-Norm，图像 Token 仍会出现数值溢出——图像生成任务对数值的敏感度远高于纯文本。<br> <strong>解决方法</strong>：在 Pre-Norm 基础上，在残差分支末端（与主干相加之前）再加一个 LN，把子层”夹”在两个 Norm 之间：<br> $$x_{l+1} &#x3D; x_l + LN(\text{Sublayer}(LN(x_l)))$$<br> 形如”面包-子层-面包”，故名三明治。代价是多一次 LN 的计算，换来的是彻底消除数值溢出，让 CogView 能在 FP16 混合精度下稳定训练。</li>
+<li>NormFormer：通过”过归一化”加速收敛<br> <strong>策略</strong>：在每个 Transformer 层中塞入<strong>三个</strong>归一化操作：<ol>
+<li><strong>Pre-LN</strong>：标准子层输入归一化</li>
+<li><strong>Post-Attention LN</strong>：Self-Attention 输出后立即加一个 LN</li>
+<li><strong>Head-Scaling</strong>：对每个 Attention Head 输出做可学习标量缩放<br> <strong>效果</strong>：1.3B 参数模型实验中，达到目标 Perplexity 的速度加快了 <strong>24%</strong>。适度”过归一化”让优化器在训练早期更快找到下降方向，参数量的增加通常被收敛加速抵消。</li>
+</ol>
+</li>
+</ol>
+<h3 id="minimind-1"><a href="#minimind-1" class="headerlink" title="minimind"></a>minimind</h3><p><a target="_blank" rel="noopener" href="https://github.com/jingyaogong/minimind/blob/master/model/model_minimind.py#L50">model_minimind.py</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">RMSNorm(x) = weight * (x / sqrt(mean(x^2) + eps)), 计算均方根</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RMSNorm</span>(torch.nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dim: <span class="built_in">int</span>, eps: <span class="built_in">float</span> = <span class="number">1e-5</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        dim: 输入特征的维度</span></span><br><span class="line"><span class="string">        eps: 防止除零的小常数（默认 1e-5）</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.eps = eps</span><br><span class="line">        <span class="comment"># 可学习的缩放参数，初始化为全 1</span></span><br><span class="line">        <span class="variable language_">self</span>.weight = nn.Parameter(torch.ones(dim))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">norm</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="comment"># x.pow(2): 计算 x 的平方</span></span><br><span class="line">        <span class="comment"># .mean(-1, keepdim=True): 在最后一个维度上求均值，保持维度</span></span><br><span class="line">        <span class="comment"># torch.rsqrt: 计算 1/sqrt，比先 sqrt 再除更快</span></span><br><span class="line">        <span class="keyword">return</span> x * torch.rsqrt(x.<span class="built_in">pow</span>(<span class="number">2</span>).mean(-<span class="number">1</span>, keepdim=<span class="literal">True</span>) + <span class="variable language_">self</span>.eps)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        前向传播</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            x: 输入张量，可以是任意精度（float16, bfloat16, float32）</span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            归一化并缩放后的张量，保持原始精度</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 先转换为 float32 进行归一化计算（提高数值稳定性）</span></span><br><span class="line">        <span class="comment"># 乘以可学习的权重，最后转换回原始精度（type_as(x)）</span></span><br><span class="line">        <span class="keyword">return</span> (<span class="variable language_">self</span>.weight * <span class="variable language_">self</span>.norm(x.<span class="built_in">float</span>())).type_as(x)</span><br></pre></td></tr></table></figure>
+
+<h2 id="大模型优化方法：从KV-Cache到Flash-Attention"><a href="#大模型优化方法：从KV-Cache到Flash-Attention" class="headerlink" title="大模型优化方法：从KV Cache到Flash Attention"></a>大模型优化方法：从KV Cache到Flash Attention</h2><p>背景：标准 Attention 的时间与空间复杂度均为 $O(L^2)$，随上下文长度增长显存爆炸。</p>
+<p>$$\text{Attention}(Q, K, V) &#x3D; \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+<p>随着大语言模型（LLM）参数规模从数十亿（7B）向数千亿（70B-400B+）乃至万亿级别跃升，以及上下文窗口从标准的4k token扩展至128k甚至1M token，深度学习的计算重心已显著从模型训练阶段的算力（FLOPS）瓶颈，转移至推理阶段的显存带宽（Memory Bandwidth）与显存容量（Memory Capacity）瓶颈。在自回归（Autoregressive）生成范式下，传统的Transformer架构面临着计算效率与存储效率的双重挑战。</p>
+<p>KV Cache是实现实时自回归生成的必要前提，但其引入的显存线性增长问题迫使架构设计从MHA向MQA和GQA转型，以在模型精度与推理吞吐量（Throughput）之间寻找最优平衡。与此同时，Flash Attention通过算法层面的IO感知（IO-Aware）优化，打破了传统注意力机制的二次方复杂度存储瓶颈，成为长文本推理的基石。</p>
+<h3 id="KV-Cache"><a href="#KV-Cache" class="headerlink" title="KV Cache"></a>KV Cache</h3><p><strong>原理</strong>：缓存历史 Token 的 K、V，避免重复计算。</p>
+<ul>
+<li><strong>Prefill 阶段</strong>：计算 Prompt 中所有 Token 的 K、V 并存入缓存</li>
+<li><strong>Decode 阶段</strong>：只计算当前 Token 的 $q_n, k_n, v_n$，拼接到缓存后做注意力</li>
+</ul>
+<h3 id="注意力架构演进：MHA-→-MQA-→-GQA"><a href="#注意力架构演进：MHA-→-MQA-→-GQA" class="headerlink" title="注意力架构演进：MHA → MQA → GQA"></a>注意力架构演进：MHA → MQA → GQA</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>MHA</th>
+<th>GQA</th>
+<th>MQA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>KV 头数</td>
+<td>$H$（与 Q 相等）</td>
+<td>$G$（典型值 $H&#x2F;4$）</td>
+<td>1</td>
+</tr>
+<tr>
+<td>KV Cache</td>
+<td>100%</td>
+<td>25%</td>
+<td>~3%</td>
+</tr>
+<tr>
+<td>模型精度</td>
+<td>最高</td>
+<td>极接近 MHA</td>
+<td>有损失</td>
+</tr>
+<tr>
+<td>Q:K:V 比例</td>
+<td>$H:H:H$</td>
+<td>$H:G:G$</td>
+<td>$H:1:1$</td>
+</tr>
+</tbody></table>
+<p><strong>GQA</strong> 是主流选择（$G&#x3D;8$ 为甜点），当 $G&#x3D;H$ 退化为 MHA，$G&#x3D;1$ 退化为 MQA。</p>
+<h3 id="Flash-Attention"><a href="#Flash-Attention" class="headerlink" title="Flash Attention"></a>Flash Attention</h3><p><strong>问题</strong>：标准实现反复将 $N \times N$ 矩阵写入&#x2F;读出 HBM，IO 是瓶颈而非计算。</p>
+<p><strong>方案</strong>：IO 感知算法，通过**分块（Tiling）+ 重计算（Recomputation）**将 Attention 融合为单一 CUDA Kernel，在 SRAM 内完成计算，减少 HBM 读写。</p>
+<ul>
+<li><strong>Flash Decoding</strong>：针对生成阶段（Decode），将 KV Cache 切分为多块（Split-K），并行分发给所有 SM 计算，长上下文（32k+）下提速 <strong>8倍以上</strong>。</li>
+</ul>
+<h3 id="显存占用公式"><a href="#显存占用公式" class="headerlink" title="显存占用公式"></a>显存占用公式</h3><p>$$M_{\text{total}} &#x3D; M_{\text{weights}} + M_{\text{kvcache}} + M_{\text{activation}}$$</p>
+<p>$$M_{\text{weights}} \approx P_{\text{model}} \times S_{\text{prec}}$$</p>
+<p>$$M_{\text{kvcache}} &#x3D; 2 \times N_{\text{layers}} \times N_{kv} \times D_{\text{head}} \times L_{\text{seq}} \times B \times S_{\text{prec}}$$</p>
+<blockquote>
+<p>系数 <strong>2</strong> 代表同时存储 Key 和 Value。</p>
+</blockquote>
+<p>FP16 下的简化版：</p>
+<ul>
+<li><strong>静态显存（权重）</strong>：$M_{\text{weight}} &#x3D; \text{参数量} \times 2$</li>
+<li><strong>动态显存（KV Cache）</strong>：$M_{kv} &#x3D; 2 \times \text{层数} \times \text{KV头数} \times \text{头维度} \times \text{序列长} \times \text{Batch} \times 2$</li>
+</ul>
+<p><strong>示例</strong>：Llama 2 7B（MHA，32 KV头）vs Llama 3 8B（GQA，8 KV头），后者 KV Cache 仅为前者的 <strong>1&#x2F;4</strong>。</p>
+<h3 id="前沿扩展"><a href="#前沿扩展" class="headerlink" title="前沿扩展"></a>前沿扩展</h3><ul>
+<li><strong>MLA（DeepSeek-V2&#x2F;V3）</strong>：通过低秩矩阵分解将 KV 压缩为极小的 Latent Vector，比 GQA 更进一步压缩每头内部的数据表示。</li>
+<li><strong>PagedAttention（vLLM）</strong>：类似 OS 虚拟内存分页，允许 KV Block 离散存储，显存利用率从 60% 提升至 <strong>95% 以上</strong>。</li>
+</ul>
+
   </article>
 
   <!-- prev and next -->
