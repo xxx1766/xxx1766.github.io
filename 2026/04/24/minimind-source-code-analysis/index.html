@@ -1240,7 +1240,7 @@
 <h3 id="KV-Cache"><a href="#KV-Cache" class="headerlink" title="KV Cache"></a>KV Cache</h3><p><strong>原理</strong>：缓存历史 Token 的 K、V，避免重复计算。</p>
 <ul>
 <li><strong>Prefill 阶段</strong>：计算 Prompt 中所有 Token 的 K、V 并存入缓存</li>
-<li><strong>Decode 阶段</strong>：只计算当前 Token 的 $q_n, k_n, v_n$，拼接到缓存后做注意力<br><img src="/2026/04/10/agent-orchestrator/e-analysis/1.png"></li>
+<li><strong>Decode 阶段</strong>：只计算当前 Token 的 $q_n, k_n, v_n$，拼接到缓存后做注意力<br><img src="/./minimind-source-code-analysis/1.png"></li>
 </ul>
 <h3 id="注意力架构演进：MHA-→-MQA-→-GQA"><a href="#注意力架构演进：MHA-→-MQA-→-GQA" class="headerlink" title="注意力架构演进：MHA → MQA → GQA"></a>注意力架构演进：MHA → MQA → GQA</h3><table>
 <thead>
