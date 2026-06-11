@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>PPO 解析：从数学原理到代码实现 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./career" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:briefcase-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Career</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./career" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:briefcase-fill" width="22">
+      </iconify-icon>
+      <p>
+        Career
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">PPO 解析：从数学原理到代码实现</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-06-11</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-06-11</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>2.4k words, 9 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        源码解析
+      </a>
+    
+      <a href="/tags/rl/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        rl
+      </a>
+    
+      <a href="/tags/policy-gradient/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        policy-gradient
+      </a>
+    
+      <a href="/tags/ppo/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        ppo
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <h1 id="PPO-完全指南：从-TRPO-到工程落地"><a href="#PPO-完全指南：从-TRPO-到工程落地" class="headerlink" title="PPO 完全指南：从 TRPO 到工程落地"></a>PPO 完全指南：从 TRPO 到工程落地</h1><h2 id="一、背景：PPO-从哪里来？"><a href="#一、背景：PPO-从哪里来？" class="headerlink" title="一、背景：PPO 从哪里来？"></a>一、背景：PPO 从哪里来？</h2><p>PPO 的前身是 <strong>TRPO（Trust Region Policy Optimization）</strong>。要理解 PPO 为什么这样设计，必须先理解 TRPO 想解决什么问题。</p>
+<h3 id="TRPO-的核心思想"><a href="#TRPO-的核心思想" class="headerlink" title="TRPO 的核心思想"></a>TRPO 的核心思想</h3><p>强化学习中，策略梯度方法的核心问题是：<strong>每次更新步子多大合适？</strong></p>
+<p>步子太小 → 收敛慢；步子太大 → 策略崩溃，难以恢复。</p>
+<p>TRPO 的解法是：<strong>在优化目标的同时，加一个硬约束，限制新旧策略的 KL 散度不超过阈值 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span></span></span></span></strong>。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.4em;vertical-align:-0.95em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.4306em;"><span style="top:-2.3479em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">max</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7521em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9523em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbb">E</span></span><span style="top:-3.2579em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0278em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2559em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9419em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">]</span></span></span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">s.t.</span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9523em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbb">E</span></span><span style="top:-3.2579em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord text"><span class="mord">KL</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0278em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2559em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">⋅</span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">⋅</span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span></span></span></span></span></p>
+<p>TRPO 能理论保证策略单调改进，但代价沉重：</p>
+<ul>
+<li>需要计算 <strong>Fisher 信息矩阵的逆</strong>，计算量是参数量的平方级</li>
+<li>需要<strong>共轭梯度</strong>迭代求解约束优化</li>
+<li>大模型参数动辄几十亿，完全不可行</li>
+</ul>
+<h3 id="PPO-的核心改动"><a href="#PPO-的核心改动" class="headerlink" title="PPO 的核心改动"></a>PPO 的核心改动</h3><p>PPO 用一个极其简单的想法替代了 TRPO 的二阶约束：</p>
+<blockquote>
+<p><strong>直接把概率比值截断（clip）在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ϵ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ϵ</span><span class="mclose">]</span></span></span></span> 的范围内</strong>，从而限制策略更新幅度。</p>
+</blockquote>
+<p>TRPO 的约束是在<strong>参数空间</strong>上控制 KL 距离（<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span></span></span></span> 是 KL 散度上界）；PPO 的 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 是在<strong>概率比值空间</strong>上直接截断，两者度量体系不同，不能直接比大小。典型取值：<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.01</span></span></span></span>，<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4831em;"></span><span class="mord mathnormal">ϵ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.3</span></span></span></span>。</p>
+<p>PPO 牺牲了理论上的严格保证，换来了<strong>一阶优化、标准反向传播</strong>，工程实现大幅简化。</p>
+<h2 id="二、PPO-公式详解"><a href="#二、PPO-公式详解" class="headerlink" title="二、PPO 公式详解"></a>二、PPO 公式详解</h2><h3 id="2-1-核心目标函数"><a href="#2-1-核心目标函数" class="headerlink" title="2.1 核心目标函数"></a>2.1 核心目标函数</h3><p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">CLIP</span></span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.8em;vertical-align:-0.65em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9523em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbb">E</span></span><span style="top:-3.2579em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">[</span></span><span class="mop">min</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">(</span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">clip</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">ϵ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">ϵ</span><span class="mclose">)</span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">)</span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">]</span></span></span></span></span></span></span></p>
+<p><strong>逐符号解释：</strong></p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span></span></span></span></td>
+<td>Actor（策略网络）当前参数</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2023em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9523em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbb">E</span></span><span style="top:-3.2579em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">[</span><span class="mord">⋅</span><span class="mclose">]</span></span></span></span></td>
+<td>对一批采样数据取期望（均值）</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span></span></span></span></td>
+<td>概率比率 &#x3D; <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.3689em;vertical-align:-0.9419em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0278em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2559em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9419em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>，衡量新旧策略对同一动作的概率之比</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></td>
+<td>优势函数估计值，表示动作 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 比”平均水平”好多少</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span></td>
+<td>截断超参，控制更新幅度，典型值 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.3</span></span></span></span></td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">clip</span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">b</span><span class="mclose">)</span></span></span></span></td>
+<td>将 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 强制限制在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">b</span><span class="mclose">]</span></span></span></span> 范围内</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-为什么是-clip-min，而不只是-clip？"><a href="#2-2-为什么是-clip-min，而不只是-clip？" class="headerlink" title="2.2 为什么是 clip + min，而不只是 clip？"></a>2.2 为什么是 clip + min，而不只是 clip？</h3><p>这是 PPO 设计中最精妙的地方，单独用 clip 是不够的。</p>
+<p><strong>场景一：优势 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>（好动作，应该增大概率）</strong></p>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6891em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 时：clip 强制截断，梯度为零，不再继续增大比率 ✓</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6891em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 时：min 取 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>（未截断值更小），仍允许向好方向移动 ✓</li>
+</ul>
+<p><strong>场景二：优势 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>（坏动作，应该减小概率）</strong></p>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6891em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 时：clip 强制截断，梯度为零，不再继续减小比率 ✓</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6891em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 时（概率不降反升！）：<ul>
+<li>此时 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是很负的值</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1968em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">clip</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 被截断，是一个”没那么负”的值</li>
+<li>min 会选更负的那个，即 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，产生梯度，<strong>强迫把比率拉回来</strong> ✓</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论：clip 负责”别走太远”，min 负责”走错了必须拉回来”，二者缺一不可。</strong></p>
+<h3 id="2-3-完整损失函数"><a href="#2-3-完整损失函数" class="headerlink" title="2.3 完整损失函数"></a>2.3 完整损失函数</h3><p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">L</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">CLIP</span></span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">VF</span></span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0278em;">θ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.0813em;">H</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>含义</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8413em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">CLIP</span></span></span></span></span></span></span></span></span></span></span></span></span></td>
+<td>Actor 策略损失</td>
+<td>优化动作选择</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8413em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">VF</span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1615em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9115em;"><span style="top:-2.4542em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.1809em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">targ</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2458em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></td>
+<td>Critic 价值损失（MSE）</td>
+<td>训练价值估计更准确</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0813em;">H</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></td>
+<td>策略熵</td>
+<td>鼓励探索，防止策略过早收敛</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></td>
+<td>权重系数</td>
+<td>平衡各项损失</td>
+</tr>
+</tbody></table>
+<h3 id="2-4-优势函数：GAE"><a href="#2-4-优势函数：GAE" class="headerlink" title="2.4 优势函数：GAE"></a>2.4 优势函数：GAE</h3><p>PPO 通常使用 <strong>GAE（Generalized Advantage Estimation）</strong> 来估计 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1938em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">GAE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.9535em;vertical-align:-1.3021em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6514em;"><span style="top:-1.8479em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0197em;">l</span><span class="mrel mtight">=</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∞</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3021em;"><span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0556em;">γ</span><span class="mord mathnormal">λ</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0197em;">l</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.0197em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord text"><span class="mord cjk_fallback">其中</span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0556em;">γ</span><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：TD 残差，是单步优势的估计</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0556em;">γ</span></span></span></span>：折扣因子，控制未来奖励的权重</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span>：GAE 平滑系数，控制方差和偏差的权衡</li>
+</ul>
+<h2 id="三、PPO-的系统架构"><a href="#三、PPO-的系统架构" class="headerlink" title="三、PPO 的系统架构"></a>三、PPO 的系统架构</h2><p>在大语言模型的 RLHF（基于人类反馈的强化学习）场景中，PPO 同时需要维护 <strong>4 个模型</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">  query (q)</span><br><span class="line">     │</span><br><span class="line">     ▼</span><br><span class="line">┌─────────┐</span><br><span class="line">│  Actor  │  ← 唯一被训练的模型（策略网络 π_θ）</span><br><span class="line">│ Policy  │</span><br><span class="line">└─────────┘</span><br><span class="line">     │ 生成输出 (o)</span><br><span class="line">     ├──────────────────────┬──────────────────────┐</span><br><span class="line">     ▼                      ▼                      ▼</span><br><span class="line">┌───────────┐        ┌──────────┐         ┌───────────┐</span><br><span class="line">│ Reference │        │  Reward  │         │   Value   │</span><br><span class="line">│  Model    │        │  Model   │         │  (Critic) │</span><br><span class="line">│  (冻结)   │        │  (冻结)  │         │  (训练)   │</span><br><span class="line">└───────────┘        └──────────┘         └───────────┘</span><br><span class="line">     │                      │                      │</span><br><span class="line">     │ KL 惩罚项             │ 奖励分 r              │ 价值估计 v</span><br><span class="line">     └──────────┬───────────┘                      │</span><br><span class="line">                ▼                                  │</span><br><span class="line">           r（含KL惩罚）                            v</span><br><span class="line">                └──────────────┬───────────────────┘</span><br><span class="line">                               ▼</span><br><span class="line">                          GAE 计算</span><br><span class="line">                         ┌──────────┐</span><br><span class="line">                         │    A     │  优势函数 → 更新 Actor</span><br><span class="line">                         │  (优势)  │</span><br><span class="line">                         └──────────┘</span><br><span class="line">                         ┌──────────┐</span><br><span class="line">                         │ Returns  │  真实回报 → 更新 Critic</span><br><span class="line">                         └──────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="四个模型的角色"><a href="#四个模型的角色" class="headerlink" title="四个模型的角色"></a>四个模型的角色</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>是否训练</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Actor（策略网络）</strong></td>
+<td>✅ 是</td>
+<td>生成回答，是训练的最终目标</td>
+</tr>
+<tr>
+<td><strong>Critic（价值网络）</strong></td>
+<td>✅ 是</td>
+<td>估计当前状态价值 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mclose">)</span></span></span></span>，计算 GAE，训练完可丢弃</td>
+</tr>
+<tr>
+<td><strong>Reference Model</strong></td>
+<td>❌ 冻结</td>
+<td>SFT 初始模型，计算 KL 散度，防止 Actor 跑偏</td>
+</tr>
+<tr>
+<td><strong>Reward Model</strong></td>
+<td>❌ 冻结</td>
+<td>人类偏好训练的打分模型，给每条输出打分</td>
+</tr>
+</tbody></table>
+<p><strong>KL 惩罚机制：</strong></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">final</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">reward</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0528em;">β</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">KL</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0278em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∥</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">ref</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>Reference Model 保证了 Actor 不会为了刷高奖励分而产生”奖励黑客”——说出毫无意义但高分的奇怪输出。</p>
+<h2 id="四、核心代码讲解"><a href="#四、核心代码讲解" class="headerlink" title="四、核心代码讲解"></a>四、核心代码讲解</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">PPOTrainer</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, clip_epsilon=<span class="number">0.2</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.clip_epsilon = clip_epsilon</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">compute_loss</span>(<span class="params">self, old_log_probs, new_log_probs, advantages, returns, values</span>):</span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># Step 1：计算概率比率 r_t</span></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># 用对数差代替直接相除：exp(log π_new - log π_old) = π_new / π_old</span></span><br><span class="line">        <span class="comment"># 数值稳定，避免概率值极小时的浮点下溢</span></span><br><span class="line">        ratio = torch.exp(new_log_probs - old_log_probs)</span><br><span class="line">        <span class="comment"># old_log_probs 必须 detach()，它来自采样时的旧策略，不参与梯度计算</span></span><br><span class="line">        <span class="comment"># new_log_probs 保留梯度，是当前 Actor 的输出</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># Step 2：未截断损失（Surrogate 1）</span></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        surr1 = ratio * advantages</span><br><span class="line"></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># Step 3：截断损失（Surrogate 2）</span></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># torch.clamp 将 ratio 强制限制在 [1-ε, 1+ε]</span></span><br><span class="line">        ratio_clipped = torch.clamp(ratio, <span class="number">1.0</span> - <span class="variable language_">self</span>.clip_epsilon, <span class="number">1.0</span> + <span class="variable language_">self</span>.clip_epsilon)</span><br><span class="line">        surr2 = ratio_clipped * advantages</span><br><span class="line"></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># Step 4：Actor Loss = -min(surr1, surr2)</span></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># min：取保守估计，防止过度优化</span></span><br><span class="line">        <span class="comment"># 负号：因为 PyTorch 做梯度下降，而我们想最大化目标</span></span><br><span class="line">        policy_loss = -torch.<span class="built_in">min</span>(surr1, surr2).mean()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># Step 5：Critic Loss = MSE(预测值, 真实回报)</span></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># values：Critic 对当前状态的价值预测 V(s_t)</span></span><br><span class="line">        <span class="comment"># returns：GAE 计算出的真实折扣回报（rewards-to-go）</span></span><br><span class="line">        <span class="comment"># 注意：advantages 用于更新 Actor；returns 用于更新 Critic</span></span><br><span class="line">        value_loss = F.mse_loss(values, returns)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># Step 6：总损失合并</span></span><br><span class="line">        <span class="comment"># ----------------------------------------------------------------</span></span><br><span class="line">        <span class="comment"># 0.5 是常用的 Critic 损失系数（也可加熵正则）</span></span><br><span class="line">        total_loss = policy_loss + <span class="number">0.5</span> * value_loss</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> total_loss</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键实现细节"><a href="#关键实现细节" class="headerlink" title="关键实现细节"></a>关键实现细节</h3><p><strong>① <code>old_log_probs</code> 必须 detach</strong></p>
+<p><code>old_log_probs</code> 是在数据采集（rollout）阶段用旧策略计算的，它是常数基准，不应该有梯度。如果不 detach，PyTorch 会尝试对它反向传播，导致错误或无意义的梯度。</p>
+<p><strong>② 对数差 vs 直接相除</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ❌ 直接相除：数值不稳定</span></span><br><span class="line">ratio = new_probs / old_probs</span><br><span class="line"></span><br><span class="line"><span class="comment"># ✅ 对数差后取指数：数值稳定</span></span><br><span class="line">ratio = torch.exp(new_log_probs - old_log_probs)</span><br></pre></td></tr></table></figure>
+
+<p>当概率值非常小（如 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">7</span></span></span></span></span></span></span></span></span></span></span></span>）时，直接相除会有浮点精度问题；对数空间做减法再取指数则稳定得多。</p>
+<p><strong>③ advantages vs returns 的区别</strong></p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>公式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>advantages</code></td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span> GAE</td>
+<td>告诉 Actor”这个动作比均值好多少”，用于更新策略</td>
+</tr>
+<tr>
+<td><code>returns</code></td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0077em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7917em;vertical-align:-0.2083em;"></span><span class="mord mathnormal" style="margin-right:0.0556em;">γ</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.313em;"></span><span class="minner">⋯</span></span></span></span></td>
+<td>告诉 Critic”这个状态的真实价值是多少”，用于更新价值估计</td>
+</tr>
+</tbody></table>
+<h2 id="五、PPO-的缺点"><a href="#五、PPO-的缺点" class="headerlink" title="五、PPO 的缺点"></a>五、PPO 的缺点</h2><p>PPO 虽然工程简洁、效果稳定，但在大语言模型场景下暴露出明显短板：</p>
+<h3 id="1-显存压力极大"><a href="#1-显存压力极大" class="headerlink" title="1. 显存压力极大"></a>1. 显存压力极大</h3><p>同时需要加载 4 个大模型（Actor、Critic、Reference、Reward），且 Actor 和 Critic 通常与原始 LLM 同等体量。以 7B 参数模型为例：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord">7</span><span class="mord text"><span class="mord">B</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mord text"><span class="mord">bytes (bf16)</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">56</span><span class="mord text"><span class="mord">GB</span></span></span></span></span></span></p>
+<p>仅模型权重就需要 56GB，还不含激活值、优化器状态，实际需求轻松超过 160GB。</p>
+<h3 id="2-On-Policy-导致训练效率低"><a href="#2-On-Policy-导致训练效率低" class="headerlink" title="2. On-Policy 导致训练效率低"></a>2. On-Policy 导致训练效率低</h3><p>PPO 是 On-Policy 算法：每次用<strong>当前策略生成数据</strong>，更新几步后数据就过期，必须重新采样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">生成 → 训练几步 → 数据过期 → 重新生成 → 训练几步 → ...</span><br></pre></td></tr></table></figure>
+
+<p>对于 LLM 而言，生成是自回归的，速度远慢于训练。生成成为整个训练流程的瓶颈。</p>
+<h3 id="3-Critic-训练带来额外复杂性"><a href="#3-Critic-训练带来额外复杂性" class="headerlink" title="3. Critic 训练带来额外复杂性"></a>3. Critic 训练带来额外复杂性</h3><p>Critic 需要与 Actor 同步训练，且本身也是一个 LLM 级别的大模型。如果 Critic 估值不准，会导致 GAE 偏差，进而污染 Actor 的训练信号。</p>
+<h3 id="4-超参数敏感"><a href="#4-超参数敏感" class="headerlink" title="4. 超参数敏感"></a>4. 超参数敏感</h3><p>PPO 有多个超参数需要精心调整：clip 系数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span>、Critic 系数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>、熵系数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>、GAE 的 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span>、KL 惩罚系数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0528em;">β</span></span></span></span>……各超参之间存在耦合，调参成本高。</p>
+<h2 id="六、后续改进方向"><a href="#六、后续改进方向" class="headerlink" title="六、后续改进方向"></a>六、后续改进方向</h2><p>针对 PPO 的上述缺点，学界提出了几个有影响力的改进方案：</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>核心改动</th>
+<th>解决的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ReMax</strong></td>
+<td>用 REINFORCE + 贪心基线替代 GAE</td>
+<td>去掉 Critic，减少显存</td>
+</tr>
+<tr>
+<td><strong>RLOO</strong></td>
+<td>组内多条输出互为基线</td>
+<td>去掉 Critic，基线更稳定</td>
+</tr>
+<tr>
+<td><strong>GRPO</strong></td>
+<td>组内平均奖励做基线，去掉 Critic</td>
+<td>去掉 Critic，只需 Actor + Reference，DeepSeek-R1 采用</td>
+</tr>
+</tbody></table>
+<p>其中 <strong>GRPO</strong> 目前最为流行。其优势函数估计为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0968em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1111em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">std</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">mean</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>对同一个 query 采样 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span> 条输出，组内标准化得到优势，完全绕开了 Critic 模型。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>TRPO</th>
+<th>PPO</th>
+<th>GRPO</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>约束方式</td>
+<td>KL 散度硬约束</td>
+<td>clip 截断</td>
+<td>clip + 组内基线</td>
+</tr>
+<tr>
+<td>优化阶数</td>
+<td>二阶（共轭梯度）</td>
+<td>一阶（Adam）</td>
+<td>一阶（Adam）</td>
+</tr>
+<tr>
+<td>所需模型数</td>
+<td>2</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>工程复杂度</td>
+<td>高</td>
+<td>中</td>
+<td>低</td>
+</tr>
+<tr>
+<td>理论保证</td>
+<td>单调改进</td>
+<td>近似保证</td>
+<td>无严格保证</td>
+</tr>
+<tr>
+<td>大模型适用性</td>
+<td>差</td>
+<td>可用</td>
+<td>好</td>
+</tr>
+</tbody></table>
+<p>PPO 是强化学习工程化落地的重要里程碑，理解它的公式逻辑（clip + min 的协同）、架构设计（四模型分工）和代码实现，是进入大模型 RLHF 领域的必要基础。</p>
+<p>take home message：<br><img src="/./ppo-from-math-to-code/1.png" alt="PPO arch"></p>
+<blockquote>
+<p>「源码解析」合集：本文与 <a href="/2026/06/11/trpo-from-math-to-code/">TRPO 解析：从数学原理到代码实现</a>、<a href="/2026/04/24/minimind-source-code-analysis/">MiniMind 源码阅读与架构分析</a> 同属一个系列。建议先读 TRPO 那篇，PPO 的所有设计都是对它的工程简化。</p>
+</blockquote>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/06/11/trpo-from-math-to-code/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          TRPO 解析：从数学原理到代码实现
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
