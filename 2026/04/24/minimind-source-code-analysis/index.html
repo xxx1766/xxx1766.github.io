@@ -647,7 +647,7 @@
             </div>
             <div class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
-              Edited: <time class="w-max">2026-06-10</time>
+              Edited: <time class="w-max">2026-06-11</time>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
@@ -657,7 +657,7 @@
             <!-- Word count -->
             <span class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
-              <span>19.5k words, 81 min</span>
+              <span>21.5k words, 90 min</span>
             </span>
             <!-- Categories -->
             
@@ -759,6 +759,26 @@
         transformer
       </a>
     
+      <a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        源码解析
+      </a>
+    
   
 </div>
       </div>
@@ -766,7 +786,10 @@
   </header>
   <!-- content -->
   <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
-    <h2 id="Tokenizer"><a href="#Tokenizer" class="headerlink" title="Tokenizer"></a>Tokenizer</h2><p>Step 1：分词<br>Word-level（问题：未登录词+词表爆炸） -&gt; Character-level（序列过长+寓意稀疏）+ SubWord-level<br>目前主流subword分词算法：</p>
+    <blockquote>
+<p>「源码解析」合集：本文与 <a href="/2026/06/11/trpo-from-math-to-code/">TRPO 解析：从数学原理到代码实现</a> 同属一个系列，关注「论文&#x2F;数学原理 → 工程实现」的拆解。</p>
+</blockquote>
+<h2 id="Tokenizer"><a href="#Tokenizer" class="headerlink" title="Tokenizer"></a>Tokenizer</h2><p>Step 1：分词<br>Word-level（问题：未登录词+词表爆炸） -&gt; Character-level（序列过长+寓意稀疏）+ SubWord-level<br>目前主流subword分词算法：</p>
 <ul>
 <li>BPE（Byte Pair Encoding）：基于频率的合并算法，逐步合并最频繁的字节对，生成新的子词单元。用于GPT系列、Llama、RoBERTa等。</li>
 <li>WordPiece：基于概率的分词算法，使用最大似然估计来选择合适的子词单元。用于BERT、ALBERT等。</li>
@@ -1283,6 +1306,50 @@
 <p><strong>GQA</strong> 是主流选择（$G&#x3D;8$ 为甜点），当 $G&#x3D;H$ 退化为 MHA，$G&#x3D;1$ 退化为 MQA。</p>
 <h3 id="Flash-Attention"><a href="#Flash-Attention" class="headerlink" title="Flash Attention"></a>Flash Attention</h3><p><strong>问题</strong>：标准实现反复将 $N \times N$ 矩阵写入&#x2F;读出 HBM，IO 是瓶颈而非计算。</p>
 <p><strong>方案</strong>：IO 感知算法，通过**分块（Tiling）+ 重计算（Recomputation）**将 Attention 融合为单一 CUDA Kernel，在 SRAM 内完成计算，减少 HBM 读写。</p>
+<blockquote>
+<p>重计算用于反向传播</p>
+</blockquote>
+<p>注意力层的输出 $O$ 定义为：</p>
+<p>$$O &#x3D; PV &#x3D; \text{softmax}!\left(\frac{QK^\top}{\sqrt{d}}\right) V \in \mathbb{R}^{N \times d}$$</p>
+<p>其中 $S &#x3D; QK^\top$ 是相似度矩阵，$P &#x3D; \text{softmax}(S)$ 是注意力权重矩阵，输出的每一行是对所有 Value 向量的加权求和：</p>
+<p>$$O_i &#x3D; \sum_j P_{ij} V_j$$</p>
+<p>标准实现需要在前向传播时<strong>保存完整的 $S$ 和 $P$</strong>（均为 $N \times N$）用于反向传播，显存复杂度为 $O(N^2)$，序列长时代价极大。</p>
+<p>Flash Attention 的实现是前向传播时<strong>不保存 $S$ 和 $P$</strong>，只保留三样东西：</p>
+<ul>
+<li>输出 $O \in \mathbb{R}^{N \times d}$</li>
+<li>每行的最大值 $m_i &#x3D; \max_j S_{ij}$</li>
+<li>每行的 softmax 分母 $\ell_i &#x3D; \sum_j e^{S_{ij} - m_i}$</li>
+</ul>
+<p>$m_i$ 和 $\ell_i$ 合称 <strong>softmax 归一化统计量</strong>，在分块计算时可以增量维护。</p>
+<p>需要梯度时，利用仍在显存中的 $Q, K$ 逐块<strong>重新计算</strong> $S$ 和 $P$：</p>
+<p>$$S_{ij} &#x3D; q_i \cdot k_j^\top, \quad P_{ij} &#x3D; \frac{e^{S_{ij} - m_i}}{\ell_i}$$</p>
+<p>再用标准链式法则计算梯度。由 $dP_{ij} &#x3D; dO_i \cdot V_j^\top$，得：</p>
+<p>$$dS_{ij} &#x3D; P_{ij}\left(dP_{ij} - \sum_k P_{ik}, dP_{ik}\right)$$</p>
+<p>进而：</p>
+<p>$$dQ &#x3D; dS, K, \quad dK &#x3D; dS^\top Q, \quad dV &#x3D; P^\top, dO$$</p>
+<blockquote>
+<p>注：$O$ 本身不用于还原 $P$，而是参与 $dO$ 相关梯度项的计算；真正用于重建 $P$ 的是 $Q, K, m_i, \ell_i$。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>标准 Attention</th>
+<th>Flash Attention</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前向显存</td>
+<td>$O(N^2)$</td>
+<td>$O(N)$</td>
+</tr>
+<tr>
+<td>计算量</td>
+<td>$O(N^2 d)$</td>
+<td>$O(N^2 d)$（反向多一次前向）</td>
+</tr>
+</tbody></table>
+<p>重计算以<strong>少量额外计算</strong>换取<strong>大量显存节省</strong>，是 Flash Attention 能支持长序列训练的核心机制。</p>
 <ul>
 <li><strong>Flash Decoding</strong>：针对生成阶段（Decode），将 KV Cache 切分为多块（Split-K），并行分发给所有 SM 计算，长上下文（32k+）下提速 <strong>8倍以上</strong>。</li>
 </ul>
@@ -1682,6 +1749,163 @@
 <li>User 说的话 (“给我推荐一些…”) -&gt; Label设为 -100。</li>
 <li>Assistant 说的话 (“摇滚歌曲推荐…”) -&gt; Label设为 Token ID。</li>
 </ul>
+<h3 id="RLHF"><a href="#RLHF" class="headerlink" title="RLHF"></a>RLHF</h3><p>minimind RL的数据格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;chosen&quot;: [</span><br><span class="line">    &#123;&quot;content&quot;: &quot;Q&quot;, &quot;role&quot;: &quot;user&quot;&#125;, </span><br><span class="line">    &#123;&quot;content&quot;: &quot;good answer&quot;, &quot;role&quot;: &quot;assistant&quot;&#125;</span><br><span class="line">  ], </span><br><span class="line">  &quot;rejected&quot;: [</span><br><span class="line">    &#123;&quot;content&quot;: &quot;Q&quot;, &quot;role&quot;: &quot;user&quot;&#125;, </span><br><span class="line">    &#123;&quot;content&quot;: &quot;bad answer&quot;, &quot;role&quot;: &quot;assistant&quot;&#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./minimind-source-code-analysis/9.png" alt="RL algo"></p>
+<h4 id="信任区域算法"><a href="#信任区域算法" class="headerlink" title="信任区域算法"></a>信任区域算法</h4><h5 id="TRPO（信任区域策略优化）Trust-Region-Policy-Optimization"><a href="#TRPO（信任区域策略优化）Trust-Region-Policy-Optimization" class="headerlink" title="TRPO（信任区域策略优化）Trust Region Policy Optimization"></a>TRPO（信任区域策略优化）Trust Region Policy Optimization</h5><p><strong>核心思想</strong>：不限制参数数值的变化，而是限制<strong>策略行为分布</strong>的变化（用 KL 散度衡量）。</p>
+<p>带约束的优化问题：</p>
+<p>$$\max_\theta \mathbb{E}<em>t \left[\frac{\pi</em>\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)} A_t\right] \quad \text{subject to} \quad \mathbb{E}<em>t[\text{KL}(\pi</em>{\theta_{old}}(\cdot|s_t) | \pi_\theta(\cdot|s_t))] \leq \delta$$</p>
+<p><strong>瓶颈</strong>：求解需对 KL 散度做二阶泰勒展开，引入 Hessian 矩阵（7B 模型大小为 70亿×70亿），计算量不可接受。</p>
+<h5 id="PPO（近端策略优化）——-工业级标准"><a href="#PPO（近端策略优化）——-工业级标准" class="headerlink" title="PPO（近端策略优化）—— 工业级标准"></a>PPO（近端策略优化）—— 工业级标准</h5><p><strong>核心思想</strong>：用简单的”裁剪”技巧模拟信任区域，只用一阶梯度。</p>
+<p><strong>裁剪目标函数</strong>：</p>
+<p>$$\mathcal{L}^{CLIP}(\theta) &#x3D; \mathbb{E}\left[\min\left(r_t(\theta)\hat{A}_t,\ \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t\right)\right]$$</p>
+<ul>
+<li>$r_t(\theta) &#x3D; \frac{\pi_\theta}{\pi_{old}}$ 为新旧策略比值；$\epsilon$ 通常取 0.2</li>
+<li>好动作：增加概率但不超过 $1+\epsilon$；坏动作：降低概率但不低于 $1-\epsilon$</li>
+</ul>
+<p><strong>工业级架构需同时维护 4 个模型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>角色</th>
+<th>是否可训</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Actor $\pi_\theta$</td>
+<td>正在训练的 LLM</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Critic $V_\phi$</td>
+<td>预测状态价值，降低方差</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Reference $\pi_{ref}$</td>
+<td>SFT 后的冻结副本，计算 KL 防止跑偏</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Reward Model</td>
+<td>给生成结果打分</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<p><strong>PPO 瓶颈</strong>：4 个大模型占用极高显存；On-Policy 需实时生成文本，90% 时间花在推理上。</p>
+<h4 id="去-Critic-的-REINFORCE-变体"><a href="#去-Critic-的-REINFORCE-变体" class="headerlink" title="去 Critic 的 REINFORCE 变体"></a>去 Critic 的 REINFORCE 变体</h4><h5 id="ReMax"><a href="#ReMax" class="headerlink" title="ReMax"></a>ReMax</h5><p>利用 LLM 环境的确定性，用<strong>贪婪解码结果</strong>作为基线：</p>
+<p>$$A(x, y_{sample}) &#x3D; R(x, y_{sample}) - R(x, y_{greedy})$$</p>
+<p>效果与 PPO 持平，但显存减少 1&#x2F;4~1&#x2F;2。</p>
+<h5 id="RLOO"><a href="#RLOO" class="headerlink" title="RLOO"></a>RLOO</h5><p>对同一 Prompt 采 $K$ 个回复，用<strong>其余 $K-1$ 个的平均奖励</strong>作为基线：</p>
+<p>$$b_i &#x3D; \frac{1}{K-1}\sum_{j \neq i} R(x, y_j), \quad A_i &#x3D; R(x, y_i) - b_i$$</p>
+<p>无偏估计，随 $K$ 增大方差显著降低。</p>
+<h5 id="Reinforce"><a href="#Reinforce" class="headerlink" title="Reinforce++"></a>Reinforce++</h5><p>将 PPO 的工程技巧（Token 级 KL 惩罚、梯度裁剪、优势归一化）移植回 REINFORCE，无需 Critic 即可达到 PPO 稳定性。</p>
+<h4 id="RL-Free：隐式偏好优化"><a href="#RL-Free：隐式偏好优化" class="headerlink" title="RL-Free：隐式偏好优化"></a>RL-Free：隐式偏好优化</h4><blockquote>
+<p>核心动机：跳过显式 Reward Model，直接用人类偏好数据优化策略。</p>
+</blockquote>
+<h5 id="DPO（直接偏好优化）"><a href="#DPO（直接偏好优化）" class="headerlink" title="DPO（直接偏好优化）"></a>DPO（直接偏好优化）</h5><p><strong>推导路径</strong>：RLHF 目标 → 最优策略解析解 → 消去配分函数 $Z(x)$</p>
+<p>RLHF 目标：</p>
+<p>$$\max_\pi \mathbb{E}<em>{x \sim \mathcal{D}, y \sim \pi}\left[r(x,y) - \beta D</em>{KL}(\pi(y|x) | \pi_{ref}(y|x))\right]$$</p>
+<p>最优策略解析解：</p>
+<p>$$\pi^*(y|x) &#x3D; \frac{1}{Z(x)}\pi_{ref}(y|x),e^{\frac{1}{\beta}r(x,y)}$$</p>
+<p>最终损失（$Z(x)$ 在差值中自动抵消）：</p>
+<p>$$\mathcal{L}<em>{DPO}(\pi</em>\theta;\pi_{ref}) &#x3D; -\mathbb{E}<em>{(x,y_w,y_l)\sim\mathcal{D}}\left[\log\sigma\left(\beta\log\frac{\pi</em>\theta(y_w|x)}{\pi_{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_{ref}(y_l|x)}\right)\right]$$</p>
+<p><strong>局限</strong>：离线算法，存在分布偏移、模式坍塌、无法探索新解等问题。</p>
+<h5 id="IPO"><a href="#IPO" class="headerlink" title="IPO"></a>IPO</h5><p>修正 DPO 的过拟合倾向，用 MSE 控制更新幅度，将偏好差距回归到固定目标值 $\gamma$：</p>
+<p>$$\mathcal{L}<em>{IPO} &#x3D; \mathbb{E}</em>{(x,y_w,y_l)}\left[\left(\log\frac{\pi(y_w|x)}{\pi_{ref}(y_w|x)} - \log\frac{\pi(y_l|x)}{\pi_{ref}(y_l|x)} - \frac{\gamma}{2}\right)^2\right]$$</p>
+<h5 id="KTO"><a href="#KTO" class="headerlink" title="KTO"></a>KTO</h5><p>灵感来源于<strong>前景理论（损失厌恶）</strong>，不需要配对数据，只需单条点赞&#x2F;踩：</p>
+<p>$$\mathcal{L}<em>{KTO} \approx \text{WeightedLoss}(y</em>{good}) + \lambda \cdot \text{WeightedLoss}(y_{bad})$$</p>
+<p>对”避免坏结果”的敏感度高于”生成好结果”。</p>
+<h5 id="ORPO"><a href="#ORPO" class="headerlink" title="ORPO"></a>ORPO</h5><p>将 SFT 和对齐<strong>合二为一</strong>，在交叉熵 SFT Loss 上增加基于**赔率比（Odds Ratio）**的惩罚项。无需参考模型 $\pi_{ref}$，显存最友好。</p>
+<h4 id="GRPO-及推理增强算法"><a href="#GRPO-及推理增强算法" class="headerlink" title="GRPO 及推理增强算法"></a>GRPO 及推理增强算法</h4><h5 id="GRPO（群组相对策略优化）——-DeepSeek-核心算法"><a href="#GRPO（群组相对策略优化）——-DeepSeek-核心算法" class="headerlink" title="GRPO（群组相对策略优化）—— DeepSeek 核心算法"></a>GRPO（群组相对策略优化）—— DeepSeek 核心算法</h5><p><strong>核心洞见</strong>：一次生成一组回答，通过组内比较估算优势，彻底删除 Critic 模型。</p>
+<p><strong>算法流程</strong>：</p>
+<ol>
+<li><strong>群体采样</strong>：对 Prompt $q$ 并行采样 $G$ 个回答：$o_1, o_2, \ldots, o_G \sim \pi_\theta(o|q)$</li>
+<li><strong>奖励计算</strong>：规则打分（准确性 + 格式），无需神经网络 RM</li>
+<li><strong>优势估计（Z-Score 标准化）</strong>：<br>$$A_i &#x3D; \frac{r_i - \text{mean}(r_1,\ldots,r_G)}{\text{std}(r_1,\ldots,r_G) + \epsilon}$$</li>
+<li><strong>目标函数</strong>：</li>
+</ol>
+<p>$$\mathcal{L}<em>{GRPO} &#x3D; \mathbb{E}\left[\min\left(\frac{\pi</em>\theta}{\pi_{old}}A_i,\ \text{clip}\left(\frac{\pi_\theta}{\pi_{old}}, 1-\epsilon, 1+\epsilon\right)A_i\right)\right] - \beta D_{KL}(\pi_\theta | \pi_{ref})$$</p>
+<h5 id="GRPO-变体"><a href="#GRPO-变体" class="headerlink" title="GRPO 变体"></a>GRPO 变体</h5><p><strong>Dr. GRPO</strong>：发现并修正 GRPO 的三类偏差：</p>
+<ul>
+<li><strong>基线偏差</strong>：使用留一均值替代含自身的均值</li>
+<li><strong>长度偏差</strong>：归一化不同长度序列的梯度贡献</li>
+<li><strong>难度偏差</strong>：引入历史感知锚点，处于”学习区”的问题给予更强信号</li>
+</ul>
+<p><strong>DAPO</strong>：解耦裁剪参数、动态采样，非对称 Clip 鼓励探索，适合大规模推理训练。</p>
+<p><strong>GSPO</strong>：序列级一致性约束，防止长链条崩塌，适合 MoE &#x2F; 长文本。</p>
+<p><strong>SAPO</strong>：软门控提供连续信任区域，平滑优化，适合多模态 &#x2F; 复杂推理。</p>
+<h4 id="过程监督与自举学习"><a href="#过程监督与自举学习" class="headerlink" title="过程监督与自举学习"></a>过程监督与自举学习</h4><h5 id="PRM（过程奖励模型）"><a href="#PRM（过程奖励模型）" class="headerlink" title="PRM（过程奖励模型）"></a>PRM（过程奖励模型）</h5><p>对推理的<strong>每一步</strong>打分（vs. ORM 只看最终结果），提供密集奖励信号，极大加速复杂推理收敛。</p>
+<h5 id="STaR（自我教学推理）"><a href="#STaR（自我教学推理）" class="headerlink" title="STaR（自我教学推理）"></a>STaR（自我教学推理）</h5><p>自进化循环：生成 → 过滤正确样本 → 微调 → 对错误题目用正确答案反推推理过程（Rationalization）→ 扩充训练集。</p>
+<h4 id="算法横向对比"><a href="#算法横向对比" class="headerlink" title="算法横向对比"></a>算法横向对比</h4><table>
+<thead>
+<tr>
+<th>算法</th>
+<th>需要 Critic</th>
+<th>显存</th>
+<th>核心优势</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PPO</td>
+<td>✅</td>
+<td>极高</td>
+<td>稳定，在线探索，理论成熟</td>
+</tr>
+<tr>
+<td>ReMax</td>
+<td>❌</td>
+<td>中</td>
+<td>极简，效果持平 PPO</td>
+</tr>
+<tr>
+<td>RLOO</td>
+<td>❌</td>
+<td>中</td>
+<td>无偏估计，高效利用采样</td>
+</tr>
+<tr>
+<td>DPO</td>
+<td>❌</td>
+<td>低</td>
+<td>稳定，无采样开销</td>
+</tr>
+<tr>
+<td>KTO</td>
+<td>❌</td>
+<td>低</td>
+<td>只需单条反馈，无需配对数据</td>
+</tr>
+<tr>
+<td>ORPO</td>
+<td>❌</td>
+<td>极低</td>
+<td>SFT+对齐一步到位</td>
+</tr>
+<tr>
+<td>GRPO</td>
+<td>❌</td>
+<td>中低</td>
+<td>大规模推理，DeepSeek 首选</td>
+</tr>
+<tr>
+<td>DAPO</td>
+<td>❌</td>
+<td>中低</td>
+<td>动态采样，非对称 Clip</td>
+</tr>
+<tr>
+<td>GSPO</td>
+<td>❌</td>
+<td>中低</td>
+<td>序列级一致性</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>未来可能是多算法融合——STaR 生成数据 → ORPO 冷启动 → GRPO&#x2F;DAPO 大规模推理增强 → PRM 推理时搜索引导。RL 是弥合预训练模型与 AGI 之间”最后一公里”的关键桥梁。</p>
+</blockquote>
 
   </article>
 

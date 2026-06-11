@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="xxx1766">
+
+
+  <meta name="subtitle" content="A girl who loves speaking...">
+
+
+  <meta name="description" content="Here is my blog, welcome to visit it.">
+
+
+
+<title>TRPO 解析：从数学原理到代码实现 | xxx1766&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/css/search.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ic:round-dark-mode" : "ic:round-light-mode");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+    $("#toggle-dark").click(toggleDark);
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ic:round-dark-mode" : "ic:round-light-mode"
+          );
+          toggleGiscusTheme();
+        }
+      });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body 
+  class="
+    bg-[var(--c-0)]
+    text-[var(--c-80)]
+  ">
+  <!-- The navigation bar -->
+<header class="
+    flex flex-row items-center
+    w-full
+    pr-4
+    z-10
+    border-b-[1px]
+    border-b-[var(--c-border)]
+    dark:bg-[var(--c-0)]
+    dark:border-b-[var(--c-0)]
+    gap-2
+    h-[var(--h-header)]
+    text-[var(--c-80)]
+">
+  <!-- Left part -->
+  <div class="overflow-hidden h-full flex flex-row items-center">
+    <!-- Site Title on the top left -->
+    <a href="/" class="
+            whitespace-nowrap
+            text-2xl
+            text-[var(--c-theme)]
+            hover:text-[var(--c-theme)]
+            pl-4
+            font-black
+            bg-gradient-to-r from-cyan-500
+            to-blue-500 bg-clip-text text-transparent
+          ">
+      xxx1766&#39;s Blog
+    </a>
+  </div>
+  <!-- Div for pushing items to both sides -->
+  <div class="flex-1"></div>
+  <!-- Right part -->
+  <div class="flex flex-row items-center z-20 h-full">
+    <!-- Page links -->
+    <div class="hidden sm:flex flex-row h-full">
+      
+        
+        
+          
+          
+        
+      <a href="/./archives" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:inbox-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Posts</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./publications" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:science-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Publications</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./about" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:user-info-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>About</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./categories" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:classify-2-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Categories</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./tags" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:tag-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Tags</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./pictures" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:camera_2_ai_fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Pictures</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./career" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:briefcase-fill" width="22">
+        </iconify-icon>
+        
+        
+        <p>Career</p>
+        
+      </a>
+      
+        
+        
+          
+          
+        
+      <a href="/./index" class="
+                        flex flex-row items-center
+                        gap-1
+                        hover:underline
+                        hover:bg-[var(--c-20)]
+                        hover:text-[var(--c-theme)]
+                        transition-all
+                        px-2
+                        py-1
+                        my-1
+                        rounded-lg
+                        group
+                        whitespace-nowrap
+                    ">
+        
+        <iconify-icon class="group-hover:scale-125 transition-transform" icon="mingcute:home-2-fill" width="22">
+        </iconify-icon>
+        
+        
+      </a>
+      
+    </div>
+    <!-- Icons on the right -->
+    <div class="flex flex-row items-center justify-center">
+
+      <!-- TODO: Add search icon here -->
+
+      <!-- Dark/light toggle icon -->
+      <a class="flex group p-1" title="toggle theme" id="toggle-dark">
+        <iconify-icon class="transition-transform
+                    group-hover:rotate-[45deg]
+                    group-hover:scale-125
+                    group-hover:text-[var(--c-theme)]" width="24" id="theme-icon">
+        </iconify-icon>
+      </a>
+      <!-- Icon for dropout menu on small screens -->
+      <div class="flex flex-row items-center justify-center p-1 sm:hidden">
+        <a class="w-6 h-6" aria-hidden="true" id="open-menu">
+          <iconify-icon width="24" icon="mingcute:menu-fill" class="transition-transform hover:scale-125 hover:rotate-[5deg]">
+          </iconify-icon>
+        </a>
+        <a class="w-6 h-6 hidden" aria-hidden="true" id="close-menu">
+          <iconify-icon width="24" icon="mingcute:close-circle-fill" class="transition-transform hover:scale-125 hover:rotate-[80deg]">
+          </iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Dropdown menu on small screens -->
+<div id="menu-panel" class="
+        h-0
+        overflow-hidden
+        sm:hidden
+        w-full
+        z-10
+        rounded
+    ">
+  <div id="menu-content" class="
+        flex
+        flex-col
+        font-bold
+        text-xl
+        border-b-[1px]
+        relative
+        z-20
+        border-[var(--c-sep)]
+        px-2
+        py-2
+        -translate-y-full
+        transition-transform
+        duration-200
+        ">
+    
+    
+    
+    <a href="/./archives" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:inbox-fill" width="22">
+      </iconify-icon>
+      <p>
+        Posts
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./publications" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:science-fill" width="22">
+      </iconify-icon>
+      <p>
+        Publications
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./about" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:user-info-fill" width="22">
+      </iconify-icon>
+      <p>
+        About
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./categories" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:classify-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        Categories
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./tags" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:tag-fill" width="22">
+      </iconify-icon>
+      <p>
+        Tags
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./pictures" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:camera_2_ai_fill" width="22">
+      </iconify-icon>
+      <p>
+        Pictures
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./career" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:briefcase-fill" width="22">
+      </iconify-icon>
+      <p>
+        Career
+      </p>
+    </a>
+    
+    
+    
+    
+    <a href="/./index" class="
+                flex flex-row items-center
+                gap-2
+                h-12
+                hover:underline
+                hover:bg-[var(--c-20)]
+                px-3
+                py-1
+                rounded-lg
+            ">
+      <iconify-icon icon="mingcute:home-2-fill" width="22">
+      </iconify-icon>
+      <p>
+        
+      </p>
+    </a>
+    
+    
+  </div>
+</div>
+
+
+  <main>
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+  
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+    <!-- toc -->
+    
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-40 relative top-32 right-4 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<!-- <section class="px-6 max-w-prose mx-auto md:px-0"> -->
+<section class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl">
+  <!-- Post header before content -->
+  <header class="py-4">
+    <div class="flex flex-col gap-2 pt-4 md:pt-6">
+      <!-- Title -->
+      <div id="article-title" class="leading-snug">
+        <p class="text-3xl font-bold text-[var(--c-100)] mb-4">TRPO 解析：从数学原理到代码实现</p>
+      </div>
+      <!-- Meta data -->
+      <div>
+        <section class="
+          flex flex-col gap-x-2 gap-y-1 text-sm text-[var(--c-100)]">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <!-- Dates -->
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:add-circle-fill" ></iconify-icon>
+              Created: <time class="w-max">2026-06-11</time>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:refresh-3-fill" ></iconify-icon>
+              Edited: <time class="w-max">2026-06-11</time>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-3">
+            <!-- Author -->
+            
+
+            <!-- Word count -->
+            <span class="flex items-center gap-1">
+              <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
+              <span>2.2k words, 11 min</span>
+            </span>
+            <!-- Categories -->
+            
+              <!-- <span class="text-gray-400">·</span> -->
+              <span class="flex flex-row items-center gap-1 group hover:underline">
+                <iconify-icon class="transition-all group-hover:scale-125 mr-0"
+                  width="18"
+                  icon="mingcute:classify-2-fill">
+                </iconify-icon>
+                <a class="article-category-link" href="/categories/Knowledge/">Knowledge</a>
+              </span>
+            
+          </div>
+        </section>
+      </div>
+      <!-- tags -->
+      <div>
+        
+<div class="flex flex-wrap gap-1">
+  
+    
+      <a href="/tags/rl/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        rl
+      </a>
+    
+      <a href="/tags/trpo/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        trpo
+      </a>
+    
+      <a href="/tags/policy-gradient/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        policy-gradient
+      </a>
+    
+      <a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" 
+        class="
+          tag
+          text-sm
+          rounded-full
+          px-[5px]
+          border-[1px]
+          border-[var(--c-theme)]
+          text-[var(--c-theme)]
+          bg-[var(--c-0)]
+          dark:bg-[var(--c-0)]
+          dark:drop-shadow-none
+          hover:bg-[var(--c-theme)]
+          hover:text-[var(--c-0)]
+          dark:hover:text-[var(--c-10)]
+          dark:hover:bg-[var(--c-theme)]
+        ">
+        源码解析
+      </a>
+    
+  
+</div>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
+    <blockquote>
+<p>「源码解析」合集：本文与 <a href="/2026/04/24/minimind-source-code-analysis/">MiniMind 源码阅读与架构分析</a> 同属一个系列，关注「论文&#x2F;数学原理 → 工程实现」的拆解。</p>
+</blockquote>
+<h2 id="0-为什么需要-TRPO"><a href="#0-为什么需要-TRPO" class="headerlink" title="0. 为什么需要 TRPO"></a>0. 为什么需要 TRPO</h2><p>Vanilla Policy Gradient（REINFORCE &#x2F; A2C）有一个老问题：步长不好选。</p>
+<ul>
+<li>步长太小：训练慢。</li>
+<li>步长太大：策略一更新就崩，掉进永远爬不回来的劣策略区域。</li>
+</ul>
+<p>监督学习里参数走错了，下一批数据还会拉回来；RL 里策略一坏，采到的数据全是坏数据，更新方向继续偏，进入死亡螺旋。</p>
+<p>TRPO（Trust Region Policy Optimization, Schulman et al., 2015）的核心想法：</p>
+<blockquote>
+<p>每一步更新都限制在一个「信任域」里 —— 新策略和旧策略的 KL 散度不能超过 δ。</p>
+</blockquote>
+<p>这样保证单调改进（monotonic improvement）：每一步要么变好，要么至少不变差太多。</p>
+<h2 id="1-数学原理"><a href="#1-数学原理" class="headerlink" title="1. 数学原理"></a>1. 数学原理</h2><h3 id="1-1-期望回报与优势函数"><a href="#1-1-期望回报与优势函数" class="headerlink" title="1.1 期望回报与优势函数"></a>1.1 期望回报与优势函数</h3><p>定义策略 $\pi$ 的期望回报：</p>
+<p>$$<br>\eta(\pi) &#x3D; \mathbb{E}<em>{s_0, a_0, \dots} \left[ \sum</em>{t&#x3D;0}^{\infty} \gamma^t r(s_t) \right]<br>$$</p>
+<p>优势函数：</p>
+<p>$$<br>A^\pi(s, a) &#x3D; Q^\pi(s, a) - V^\pi(s)<br>$$</p>
+<p>Kakade &amp; Langford (2002) 给了一个漂亮的恒等式：</p>
+<p>$$<br>\eta(\tilde{\pi}) &#x3D; \eta(\pi) + \mathbb{E}<em>{s \sim \rho</em>{\tilde{\pi}}, a \sim \tilde{\pi}} \left[ A^\pi(s, a) \right]<br>$$</p>
+<p>意思是：新策略 $\tilde{\pi}$ 的回报 &#x3D; 旧策略回报 + 在新策略状态分布下、按旧策略优势加权的期望。</p>
+<p>问题：$\rho_{\tilde{\pi}}$ 依赖新策略，我们还没采样。</p>
+<h3 id="1-2-替代目标（Surrogate-Objective）"><a href="#1-2-替代目标（Surrogate-Objective）" class="headerlink" title="1.2 替代目标（Surrogate Objective）"></a>1.2 替代目标（Surrogate Objective）</h3><p>近似：把状态分布从 $\rho_{\tilde{\pi}}$ 换成 $\rho_\pi$（旧策略的状态分布），用重要性采样修正动作：</p>
+<p>$$<br>L_\pi(\tilde{\pi}) &#x3D; \eta(\pi) + \mathbb{E}<em>{s \sim \rho</em>\pi, a \sim \pi} \left[ \frac{\tilde{\pi}(a|s)}{\pi(a|s)} A^\pi(s, a) \right]<br>$$</p>
+<p>可以证明：当 $\tilde{\pi}$ 离 $\pi$ 足够近时，$L_\pi(\tilde{\pi}) \approx \eta(\tilde{\pi})$，且一阶项相等。</p>
+<h3 id="1-3-信任域约束"><a href="#1-3-信任域约束" class="headerlink" title="1.3 信任域约束"></a>1.3 信任域约束</h3><p>TRPO 把”足够近”形式化为 KL 散度约束：</p>
+<p>$$<br>\begin{aligned}<br>\max_\theta \quad &amp; \mathbb{E}<em>{s, a} \left[ \frac{\pi</em>\theta(a|s)}{\pi_{\theta_\text{old}}(a|s)} A^{\pi_{\theta_\text{old}}}(s, a) \right] \<br>\text{s.t.} \quad &amp; \mathbb{E}<em>s \left[ D</em>{\text{KL}}(\pi_{\theta_\text{old}}(\cdot|s) | \pi_\theta(\cdot|s)) \right] \le \delta<br>\end{aligned}<br>$$</p>
+<p>$\delta$ 是信任域半径（典型值 $10^{-2}$）。</p>
+<h3 id="1-4-求解：二阶近似-共轭梯度"><a href="#1-4-求解：二阶近似-共轭梯度" class="headerlink" title="1.4 求解：二阶近似 + 共轭梯度"></a>1.4 求解：二阶近似 + 共轭梯度</h3><p>直接解约束优化太贵。TRPO 在 $\theta_\text{old}$ 附近做近似：</p>
+<ul>
+<li>目标函数一阶近似：$L(\theta) \approx g^\top (\theta - \theta_\text{old})$，$g$ 是策略梯度。</li>
+<li>KL 约束二阶近似：$\bar{D}<em>{\text{KL}} \approx \frac{1}{2}(\theta - \theta</em>\text{old})^\top F (\theta - \theta_\text{old})$，$F$ 是 Fisher 信息矩阵（KL 的 Hessian）。</li>
+</ul>
+<p>变成：</p>
+<p>$$<br>\max_\theta g^\top (\theta - \theta_\text{old}) \quad \text{s.t.} \quad \frac{1}{2}(\theta - \theta_\text{old})^\top F (\theta - \theta_\text{old}) \le \delta<br>$$</p>
+<p>拉格朗日法得到自然梯度方向：</p>
+<p>$$<br>\theta - \theta_\text{old} \propto F^{-1} g<br>$$</p>
+<p>步长由 KL 约束反解：</p>
+<p>$$<br>\theta_{\text{new}} &#x3D; \theta_\text{old} + \sqrt{\frac{2\delta}{g^\top F^{-1} g}} \cdot F^{-1} g<br>$$</p>
+<p>工程上 $F$ 太大无法存储（参数数 × 参数数）。TRPO 用**共轭梯度（Conjugate Gradient）**迭代求 $x &#x3D; F^{-1} g$，只需要 Fisher-vector product（FVP）：$v \mapsto Fv$。</p>
+<h3 id="1-5-Line-Search"><a href="#1-5-Line-Search" class="headerlink" title="1.5 Line Search"></a>1.5 Line Search</h3><p>二阶近似可能不准。TRPO 做完一次步进后，回头检查：</p>
+<ol>
+<li>实际 KL 散度是否真的在 $\delta$ 内？</li>
+<li>替代目标是否真的上升？</li>
+</ol>
+<p>如果不满足，按 $\theta_\text{new} &#x3D; \theta_\text{old} + \alpha^j \cdot \text{step}$（$\alpha \in (0, 1)$，$j$ 从 0 递增）做指数回退，直到满足为止。</p>
+<h2 id="2-算法骨架"><a href="#2-算法骨架" class="headerlink" title="2. 算法骨架"></a>2. 算法骨架</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Initialize: θ (policy), φ (value net)</span><br><span class="line">for iteration = 1, 2, ... do</span><br><span class="line">    # 1. 采样</span><br><span class="line">    collect trajectories &#123;(s_t, a_t, r_t)&#125; under π_θ</span><br><span class="line">    </span><br><span class="line">    # 2. 计算优势 (GAE)</span><br><span class="line">    compute V_φ(s_t), advantages Â_t, returns R_t</span><br><span class="line">    </span><br><span class="line">    # 3. 策略梯度</span><br><span class="line">    g = ∇_θ L_θ_old(θ) |_&#123;θ=θ_old&#125;</span><br><span class="line">    </span><br><span class="line">    # 4. 共轭梯度求自然梯度方向</span><br><span class="line">    x = ConjugateGradient(Fvp, g)  # x ≈ F^&#123;-1&#125; g</span><br><span class="line">    </span><br><span class="line">    # 5. 计算步长</span><br><span class="line">    step_size = sqrt(2δ / (x^T F x))</span><br><span class="line">    full_step = step_size * x</span><br><span class="line">    </span><br><span class="line">    # 6. Line search</span><br><span class="line">    for j = 0, 1, ..., max_backtracks do</span><br><span class="line">        θ_new = θ_old + α^j * full_step</span><br><span class="line">        if KL(θ_old, θ_new) ≤ δ and L(θ_new) &gt; L(θ_old):</span><br><span class="line">            accept; break</span><br><span class="line">    </span><br><span class="line">    # 7. 价值网络更新（普通 MSE）</span><br><span class="line">    φ ← argmin_φ Σ_t (V_φ(s_t) - R_t)^2</span><br><span class="line">end for</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-代码讲解（PyTorch）"><a href="#3-代码讲解（PyTorch）" class="headerlink" title="3. 代码讲解（PyTorch）"></a>3. 代码讲解（PyTorch）</h2><p>下面按顺序实现核心组件。完整可运行版本参考 OpenAI Spinning Up 的 <a target="_blank" rel="noopener" href="https://github.com/openai/spinningup/blob/master/spinup/algos/pytorch/trpo/trpo.py"><code>trpo.py</code></a>，这里抽取关键片段。</p>
+<h3 id="3-1-策略与价值网络"><a href="#3-1-策略与价值网络" class="headerlink" title="3.1 策略与价值网络"></a>3.1 策略与价值网络</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.distributions <span class="keyword">import</span> Categorical, Normal</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MLPCategoricalPolicy</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;离散动作空间的策略网络。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, obs_dim, act_dim, hidden=(<span class="params"><span class="number">64</span>, <span class="number">64</span></span>)</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        layers, last = [], obs_dim</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> hidden:</span><br><span class="line">            layers += [nn.Linear(last, h), nn.Tanh()]</span><br><span class="line">            last = h</span><br><span class="line">        layers += [nn.Linear(last, act_dim)]</span><br><span class="line">        <span class="variable language_">self</span>.logits_net = nn.Sequential(*layers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">distribution</span>(<span class="params">self, obs</span>):</span><br><span class="line">        <span class="keyword">return</span> Categorical(logits=<span class="variable language_">self</span>.logits_net(obs))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">log_prob</span>(<span class="params">self, obs, act</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.distribution(obs).log_prob(act)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MLPValue</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, obs_dim, hidden=(<span class="params"><span class="number">64</span>, <span class="number">64</span></span>)</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        layers, last = [], obs_dim</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> hidden:</span><br><span class="line">            layers += [nn.Linear(last, h), nn.Tanh()]</span><br><span class="line">            last = h</span><br><span class="line">        layers += [nn.Linear(last, <span class="number">1</span>)]</span><br><span class="line">        <span class="variable language_">self</span>.v_net = nn.Sequential(*layers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, obs</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.v_net(obs).squeeze(-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-GAE-优势估计"><a href="#3-2-GAE-优势估计" class="headerlink" title="3.2 GAE 优势估计"></a>3.2 GAE 优势估计</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">compute_gae</span>(<span class="params">rewards, values, dones, gamma=<span class="number">0.99</span>, lam=<span class="number">0.97</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Generalized Advantage Estimation.</span></span><br><span class="line"><span class="string">    rewards/values/dones: (T,) numpy 数组</span></span><br><span class="line"><span class="string">    返回 advantages, returns</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    T = <span class="built_in">len</span>(rewards)</span><br><span class="line">    advantages = np.zeros(T, dtype=np.float32)</span><br><span class="line">    last_gae = <span class="number">0.0</span></span><br><span class="line">    <span class="comment"># 注意 values 长度是 T+1，多一个 bootstrap V(s_T)</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(T)):</span><br><span class="line">        next_nonterminal = <span class="number">1.0</span> - dones[t]</span><br><span class="line">        delta = rewards[t] + gamma * values[t + <span class="number">1</span>] * next_nonterminal - values[t]</span><br><span class="line">        last_gae = delta + gamma * lam * next_nonterminal * last_gae</span><br><span class="line">        advantages[t] = last_gae</span><br><span class="line">    returns = advantages + values[:-<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> advantages, returns</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-替代目标与策略梯度"><a href="#3-3-替代目标与策略梯度" class="headerlink" title="3.3 替代目标与策略梯度"></a>3.3 替代目标与策略梯度</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">surrogate_loss</span>(<span class="params">policy, obs, act, adv, old_log_prob</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;L_θ_old(θ) = E[ ratio * A ]，加负号变最小化。&quot;&quot;&quot;</span></span><br><span class="line">    log_prob = policy.log_prob(obs, act)</span><br><span class="line">    ratio = torch.exp(log_prob - old_log_prob)</span><br><span class="line">    <span class="keyword">return</span> -(ratio * adv).mean()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">policy_gradient</span>(<span class="params">policy, obs, act, adv, old_log_prob</span>):</span><br><span class="line">    loss = surrogate_loss(policy, obs, act, adv, old_log_prob)</span><br><span class="line">    grads = torch.autograd.grad(loss, policy.parameters())</span><br><span class="line">    <span class="comment"># 拍平成一维向量</span></span><br><span class="line">    <span class="keyword">return</span> torch.cat([g.view(-<span class="number">1</span>) <span class="keyword">for</span> g <span class="keyword">in</span> grads]).detach()</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-Fisher-Vector-Product-FVP"><a href="#3-4-Fisher-Vector-Product-FVP" class="headerlink" title="3.4 Fisher-Vector Product (FVP)"></a>3.4 Fisher-Vector Product (FVP)</h3><p>关键点：不显式构造 $F$。利用 $F &#x3D; \nabla^2 \bar{D}_{\text{KL}}$ 的性质，先算 KL 的一阶梯度，再和向量 $v$ 内积，再求一次梯度，得到 $Fv$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mean_kl</span>(<span class="params">policy, obs, old_dist</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;计算 E_s[ KL(π_old || π_new) ]，old_dist 是冻结的分布。&quot;&quot;&quot;</span></span><br><span class="line">    new_dist = policy.distribution(obs)</span><br><span class="line">    <span class="keyword">return</span> torch.distributions.kl_divergence(old_dist, new_dist).mean()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fisher_vector_product</span>(<span class="params">policy, obs, old_dist, vector, damping=<span class="number">1e-2</span></span>):</span><br><span class="line">    kl = mean_kl(policy, obs, old_dist)</span><br><span class="line">    grads = torch.autograd.grad(kl, policy.parameters(), create_graph=<span class="literal">True</span>)</span><br><span class="line">    flat_grads = torch.cat([g.view(-<span class="number">1</span>) <span class="keyword">for</span> g <span class="keyword">in</span> grads])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 内积 g^T v，再对参数求梯度 → Fv</span></span><br><span class="line">    gv = (flat_grads * vector).<span class="built_in">sum</span>()</span><br><span class="line">    Hv = torch.autograd.grad(gv, policy.parameters())</span><br><span class="line">    flat_Hv = torch.cat([h.contiguous().view(-<span class="number">1</span>) <span class="keyword">for</span> h <span class="keyword">in</span> Hv]).detach()</span><br><span class="line">    <span class="keyword">return</span> flat_Hv + damping * vector  <span class="comment"># damping 提升数值稳定</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-5-共轭梯度"><a href="#3-5-共轭梯度" class="headerlink" title="3.5 共轭梯度"></a>3.5 共轭梯度</h3><p>求 $Fx &#x3D; g$，不需要 $F^{-1}$：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">conjugate_gradient</span>(<span class="params">Avp_fn, b, n_iters=<span class="number">10</span>, tol=<span class="number">1e-10</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;解 A x = b，A 通过 matrix-vector product 提供。&quot;&quot;&quot;</span></span><br><span class="line">    x = torch.zeros_like(b)</span><br><span class="line">    r = b.clone()</span><br><span class="line">    p = b.clone()</span><br><span class="line">    rdotr = r.dot(r)</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n_iters):</span><br><span class="line">        Ap = Avp_fn(p)</span><br><span class="line">        alpha = rdotr / (p.dot(Ap) + <span class="number">1e-10</span>)</span><br><span class="line">        x += alpha * p</span><br><span class="line">        r -= alpha * Ap</span><br><span class="line">        new_rdotr = r.dot(r)</span><br><span class="line">        <span class="keyword">if</span> new_rdotr &lt; tol:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        p = r + (new_rdotr / rdotr) * p</span><br><span class="line">        rdotr = new_rdotr</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-6-主循环：CG-→-步长-→-Line-Search"><a href="#3-6-主循环：CG-→-步长-→-Line-Search" class="headerlink" title="3.6 主循环：CG → 步长 → Line Search"></a>3.6 主循环：CG → 步长 → Line Search</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trpo_step</span>(<span class="params">policy, obs, act, adv, old_log_prob, old_dist,</span></span><br><span class="line"><span class="params">              delta=<span class="number">0.01</span>, max_backtracks=<span class="number">10</span>, backtrack_coeff=<span class="number">0.8</span></span>):</span><br><span class="line">    <span class="comment"># 标准化优势</span></span><br><span class="line">    adv = (adv - adv.mean()) / (adv.std() + <span class="number">1e-8</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 1. 策略梯度</span></span><br><span class="line">    g = policy_gradient(policy, obs, act, adv, old_log_prob)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 共轭梯度求 x = F^&#123;-1&#125; g</span></span><br><span class="line">    Avp = <span class="keyword">lambda</span> v: fisher_vector_product(policy, obs, old_dist, v)</span><br><span class="line">    x = conjugate_gradient(Avp, g, n_iters=<span class="number">10</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 3. 计算最大步长</span></span><br><span class="line">    xFx = x.dot(Avp(x))</span><br><span class="line">    step_size = torch.sqrt(<span class="number">2</span> * delta / (xFx + <span class="number">1e-10</span>))</span><br><span class="line">    full_step = step_size * x</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 4. 保存旧参数 &amp; 旧损失</span></span><br><span class="line">    old_params = parameters_to_vector(policy.parameters()).detach()</span><br><span class="line">    old_loss = surrogate_loss(policy, obs, act, adv, old_log_prob).item()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 5. Line search</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(max_backtracks):</span><br><span class="line">        new_params = old_params + (backtrack_coeff ** j) * full_step</span><br><span class="line">        vector_to_parameters(new_params, policy.parameters())</span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            new_loss = surrogate_loss(policy, obs, act, adv, old_log_prob).item()</span><br><span class="line">            kl = mean_kl(policy, obs, old_dist).item()</span><br><span class="line">        improvement = old_loss - new_loss</span><br><span class="line">        <span class="keyword">if</span> kl &lt;= delta <span class="keyword">and</span> improvement &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span>  <span class="comment"># accepted</span></span><br><span class="line">    <span class="comment"># 全部失败：回滚</span></span><br><span class="line">    vector_to_parameters(old_params, policy.parameters())</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<p>辅助函数 <code>parameters_to_vector / vector_to_parameters</code> 在 <code>torch.nn.utils</code> 里直接有。</p>
+<h3 id="3-7-价值网络更新"><a href="#3-7-价值网络更新" class="headerlink" title="3.7 价值网络更新"></a>3.7 价值网络更新</h3><p>价值网络没有 KL 约束的烦恼，用普通 MSE + L-BFGS 或几轮 Adam 即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">update_value</span>(<span class="params">value_net, obs, returns, optimizer, n_epochs=<span class="number">80</span></span>):</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n_epochs):</span><br><span class="line">        v_pred = value_net(obs)</span><br><span class="line">        loss = ((v_pred - returns) ** <span class="number">2</span>).mean()</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-关键工程坑"><a href="#4-关键工程坑" class="headerlink" title="4. 关键工程坑"></a>4. 关键工程坑</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原因</th>
+<th>修正</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CG 不收敛</td>
+<td>Fisher 矩阵接近奇异</td>
+<td>加 <code>damping</code>（1e-2 起步）</td>
+</tr>
+<tr>
+<td>Line search 全失败</td>
+<td>步长估计太乐观 &#x2F; 优势未归一化</td>
+<td>标准化优势；降 <code>δ</code>；增大 <code>max_backtracks</code></td>
+</tr>
+<tr>
+<td>KL 算反了</td>
+<td>$D_{KL}(p_{old} | p_{new})$ 才是 Fisher 的二阶近似对应项</td>
+<td>顺序别写错，老在前新在后</td>
+</tr>
+<tr>
+<td>训练后期发散</td>
+<td>价值网络欠拟合，优势噪声大</td>
+<td>加 GAE 的 <code>λ</code>（0.95~0.97），增大 value epochs</td>
+</tr>
+<tr>
+<td>FVP 显存爆炸</td>
+<td><code>create_graph=True</code> 没释放</td>
+<td>每次 iteration 后 <code>detach</code>，CG 内不要存中间图</td>
+</tr>
+</tbody></table>
+<h2 id="5-TRPO-→-PPO-的过渡"><a href="#5-TRPO-→-PPO-的过渡" class="headerlink" title="5. TRPO → PPO 的过渡"></a>5. TRPO → PPO 的过渡</h2><p>TRPO 数学漂亮但工程笨重：CG、FVP、Line Search 三件套，每一步都贵。PPO（同一作者，2017）丢掉了硬约束，改用 clipping 软约束：</p>
+<p>$$<br>L^{\text{CLIP}}(\theta) &#x3D; \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \ \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]<br>$$</p>
+<p>没有 Fisher、没有 CG、用普通 Adam 就能跑。效果对标 TRPO，工程量小一个量级 —— 这是 PPO 几乎吃掉 TRPO 全部市场份额的根本原因。</p>
+<p>但<strong>理解 TRPO 仍然重要</strong>：PPO 的所有设计（信任域、ratio clip、advantage normalization）都是 TRPO 思想的工程简化版。看懂 TRPO，PPO 的每一行 <code>clip</code> 都不再是魔法常数。</p>
+<h2 id="6-参考"><a href="#6-参考" class="headerlink" title="6. 参考"></a>6. 参考</h2><ul>
+<li>Schulman et al., <em>Trust Region Policy Optimization</em>, ICML 2015. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1502.05477">arXiv:1502.05477</a></li>
+<li>Kakade &amp; Langford, <em>Approximately Optimal Approximate Reinforcement Learning</em>, ICML 2002.</li>
+<li>OpenAI Spinning Up: <a target="_blank" rel="noopener" href="https://spinningup.openai.com/en/latest/algorithms/trpo.html">TRPO</a></li>
+<li>配套阅读：<a href="/2026/04/24/minimind-source-code-analysis/">MiniMind 源码阅读与架构分析</a>（同属「源码解析」合集）</li>
+</ul>
+
+  </article>
+
+  <!-- prev and next -->
+  <div class="flex justify-between mt-4 pt-4
+    border-t border-[var(--c-sep)] text-sm
+    gap-2 text-[var(--c-50)]
+  ">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/06/05/ieops-polyforge-internship/"
+          class="
+            flex 
+            justify-center
+            hover:translate-x-1 
+            transition-transform
+            hover:text-[var(--c-100)]
+          "
+        >
+          我的 ieops × polyforge 之旅
+          <iconify-icon width="20" icon="mingcute:right-fill" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        var title = this.title;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        else if (title) $(this).after('<span class="fancybox-title">' + title + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + title + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+  </main>
+  <footer class="flex flex-col mt-18 mb-12 items-center
+  text-[var(--c-50)] text-sm">
+  <div class="flex flex-row items-center my-12">
+    
+    
+        
+        
+            
+            
+        
+        <a class="
+            hover:text-[var(--c-theme)]
+            hover:bg-[var(--c-20)]
+            rounded-lg
+            p-2
+            my-1
+            flex flex-row items-center
+            group" title="Github" target="_blank" rel="noopener" href="https://www.github.com/xxx1766">
+            <iconify-icon width="28" icon="mingcute:github-fill"></iconify-icon>
+        </a>
+    
+
+  </div>
+  <!-- busuanzi -->
+  <div class="mb-6">
+    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex flex-col items-center mb-2">
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="ic:round-person" width="18"></iconify-icon>
+    <span class="mr-1">访客 Visitors: </span>
+    <span id="busuanzi_value_site_uv"></span>
+  </div>
+  <div class="flex flex-row items-center">
+    <iconify-icon width="16" icon="carbon:view-filled" width="18"></iconify-icon>
+    <span class="mx-1">浏览量 Page Views:</span>
+    <span id="busuanzi_value_site_pv"></span>
+  </div>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  </div>
+  <!-- copyright -->
+  <div class="flex flex-row items-center gap-2">
+    <a class="hover:underline"
+      target="_blank"
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >
+      CC BY-NC-SA 4.0
+    </a>
+    <span>© 2022-2026</span>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-1">
+    <span>Powered by</span>
+    <a class="hover:underline" 
+    href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/chen-yingfa/hexo-theme-fengye" 
+    class="hover:underline"
+    target="_blank"
+      rel="noopener noreferrer"
+      >
+      Fengye
+    </a>
+  </div>
+
+</footer>
+
+  <div class="
+    back-to-top
+    fixed right-6
+    z-1024
+    -bottom-20
+    rounded-lg
+    font-bold
+    py-1 px-2
+    text-[var(--c-80)]
+    bg-[var(--c-20)]
+    cursor-pointer
+    text-center
+    drop-shadow-md
+  ">
+    <span class="flex justify-center items-center text-sm">
+      <span id="scrollpercent"><span>0</span> %</span>
+      <iconify-icon width="18" icon="mingcute:arrow-to-up-fill" id="go-top"></iconify-icon>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
