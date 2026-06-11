@@ -657,7 +657,7 @@
             <!-- Word count -->
             <span class="flex items-center gap-1">
               <iconify-icon width="18" icon="mingcute:book-2-fill" ></iconify-icon>
-              <span>2.2k words, 11 min</span>
+              <span>3.3k words, 15 min</span>
             </span>
             <!-- Categories -->
             
@@ -766,112 +766,301 @@
   </header>
   <!-- content -->
   <article class="px-6 max-w-prose mx-auto md:px-0 md:max-w-2xl lg:max-w-4xl post-content prose m-auto dark:prose-invert">
-    <blockquote>
-<p>「源码解析」合集：本文与 <a href="/2026/04/24/minimind-source-code-analysis/">MiniMind 源码阅读与架构分析</a> 同属一个系列，关注「论文&#x2F;数学原理 → 工程实现」的拆解。</p>
-</blockquote>
-<h2 id="0-为什么需要-TRPO"><a href="#0-为什么需要-TRPO" class="headerlink" title="0. 为什么需要 TRPO"></a>0. 为什么需要 TRPO</h2><p>Vanilla Policy Gradient（REINFORCE &#x2F; A2C）有一个老问题：步长不好选。</p>
+    <h1 id="TRPO-深度解析：从数学原理到代码实现"><a href="#TRPO-深度解析：从数学原理到代码实现" class="headerlink" title="TRPO 深度解析：从数学原理到代码实现"></a>TRPO 深度解析：从数学原理到代码实现</h1><h2 id="一、问题背景：为什么需要-TRPO？"><a href="#一、问题背景：为什么需要-TRPO？" class="headerlink" title="一、问题背景：为什么需要 TRPO？"></a>一、问题背景：为什么需要 TRPO？</h2><p>强化学习的目标是不断更新策略参数 $\theta$，使累计奖励最大化。最朴素的做法是直接做梯度上升：</p>
+<p>$$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$$</p>
+<p>但这有一个致命问题：<strong>步子太大会摔跤</strong>。一次更新过大，新策略可能远比旧策略差，而且强化学习没有”后悔药”——坏策略采集的数据质量更差，训练可能一路崩塌。</p>
+<p>TRPO 的解决思路是：在每次更新时，<strong>显式限制新旧策略的差距不超过 $\epsilon$</strong>：</p>
+<p>$$\max_\theta ; \mathbb{E}<em>t!\left[\frac{\pi</em>\theta(a_t|s_t)}{\pi_{\theta_\text{old}}(a_t|s_t)} A_t\right] \quad \text{s.t.} \quad \mathbb{E}<em>{s}!\left[D</em>\text{KL}!\left(\pi_{\theta_\text{old}}(\cdot|s) ,|, \pi_\theta(\cdot|s)\right)\right] \leq \epsilon$$</p>
+<p>注意约束中有 $\mathbb{E}_s[\cdot]$：KL 散度对所有可能出现的状态 $s$ 取期望，保证在整个状态分布上策略变化都不过大。</p>
+<h2 id="二、目标函数拆解"><a href="#二、目标函数拆解" class="headerlink" title="二、目标函数拆解"></a>二、目标函数拆解</h2><h4 id="策略参数-theta"><a href="#策略参数-theta" class="headerlink" title="策略参数 $\theta$"></a>策略参数 $\theta$</h4><p>$\theta$ 是神经网络（策略网络）的<strong>全部权重和偏置</strong>。策略网络输入状态 $s$，输出动作的概率分布 $\pi_\theta(\cdot|s)$。</p>
+<p>在语言模型场景中，$s_t$ &#x3D; “原始问题 + 已生成的前 $t$ 个 token”，$a_t$ &#x3D; “第 $t+1$ 个 token 的选择”。</p>
+<h4 id="重要性采样比率"><a href="#重要性采样比率" class="headerlink" title="重要性采样比率"></a>重要性采样比率</h4><p>$$r_t(\theta) &#x3D; \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_\text{old}}(a_t|s_t)}$$</p>
+<p>我们用旧策略 $\pi_{\theta_\text{old}}$ 采集数据，但希望估计新策略 $\pi_\theta$ 的表现。重要性采样的核心等式：</p>
+<p>$$\mathbb{E}<em>{a \sim \pi</em>{\theta_\text{old}}}!\left[r_t(\theta) \cdot f(a)\right] &#x3D; \mathbb{E}<em>{a \sim \pi</em>\theta}!\left[f(a)\right]$$</p>
 <ul>
-<li>步长太小：训练慢。</li>
-<li>步长太大：策略一更新就崩，掉进永远爬不回来的劣策略区域。</li>
+<li>$r_t &gt; 1$：新策略比旧策略<strong>更倾向</strong>选这个动作</li>
+<li>$r_t &lt; 1$：新策略比旧策略<strong>更不倾向</strong>选这个动作</li>
+<li>$r_t &#x3D; 1$：两个策略对此动作概率相同</li>
 </ul>
-<p>监督学习里参数走错了，下一批数据还会拉回来；RL 里策略一坏，采到的数据全是坏数据，更新方向继续偏，进入死亡螺旋。</p>
-<p>TRPO（Trust Region Policy Optimization, Schulman et al., 2015）的核心想法：</p>
-<blockquote>
-<p>每一步更新都限制在一个「信任域」里 —— 新策略和旧策略的 KL 散度不能超过 δ。</p>
-</blockquote>
-<p>这样保证单调改进（monotonic improvement）：每一步要么变好，要么至少不变差太多。</p>
-<h2 id="1-数学原理"><a href="#1-数学原理" class="headerlink" title="1. 数学原理"></a>1. 数学原理</h2><h3 id="1-1-期望回报与优势函数"><a href="#1-1-期望回报与优势函数" class="headerlink" title="1.1 期望回报与优势函数"></a>1.1 期望回报与优势函数</h3><p>定义策略 $\pi$ 的期望回报：</p>
-<p>$$<br>\eta(\pi) &#x3D; \mathbb{E}<em>{s_0, a_0, \dots} \left[ \sum</em>{t&#x3D;0}^{\infty} \gamma^t r(s_t) \right]<br>$$</p>
-<p>优势函数：</p>
-<p>$$<br>A^\pi(s, a) &#x3D; Q^\pi(s, a) - V^\pi(s)<br>$$</p>
-<p>Kakade &amp; Langford (2002) 给了一个漂亮的恒等式：</p>
-<p>$$<br>\eta(\tilde{\pi}) &#x3D; \eta(\pi) + \mathbb{E}<em>{s \sim \rho</em>{\tilde{\pi}}, a \sim \tilde{\pi}} \left[ A^\pi(s, a) \right]<br>$$</p>
-<p>意思是：新策略 $\tilde{\pi}$ 的回报 &#x3D; 旧策略回报 + 在新策略状态分布下、按旧策略优势加权的期望。</p>
-<p>问题：$\rho_{\tilde{\pi}}$ 依赖新策略，我们还没采样。</p>
-<h3 id="1-2-替代目标（Surrogate-Objective）"><a href="#1-2-替代目标（Surrogate-Objective）" class="headerlink" title="1.2 替代目标（Surrogate Objective）"></a>1.2 替代目标（Surrogate Objective）</h3><p>近似：把状态分布从 $\rho_{\tilde{\pi}}$ 换成 $\rho_\pi$（旧策略的状态分布），用重要性采样修正动作：</p>
-<p>$$<br>L_\pi(\tilde{\pi}) &#x3D; \eta(\pi) + \mathbb{E}<em>{s \sim \rho</em>\pi, a \sim \pi} \left[ \frac{\tilde{\pi}(a|s)}{\pi(a|s)} A^\pi(s, a) \right]<br>$$</p>
-<p>可以证明：当 $\tilde{\pi}$ 离 $\pi$ 足够近时，$L_\pi(\tilde{\pi}) \approx \eta(\tilde{\pi})$，且一阶项相等。</p>
-<h3 id="1-3-信任域约束"><a href="#1-3-信任域约束" class="headerlink" title="1.3 信任域约束"></a>1.3 信任域约束</h3><p>TRPO 把”足够近”形式化为 KL 散度约束：</p>
-<p>$$<br>\begin{aligned}<br>\max_\theta \quad &amp; \mathbb{E}<em>{s, a} \left[ \frac{\pi</em>\theta(a|s)}{\pi_{\theta_\text{old}}(a|s)} A^{\pi_{\theta_\text{old}}}(s, a) \right] \<br>\text{s.t.} \quad &amp; \mathbb{E}<em>s \left[ D</em>{\text{KL}}(\pi_{\theta_\text{old}}(\cdot|s) | \pi_\theta(\cdot|s)) \right] \le \delta<br>\end{aligned}<br>$$</p>
-<p>$\delta$ 是信任域半径（典型值 $10^{-2}$）。</p>
-<h3 id="1-4-求解：二阶近似-共轭梯度"><a href="#1-4-求解：二阶近似-共轭梯度" class="headerlink" title="1.4 求解：二阶近似 + 共轭梯度"></a>1.4 求解：二阶近似 + 共轭梯度</h3><p>直接解约束优化太贵。TRPO 在 $\theta_\text{old}$ 附近做近似：</p>
-<ul>
-<li>目标函数一阶近似：$L(\theta) \approx g^\top (\theta - \theta_\text{old})$，$g$ 是策略梯度。</li>
-<li>KL 约束二阶近似：$\bar{D}<em>{\text{KL}} \approx \frac{1}{2}(\theta - \theta</em>\text{old})^\top F (\theta - \theta_\text{old})$，$F$ 是 Fisher 信息矩阵（KL 的 Hessian）。</li>
-</ul>
-<p>变成：</p>
-<p>$$<br>\max_\theta g^\top (\theta - \theta_\text{old}) \quad \text{s.t.} \quad \frac{1}{2}(\theta - \theta_\text{old})^\top F (\theta - \theta_\text{old}) \le \delta<br>$$</p>
-<p>拉格朗日法得到自然梯度方向：</p>
-<p>$$<br>\theta - \theta_\text{old} \propto F^{-1} g<br>$$</p>
-<p>步长由 KL 约束反解：</p>
-<p>$$<br>\theta_{\text{new}} &#x3D; \theta_\text{old} + \sqrt{\frac{2\delta}{g^\top F^{-1} g}} \cdot F^{-1} g<br>$$</p>
-<p>工程上 $F$ 太大无法存储（参数数 × 参数数）。TRPO 用**共轭梯度（Conjugate Gradient）**迭代求 $x &#x3D; F^{-1} g$，只需要 Fisher-vector product（FVP）：$v \mapsto Fv$。</p>
-<h3 id="1-5-Line-Search"><a href="#1-5-Line-Search" class="headerlink" title="1.5 Line Search"></a>1.5 Line Search</h3><p>二阶近似可能不准。TRPO 做完一次步进后，回头检查：</p>
-<ol>
-<li>实际 KL 散度是否真的在 $\delta$ 内？</li>
-<li>替代目标是否真的上升？</li>
-</ol>
-<p>如果不满足，按 $\theta_\text{new} &#x3D; \theta_\text{old} + \alpha^j \cdot \text{step}$（$\alpha \in (0, 1)$，$j$ 从 0 递增）做指数回退，直到满足为止。</p>
-<h2 id="2-算法骨架"><a href="#2-算法骨架" class="headerlink" title="2. 算法骨架"></a>2. 算法骨架</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Initialize: θ (policy), φ (value net)</span><br><span class="line">for iteration = 1, 2, ... do</span><br><span class="line">    # 1. 采样</span><br><span class="line">    collect trajectories &#123;(s_t, a_t, r_t)&#125; under π_θ</span><br><span class="line">    </span><br><span class="line">    # 2. 计算优势 (GAE)</span><br><span class="line">    compute V_φ(s_t), advantages Â_t, returns R_t</span><br><span class="line">    </span><br><span class="line">    # 3. 策略梯度</span><br><span class="line">    g = ∇_θ L_θ_old(θ) |_&#123;θ=θ_old&#125;</span><br><span class="line">    </span><br><span class="line">    # 4. 共轭梯度求自然梯度方向</span><br><span class="line">    x = ConjugateGradient(Fvp, g)  # x ≈ F^&#123;-1&#125; g</span><br><span class="line">    </span><br><span class="line">    # 5. 计算步长</span><br><span class="line">    step_size = sqrt(2δ / (x^T F x))</span><br><span class="line">    full_step = step_size * x</span><br><span class="line">    </span><br><span class="line">    # 6. Line search</span><br><span class="line">    for j = 0, 1, ..., max_backtracks do</span><br><span class="line">        θ_new = θ_old + α^j * full_step</span><br><span class="line">        if KL(θ_old, θ_new) ≤ δ and L(θ_new) &gt; L(θ_old):</span><br><span class="line">            accept; break</span><br><span class="line">    </span><br><span class="line">    # 7. 价值网络更新（普通 MSE）</span><br><span class="line">    φ ← argmin_φ Σ_t (V_φ(s_t) - R_t)^2</span><br><span class="line">end for</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-代码讲解（PyTorch）"><a href="#3-代码讲解（PyTorch）" class="headerlink" title="3. 代码讲解（PyTorch）"></a>3. 代码讲解（PyTorch）</h2><p>下面按顺序实现核心组件。完整可运行版本参考 OpenAI Spinning Up 的 <a target="_blank" rel="noopener" href="https://github.com/openai/spinningup/blob/master/spinup/algos/pytorch/trpo/trpo.py"><code>trpo.py</code></a>，这里抽取关键片段。</p>
-<h3 id="3-1-策略与价值网络"><a href="#3-1-策略与价值网络" class="headerlink" title="3.1 策略与价值网络"></a>3.1 策略与价值网络</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.distributions <span class="keyword">import</span> Categorical, Normal</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MLPCategoricalPolicy</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;离散动作空间的策略网络。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, obs_dim, act_dim, hidden=(<span class="params"><span class="number">64</span>, <span class="number">64</span></span>)</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        layers, last = [], obs_dim</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> hidden:</span><br><span class="line">            layers += [nn.Linear(last, h), nn.Tanh()]</span><br><span class="line">            last = h</span><br><span class="line">        layers += [nn.Linear(last, act_dim)]</span><br><span class="line">        <span class="variable language_">self</span>.logits_net = nn.Sequential(*layers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">distribution</span>(<span class="params">self, obs</span>):</span><br><span class="line">        <span class="keyword">return</span> Categorical(logits=<span class="variable language_">self</span>.logits_net(obs))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">log_prob</span>(<span class="params">self, obs, act</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.distribution(obs).log_prob(act)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MLPValue</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, obs_dim, hidden=(<span class="params"><span class="number">64</span>, <span class="number">64</span></span>)</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        layers, last = [], obs_dim</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> hidden:</span><br><span class="line">            layers += [nn.Linear(last, h), nn.Tanh()]</span><br><span class="line">            last = h</span><br><span class="line">        layers += [nn.Linear(last, <span class="number">1</span>)]</span><br><span class="line">        <span class="variable language_">self</span>.v_net = nn.Sequential(*layers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, obs</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.v_net(obs).squeeze(-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-2-GAE-优势估计"><a href="#3-2-GAE-优势估计" class="headerlink" title="3.2 GAE 优势估计"></a>3.2 GAE 优势估计</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">compute_gae</span>(<span class="params">rewards, values, dones, gamma=<span class="number">0.99</span>, lam=<span class="number">0.97</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Generalized Advantage Estimation.</span></span><br><span class="line"><span class="string">    rewards/values/dones: (T,) numpy 数组</span></span><br><span class="line"><span class="string">    返回 advantages, returns</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    T = <span class="built_in">len</span>(rewards)</span><br><span class="line">    advantages = np.zeros(T, dtype=np.float32)</span><br><span class="line">    last_gae = <span class="number">0.0</span></span><br><span class="line">    <span class="comment"># 注意 values 长度是 T+1，多一个 bootstrap V(s_T)</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(T)):</span><br><span class="line">        next_nonterminal = <span class="number">1.0</span> - dones[t]</span><br><span class="line">        delta = rewards[t] + gamma * values[t + <span class="number">1</span>] * next_nonterminal - values[t]</span><br><span class="line">        last_gae = delta + gamma * lam * next_nonterminal * last_gae</span><br><span class="line">        advantages[t] = last_gae</span><br><span class="line">    returns = advantages + values[:-<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> advantages, returns</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-3-替代目标与策略梯度"><a href="#3-3-替代目标与策略梯度" class="headerlink" title="3.3 替代目标与策略梯度"></a>3.3 替代目标与策略梯度</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">surrogate_loss</span>(<span class="params">policy, obs, act, adv, old_log_prob</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;L_θ_old(θ) = E[ ratio * A ]，加负号变最小化。&quot;&quot;&quot;</span></span><br><span class="line">    log_prob = policy.log_prob(obs, act)</span><br><span class="line">    ratio = torch.exp(log_prob - old_log_prob)</span><br><span class="line">    <span class="keyword">return</span> -(ratio * adv).mean()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">policy_gradient</span>(<span class="params">policy, obs, act, adv, old_log_prob</span>):</span><br><span class="line">    loss = surrogate_loss(policy, obs, act, adv, old_log_prob)</span><br><span class="line">    grads = torch.autograd.grad(loss, policy.parameters())</span><br><span class="line">    <span class="comment"># 拍平成一维向量</span></span><br><span class="line">    <span class="keyword">return</span> torch.cat([g.view(-<span class="number">1</span>) <span class="keyword">for</span> g <span class="keyword">in</span> grads]).detach()</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-4-Fisher-Vector-Product-FVP"><a href="#3-4-Fisher-Vector-Product-FVP" class="headerlink" title="3.4 Fisher-Vector Product (FVP)"></a>3.4 Fisher-Vector Product (FVP)</h3><p>关键点：不显式构造 $F$。利用 $F &#x3D; \nabla^2 \bar{D}_{\text{KL}}$ 的性质，先算 KL 的一阶梯度，再和向量 $v$ 内积，再求一次梯度，得到 $Fv$。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mean_kl</span>(<span class="params">policy, obs, old_dist</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;计算 E_s[ KL(π_old || π_new) ]，old_dist 是冻结的分布。&quot;&quot;&quot;</span></span><br><span class="line">    new_dist = policy.distribution(obs)</span><br><span class="line">    <span class="keyword">return</span> torch.distributions.kl_divergence(old_dist, new_dist).mean()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fisher_vector_product</span>(<span class="params">policy, obs, old_dist, vector, damping=<span class="number">1e-2</span></span>):</span><br><span class="line">    kl = mean_kl(policy, obs, old_dist)</span><br><span class="line">    grads = torch.autograd.grad(kl, policy.parameters(), create_graph=<span class="literal">True</span>)</span><br><span class="line">    flat_grads = torch.cat([g.view(-<span class="number">1</span>) <span class="keyword">for</span> g <span class="keyword">in</span> grads])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 内积 g^T v，再对参数求梯度 → Fv</span></span><br><span class="line">    gv = (flat_grads * vector).<span class="built_in">sum</span>()</span><br><span class="line">    Hv = torch.autograd.grad(gv, policy.parameters())</span><br><span class="line">    flat_Hv = torch.cat([h.contiguous().view(-<span class="number">1</span>) <span class="keyword">for</span> h <span class="keyword">in</span> Hv]).detach()</span><br><span class="line">    <span class="keyword">return</span> flat_Hv + damping * vector  <span class="comment"># damping 提升数值稳定</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-5-共轭梯度"><a href="#3-5-共轭梯度" class="headerlink" title="3.5 共轭梯度"></a>3.5 共轭梯度</h3><p>求 $Fx &#x3D; g$，不需要 $F^{-1}$：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">conjugate_gradient</span>(<span class="params">Avp_fn, b, n_iters=<span class="number">10</span>, tol=<span class="number">1e-10</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;解 A x = b，A 通过 matrix-vector product 提供。&quot;&quot;&quot;</span></span><br><span class="line">    x = torch.zeros_like(b)</span><br><span class="line">    r = b.clone()</span><br><span class="line">    p = b.clone()</span><br><span class="line">    rdotr = r.dot(r)</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n_iters):</span><br><span class="line">        Ap = Avp_fn(p)</span><br><span class="line">        alpha = rdotr / (p.dot(Ap) + <span class="number">1e-10</span>)</span><br><span class="line">        x += alpha * p</span><br><span class="line">        r -= alpha * Ap</span><br><span class="line">        new_rdotr = r.dot(r)</span><br><span class="line">        <span class="keyword">if</span> new_rdotr &lt; tol:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        p = r + (new_rdotr / rdotr) * p</span><br><span class="line">        rdotr = new_rdotr</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-6-主循环：CG-→-步长-→-Line-Search"><a href="#3-6-主循环：CG-→-步长-→-Line-Search" class="headerlink" title="3.6 主循环：CG → 步长 → Line Search"></a>3.6 主循环：CG → 步长 → Line Search</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trpo_step</span>(<span class="params">policy, obs, act, adv, old_log_prob, old_dist,</span></span><br><span class="line"><span class="params">              delta=<span class="number">0.01</span>, max_backtracks=<span class="number">10</span>, backtrack_coeff=<span class="number">0.8</span></span>):</span><br><span class="line">    <span class="comment"># 标准化优势</span></span><br><span class="line">    adv = (adv - adv.mean()) / (adv.std() + <span class="number">1e-8</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 1. 策略梯度</span></span><br><span class="line">    g = policy_gradient(policy, obs, act, adv, old_log_prob)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 共轭梯度求 x = F^&#123;-1&#125; g</span></span><br><span class="line">    Avp = <span class="keyword">lambda</span> v: fisher_vector_product(policy, obs, old_dist, v)</span><br><span class="line">    x = conjugate_gradient(Avp, g, n_iters=<span class="number">10</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 3. 计算最大步长</span></span><br><span class="line">    xFx = x.dot(Avp(x))</span><br><span class="line">    step_size = torch.sqrt(<span class="number">2</span> * delta / (xFx + <span class="number">1e-10</span>))</span><br><span class="line">    full_step = step_size * x</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 4. 保存旧参数 &amp; 旧损失</span></span><br><span class="line">    old_params = parameters_to_vector(policy.parameters()).detach()</span><br><span class="line">    old_loss = surrogate_loss(policy, obs, act, adv, old_log_prob).item()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 5. Line search</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(max_backtracks):</span><br><span class="line">        new_params = old_params + (backtrack_coeff ** j) * full_step</span><br><span class="line">        vector_to_parameters(new_params, policy.parameters())</span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            new_loss = surrogate_loss(policy, obs, act, adv, old_log_prob).item()</span><br><span class="line">            kl = mean_kl(policy, obs, old_dist).item()</span><br><span class="line">        improvement = old_loss - new_loss</span><br><span class="line">        <span class="keyword">if</span> kl &lt;= delta <span class="keyword">and</span> improvement &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span>  <span class="comment"># accepted</span></span><br><span class="line">    <span class="comment"># 全部失败：回滚</span></span><br><span class="line">    vector_to_parameters(old_params, policy.parameters())</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
-
-<p>辅助函数 <code>parameters_to_vector / vector_to_parameters</code> 在 <code>torch.nn.utils</code> 里直接有。</p>
-<h3 id="3-7-价值网络更新"><a href="#3-7-价值网络更新" class="headerlink" title="3.7 价值网络更新"></a>3.7 价值网络更新</h3><p>价值网络没有 KL 约束的烦恼，用普通 MSE + L-BFGS 或几轮 Adam 即可：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">update_value</span>(<span class="params">value_net, obs, returns, optimizer, n_epochs=<span class="number">80</span></span>):</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n_epochs):</span><br><span class="line">        v_pred = value_net(obs)</span><br><span class="line">        loss = ((v_pred - returns) ** <span class="number">2</span>).mean()</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-关键工程坑"><a href="#4-关键工程坑" class="headerlink" title="4. 关键工程坑"></a>4. 关键工程坑</h2><table>
+<h4 id="优势函数-A-t"><a href="#优势函数-A-t" class="headerlink" title="优势函数 $A_t$"></a>优势函数 $A_t$</h4><p>$$A_t &#x3D; Q(s_t, a_t) - V(s_t)$$</p>
+<table>
 <thead>
 <tr>
-<th>问题</th>
-<th>原因</th>
-<th>修正</th>
+<th>符号</th>
+<th>含义</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>CG 不收敛</td>
-<td>Fisher 矩阵接近奇异</td>
-<td>加 <code>damping</code>（1e-2 起步）</td>
+<td>$Q(s_t, a_t)$</td>
+<td>在状态 $s_t$ 执行动作 $a_t$ 后的期望累计奖励</td>
 </tr>
 <tr>
-<td>Line search 全失败</td>
-<td>步长估计太乐观 &#x2F; 优势未归一化</td>
-<td>标准化优势；降 <code>δ</code>；增大 <code>max_backtracks</code></td>
+<td>$V(s_t)$</td>
+<td>在状态 $s_t$ 下，按当前策略执行的期望累计奖励（基线）</td>
 </tr>
 <tr>
-<td>KL 算反了</td>
-<td>$D_{KL}(p_{old} | p_{new})$ 才是 Fisher 的二阶近似对应项</td>
-<td>顺序别写错，老在前新在后</td>
+<td>$A_t &gt; 0$</td>
+<td>这个动作比平均水平好，应该强化</td>
 </tr>
 <tr>
-<td>训练后期发散</td>
-<td>价值网络欠拟合，优势噪声大</td>
-<td>加 GAE 的 <code>λ</code>（0.95~0.97），增大 value epochs</td>
-</tr>
-<tr>
-<td>FVP 显存爆炸</td>
-<td><code>create_graph=True</code> 没释放</td>
-<td>每次 iteration 后 <code>detach</code>，CG 内不要存中间图</td>
+<td>$A_t &lt; 0$</td>
+<td>这个动作比平均水平差，应该抑制</td>
 </tr>
 </tbody></table>
-<h2 id="5-TRPO-→-PPO-的过渡"><a href="#5-TRPO-→-PPO-的过渡" class="headerlink" title="5. TRPO → PPO 的过渡"></a>5. TRPO → PPO 的过渡</h2><p>TRPO 数学漂亮但工程笨重：CG、FVP、Line Search 三件套，每一步都贵。PPO（同一作者，2017）丢掉了硬约束，改用 clipping 软约束：</p>
-<p>$$<br>L^{\text{CLIP}}(\theta) &#x3D; \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \ \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]<br>$$</p>
-<p>没有 Fisher、没有 CG、用普通 Adam 就能跑。效果对标 TRPO，工程量小一个量级 —— 这是 PPO 几乎吃掉 TRPO 全部市场份额的根本原因。</p>
-<p>但<strong>理解 TRPO 仍然重要</strong>：PPO 的所有设计（信任域、ratio clip、advantage normalization）都是 TRPO 思想的工程简化版。看懂 TRPO，PPO 的每一行 <code>clip</code> 都不再是魔法常数。</p>
-<h2 id="6-参考"><a href="#6-参考" class="headerlink" title="6. 参考"></a>6. 参考</h2><ul>
+<p>减去基线 $V(s_t)$ 不改变梯度的期望值（因为 $\mathbb{E}<em>{a \sim \pi</em>\theta}[V(s_t)] &#x3D; V(s_t)$ 与动作选择无关），但能大幅<strong>降低方差</strong>，让训练更稳定。</p>
+<h4 id="对时间步-t-取期望"><a href="#对时间步-t-取期望" class="headerlink" title="对时间步 $t$ 取期望"></a>对时间步 $t$ 取期望</h4><p>$$\mathbb{E}<em>t[\cdots] \approx \frac{1}{T}\sum</em>{t&#x3D;1}^{T}(\cdots)$$</p>
+<p>等价于对一条（或一批）轨迹中所有时间步求平均，用来估计期望值。</p>
+<h2 id="三、KL-散度约束与二阶泰勒展开"><a href="#三、KL-散度约束与二阶泰勒展开" class="headerlink" title="三、KL 散度约束与二阶泰勒展开"></a>三、KL 散度约束与二阶泰勒展开</h2><h4 id="KL-散度的定义"><a href="#KL-散度的定义" class="headerlink" title="KL 散度的定义"></a>KL 散度的定义</h4><p>对于离散分布：</p>
+<p>$$D_\text{KL}(p | q) &#x3D; \sum_a p(a) \log \frac{p(a)}{q(a)}$$</p>
+<p>对于连续分布：</p>
+<p>$$D_\text{KL}(p | q) &#x3D; \int p(x) \log \frac{p(x)}{q(x)}, dx$$</p>
+<p>性质：</p>
+<ul>
+<li>$D_\text{KL}(p | p) &#x3D; 0$（自己与自己的散度为零）</li>
+<li>$D_\text{KL}(p | q) \geq 0$ 恒成立（由 Jensen 不等式保证）</li>
+<li><strong>不对称</strong>：$D_\text{KL}(p|q) \neq D_\text{KL}(q|p)$（一般情况下）</li>
+</ul>
+<h4 id="对-KL-散度做二阶泰勒展开"><a href="#对-KL-散度做二阶泰勒展开" class="headerlink" title="对 KL 散度做二阶泰勒展开"></a>对 KL 散度做二阶泰勒展开</h4><p>设 $\delta &#x3D; \theta - \theta_\text{old}$，在 $\delta &#x3D; 0$ 处展开 $D_\text{KL}(\pi_{\theta_\text{old}} | \pi_{\theta_\text{old}+\delta})$：</p>
+<p>$$D_\text{KL}(\pi_{\theta_\text{old}} | \pi_{\theta_\text{old}+\delta})<br>&#x3D; \underbrace{D_\text{KL}\big|<em>{\delta&#x3D;0}}</em>{\text{零阶项} &#x3D; 0}</p>
+<ul>
+<li>\underbrace{\nabla_\delta D_\text{KL}\big|<em>{\delta&#x3D;0}^\top \delta}</em>{\text{一阶项} &#x3D; 0}</li>
+<li>\underbrace{\frac{1}{2}\delta^\top F \delta}_{\text{二阶项}}</li>
+<li>O(|\delta|^3)$$</li>
+</ul>
+<p><strong>零阶项 &#x3D; 0</strong></p>
+<p>$$D_\text{KL}(\pi_{\theta_\text{old}} | \pi_{\theta_\text{old}+\delta})\big|<em>{\delta&#x3D;0}<br>&#x3D; D</em>\text{KL}(\pi_{\theta_\text{old}} | \pi_{\theta_\text{old}})<br>&#x3D; \sum_a \pi_{\theta_\text{old}}(a|s)\log\frac{\pi_{\theta_\text{old}}(a|s)}{\pi_{\theta_\text{old}}(a|s)}<br>&#x3D; 0$$</p>
+<p><strong>一阶项 &#x3D; 0（完整推导）</strong></p>
+<p>对 $D_\text{KL}(\pi_{\theta_\text{old}} | \pi_\theta)$ 关于 $\theta$ 求梯度：</p>
+<p>$$\nabla_\theta D_\text{KL}(\pi_{\theta_\text{old}} | \pi_\theta)<br>&#x3D; \nabla_\theta \sum_a \pi_{\theta_\text{old}}(a|s) \log \frac{\pi_{\theta_\text{old}}(a|s)}{\pi_\theta(a|s)}<br>&#x3D; -\nabla_\theta \sum_a \pi_{\theta_\text{old}}(a|s) \log \pi_\theta(a|s)$$</p>
+<p>$$&#x3D; -\sum_a \pi_{\theta_\text{old}}(a|s) \cdot \frac{\nabla_\theta \pi_\theta(a|s)}{\pi_\theta(a|s)}$$</p>
+<p>在 $\theta &#x3D; \theta_\text{old}$ 处，$\pi_\theta &#x3D; \pi_{\theta_\text{old}}$，代入：</p>
+<p>$$\left.\nabla_\theta D_\text{KL}\right|<em>{\theta&#x3D;\theta</em>\text{old}}<br>&#x3D; -\sum_a \nabla_\theta \pi_\theta(a|s)\big|<em>{\theta&#x3D;\theta</em>\text{old}}<br>&#x3D; -\nabla_\theta \underbrace{\sum_a \pi_\theta(a|s)}<em>{&#x3D;1,\ \forall\theta}\bigg|</em>{\theta&#x3D;\theta_\text{old}}<br>&#x3D; \mathbf{0}$$</p>
+<p>由于概率归一化 $\sum_a \pi_\theta(a|s) &#x3D; 1$ 对<strong>任意</strong> $\theta$ 成立，其关于 $\theta$ 的梯度恒为零向量。</p>
+<p><strong>二阶项：从一维到多维</strong></p>
+<p>一维情形：$f(x_0 + \delta) \approx f(x_0) + f’(x_0)\delta + \frac{1}{2}f’’(x_0)\delta^2$</p>
+<p>多维推广：</p>
+<p>$$f(\theta_0 + \delta) \approx f(\theta_0) + \nabla f(\theta_0)^\top \delta + \frac{1}{2}\delta^\top H(\theta_0), \delta$$</p>
+<p>其中 Hessian 矩阵的元素为 $H_{ij} &#x3D; \dfrac{\partial^2 f}{\partial \theta_i, \partial \theta_j}$，描述各参数方向上的曲率。</p>
+<p>对 KL 散度而言，这个 Hessian 恰好等于 <strong>Fisher 信息矩阵 $F$</strong>（见下节证明）。</p>
+<p><strong>三阶项的形状</strong></p>
+<p>$$\frac{1}{6}\sum_{i,j,k} \mathcal{T}<em>{ijk}, \delta_i, \delta_j, \delta_k, \qquad \mathcal{T}</em>{ijk} &#x3D; \frac{\partial^3 f}{\partial\theta_i,\partial\theta_j,\partial\theta_k}$$</p>
+<p>$p$ 阶项的一般规律：系数 $\dfrac{1}{p!}$ 乘以 $p$ 阶张量与 $\delta$ 的 $p$ 次缩并。TRPO 忽略三阶及以上项。</p>
+<h2 id="四、Fisher-信息矩阵"><a href="#四、Fisher-信息矩阵" class="headerlink" title="四、Fisher 信息矩阵"></a>四、Fisher 信息矩阵</h2><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>$$F(\theta) &#x3D; \mathbb{E}<em>{s \sim \rho,, a \sim \pi</em>\theta(\cdot|s)}!\left[\nabla_\theta \log \pi_\theta(a|s);\nabla_\theta \log \pi_\theta(a|s)^\top\right]$$</p>
+<p>其中 $\nabla_\theta \log \pi_\theta(a|s)$ 称为 <strong>score 函数</strong>（得分函数）。$F$ 是 score 函数外积的期望，是一个 $n \times n$ 的<strong>半正定矩阵</strong>。</p>
+<h4 id="对数导数技巧"><a href="#对数导数技巧" class="headerlink" title="对数导数技巧"></a>对数导数技巧</h4><p>$$\nabla_\theta \log \pi_\theta(a|s) &#x3D; \frac{\nabla_\theta \pi_\theta(a|s)}{\pi_\theta(a|s)}$$</p>
+<p>这是策略梯度定理的核心变换：将”对概率求梯度”转化为”对对数概率求梯度”，数值上更稳定，且便于利用 $\mathbb{E}<em>{a \sim \pi</em>\theta}[\cdot]$ 进行期望计算。</p>
+<h4 id="Fisher-矩阵-KL-散度的-Hessian（证明）"><a href="#Fisher-矩阵-KL-散度的-Hessian（证明）" class="headerlink" title="Fisher 矩阵 &#x3D; KL 散度的 Hessian（证明）"></a>Fisher 矩阵 &#x3D; KL 散度的 Hessian（证明）</h4><p>对 $D_\text{KL}(\pi_{\theta_\text{old}} | \pi_\theta)$ 关于 $\theta$ 求二阶导，在 $\theta &#x3D; \theta_\text{old}$ 处：</p>
+<p>$$H_{ij} &#x3D; -\frac{\partial^2}{\partial\theta_i,\partial\theta_j}\sum_a \pi_{\theta_\text{old}}(a|s)\log\pi_\theta(a|s)\bigg|<em>{\theta&#x3D;\theta</em>\text{old}}$$</p>
+<p>$$&#x3D; \sum_a \pi_{\theta_\text{old}}(a|s) \cdot \frac{\partial \log\pi_\theta(a|s)}{\partial\theta_i}\cdot\frac{\partial \log\pi_\theta(a|s)}{\partial\theta_j}\bigg|<em>{\theta&#x3D;\theta</em>\text{old}} &#x3D; F_{ij}$$</p>
+<p>同时有等价形式（利用 score 函数期望为零推导）：</p>
+<p>$$F &#x3D; -\mathbb{E}<em>{a \sim \pi</em>\theta}!\left[\nabla_\theta^2 \log \pi_\theta(a|s)\right]$$</p>
+<h4 id="自然梯度"><a href="#自然梯度" class="headerlink" title="自然梯度"></a>自然梯度</h4><p>在 KL 约束 $\frac{1}{2}\delta^\top F,\delta \leq \epsilon$ 下最大化线性目标 $g^\top \delta$（$g &#x3D; \nabla_\theta J(\theta)$ 为策略梯度），用拉格朗日乘子法：</p>
+<p>$$\mathcal{L}(\delta, \lambda) &#x3D; g^\top\delta - \lambda!\left(\tfrac{1}{2}\delta^\top F,\delta - \epsilon\right)$$</p>
+<p>$$\frac{\partial \mathcal{L}}{\partial \delta} &#x3D; g - \lambda F\delta &#x3D; \mathbf{0} \quad\Rightarrow\quad \delta^* &#x3D; \frac{1}{\lambda}F^{-1}g$$</p>
+<p>步长由约束 $\frac{1}{2}\delta^{<em>\top}F,\delta^</em> &#x3D; \epsilon$ 确定，解得 $\dfrac{1}{\lambda} &#x3D; \sqrt{\dfrac{2\epsilon}{g^\top F^{-1}g}}$，最终：</p>
+<p>$$\boxed{\delta^* &#x3D; \sqrt{\frac{2\epsilon}{g^\top F^{-1}g}}; F^{-1}g}$$</p>
+<p>这称为<strong>自然梯度</strong>方向，考虑了参数空间的黎曼曲率，比普通梯度方向更高效。</p>
+<h4 id="为什么-Fisher-矩阵很贵"><a href="#为什么-Fisher-矩阵很贵" class="headerlink" title="为什么 Fisher 矩阵很贵"></a>为什么 Fisher 矩阵很贵</h4><table>
+<thead>
+<tr>
+<th>网络规模</th>
+<th>$n$</th>
+<th>存储 $F$</th>
+<th>求逆 $F^{-1}$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>小型 MLP</td>
+<td>$10^4$</td>
+<td>400 MB</td>
+<td>可行但慢</td>
+</tr>
+<tr>
+<td>中型策略网络</td>
+<td>$10^6$</td>
+<td>≈ 4 TB</td>
+<td>不可行</td>
+</tr>
+<tr>
+<td>大语言模型</td>
+<td>$10^9$</td>
+<td>$\gg$ PB</td>
+<td>完全不可行</td>
+</tr>
+</tbody></table>
+<p>这正是 TRPO 需要共轭梯度法的根本原因。</p>
+<h2 id="五、共轭梯度法求解-F-1-g"><a href="#五、共轭梯度法求解-F-1-g" class="headerlink" title="五、共轭梯度法求解 $F^{-1}g$"></a>五、共轭梯度法求解 $F^{-1}g$</h2><h4 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h4><p>我们要的不是整个逆矩阵，只是一个向量 $x &#x3D; F^{-1}g$，等价于求解线性方程组：</p>
+<p>$$Fx &#x3D; g$$</p>
+<p>共轭梯度法（Conjugate Gradient, CG）专门解 $Ax &#x3D; b$ 这类<strong>对称正定</strong>线性方程组（Fisher 矩阵恰好满足这一条件），且有超强性质：</p>
+<blockquote>
+<p><strong>只需要能计算”$F$ 与某向量 $v$ 的乘积 $Fv$”，不需要显式存储 $F$</strong></p>
+</blockquote>
+<p>CG 迭代 $k$ 步即可（$k \ll n$），总计算量 $O(kn)$。</p>
+<h4 id="Hessian-Vector-Product（HVP）"><a href="#Hessian-Vector-Product（HVP）" class="headerlink" title="Hessian-Vector Product（HVP）"></a>Hessian-Vector Product（HVP）</h4><p>利用自动微分，$Fv$ 可以通过<strong>两次反向传播</strong>计算：</p>
+<p>$$Fv &#x3D; \nabla_\theta !\left[\left(\nabla_\theta D_\text{KL}(\pi_{\theta_\text{old}} | \pi_\theta)\right)^\top v\right]$$</p>
+<p>步骤：</p>
+<ol>
+<li>前向传播，计算 $D_\text{KL}$</li>
+<li>第一次反向传播：得到 $g_\text{KL} &#x3D; \nabla_\theta D_\text{KL}$（需要 <code>create_graph=True</code> 保留计算图）</li>
+<li>计算标量 $s &#x3D; g_\text{KL}^\top v$</li>
+<li>第二次反向传播：$\nabla_\theta s &#x3D; Fv$</li>
+</ol>
+<p>全程只需 $O(n)$ 内存，完全可行。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>存储</th>
+<th>计算复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显式存储并求逆 $F^{-1}$</td>
+<td>$O(n^2)$</td>
+<td>$O(n^3)$</td>
+</tr>
+<tr>
+<td>共轭梯度 + HVP</td>
+<td>$O(n)$</td>
+<td>$O(kn)$，$k \ll n$</td>
+</tr>
+</tbody></table>
+<h2 id="六、TRPO-伪代码逐行解析"><a href="#六、TRPO-伪代码逐行解析" class="headerlink" title="六、TRPO 伪代码逐行解析"></a>六、TRPO 伪代码逐行解析</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.distributions <span class="keyword">import</span> Categorical</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TRPO_Concept</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, policy_net</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.policy = policy_net</span><br></pre></td></tr></table></figure>
+
+<p><code>nn.Module</code> 是 PyTorch 所有神经网络的基类，提供参数管理、保存&#x2F;加载等功能。<code>super().__init__()</code> 必须调用，否则参数追踪机制不会生效。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_kl</span>(<span class="params">self, old_dist, new_dist</span>):</span><br><span class="line">    <span class="keyword">return</span> torch.distributions.kl.kl_divergence(old_dist, new_dist).mean()</span><br></pre></td></tr></table></figure>
+
+<p>计算一批状态上的平均 KL 散度：</p>
+<p>$$\bar{D}<em>\text{KL} &#x3D; \frac{1}{|B|}\sum</em>{s \in B} D_\text{KL}!\left(\pi_{\theta_\text{old}}(\cdot|s) ,|, \pi_\theta(\cdot|s)\right)$$</p>
+<p><code>.mean()</code> 对 batch 内所有状态取平均，对应约束中的 $\mathbb{E}_s[\cdot]$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trpo_step</span>(<span class="params">self, states, actions, advantages, old_log_probs, max_kl=<span class="number">0.01</span></span>):</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>数学符号</th>
+<th>形状</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>states</code></td>
+<td>${s_t}$</td>
+<td><code>[batch, state_dim]</code></td>
+</tr>
+<tr>
+<td><code>actions</code></td>
+<td>${a_t}$</td>
+<td><code>[batch]</code></td>
+</tr>
+<tr>
+<td><code>advantages</code></td>
+<td>${A_t}$</td>
+<td><code>[batch]</code></td>
+</tr>
+<tr>
+<td><code>old_log_probs</code></td>
+<td>${\log\pi_{\theta_\text{old}}(a_t</td>
+<td>s_t)}$</td>
+</tr>
+<tr>
+<td><code>max_kl</code></td>
+<td>$\epsilon$</td>
+<td>标量，默认 0.01</td>
+</tr>
+</tbody></table>
+<p><strong>Step 1：计算当前策略分布</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">logits = <span class="variable language_">self</span>.policy(states)</span><br><span class="line">new_dist = Categorical(logits=logits)</span><br><span class="line">new_log_probs = new_dist.log_prob(actions)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>logits</code>：网络输出原始得分，形状 <code>[batch, action_dim]</code></li>
+<li><code>Categorical</code>：内部执行 softmax，将 logits 转成合法概率分布：</li>
+</ul>
+<p>$$\pi_\theta(a|s) &#x3D; \frac{e^{z_a}}{\sum_{a’} e^{z_{a’}}}$$</p>
+<ul>
+<li><code>log_prob(actions)</code>：取出实际执行动作的 $\log\pi_\theta(a_t|s_t)$，形状 <code>[batch]</code></li>
+</ul>
+<p>用 logits 而非直接输出概率，是因为 softmax 内部做了数值稳定处理（log-sum-exp trick），避免概率连乘下溢到 0。</p>
+<p><strong>Step 2：计算重要性采样比率</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ratio = torch.exp(new_log_probs - old_log_probs)</span><br></pre></td></tr></table></figure>
+
+<p>对应公式 $r_t(\theta) &#x3D; \dfrac{\pi_\theta(a_t|s_t)}{\pi_{\theta_\text{old}}(a_t|s_t)}$，利用对数性质：</p>
+<p>$$r_t(\theta) &#x3D; \exp!\Big(\log\pi_\theta(a_t|s_t) - \log\pi_{\theta_\text{old}}(a_t|s_t)\Big)$$</p>
+<p>先减后 exp，比直接相除数值更稳定（避免两个极小概率相除产生数值爆炸）。</p>
+<p><strong>Step 3：计算代理目标函数</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loss = -(ratio * advantages).mean()</span><br></pre></td></tr></table></figure>
+
+<p>对应目标函数：</p>
+<p>$$L(\theta) &#x3D; \mathbb{E}_t!\left[r_t(\theta) \cdot A_t\right] \approx \frac{1}{|B|}\sum_t r_t(\theta) \cdot A_t$$</p>
+<p><strong>为什么取负号？</strong></p>
+<p>PyTorch 的优化器只做<strong>梯度下降</strong>（最小化），而我们想<strong>最大化</strong> $L(\theta)$：</p>
+<p>$$\max_\theta; L(\theta) \iff \min_\theta; {-L(\theta)}$$</p>
+<p>类比：你想找山顶，但手里只有”下坡工具”——把地图翻转，让山顶变谷底，下到谷底就等于爬上了山顶。强化学习里凡是要最大化的目标，在代码中均加负号。</p>
+<p><strong>Step 4：计算梯度并展平</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grads = torch.autograd.grad(loss, <span class="variable language_">self</span>.policy.parameters(), create_graph=<span class="literal">True</span>)</span><br><span class="line">flat_grads = torch.cat([g.view(-<span class="number">1</span>) <span class="keyword">for</span> g <span class="keyword">in</span> grads])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>torch.autograd.grad</code>：手动触发反向传播，返回 $g &#x3D; \nabla_\theta L(\theta)$</li>
+<li><code>create_graph=True</code>：保留计算图，使后续可对梯度再次求导（HVP 必需）</li>
+</ul>
+<p>各层参数形状不同，展平操作将所有梯度拼成一个长向量：</p>
+<p>$$g &#x3D; \left[\underbrace{g_{W_1}^\text{vec}}<em>{\text{第一层权重}},; \underbrace{g</em>{b_1}}<em>{\text{第一层偏置}},; \underbrace{g</em>{W_2}^\text{vec}}_{\text{第二层权重}},; \ldots\right] \in \mathbb{R}^n$$</p>
+<p>例如一个小网络：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Linear(64→32): weight [32,64] → 2048 个数，bias [32] → 32 个数</span><br><span class="line">Linear(32→8):  weight [8,32]  →  256 个数，bias  [8] →  8 个数</span><br><span class="line">flat_grads: shape [2344]</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Step 5（省略）：共轭梯度求解更新方向</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># step_direction = conjugate_gradient(HVP_function, flat_grads)</span></span><br></pre></td></tr></table></figure>
+
+<p>这里要解：</p>
+<p>$$F, d &#x3D; g \quad\Longrightarrow\quad d &#x3D; F^{-1}g$$</p>
+<p>其中 $F$ 通过 HVP 隐式使用（见第五节）。</p>
+<p>得到更新方向 $d$ 后，TRPO 还需做<strong>线性搜索（Line Search）</strong>：沿方向 $d$ 找到满足以下两个条件的最大步长 $\alpha$：</p>
+<ol>
+<li>KL 约束：$\mathbb{E}<em>s!\left[D</em>\text{KL}(\pi_{\theta_\text{old}} | \pi_{\theta+\alpha d})\right] \leq \epsilon$</li>
+<li>目标提升：$L(\theta + \alpha d) \geq L(\theta)$</li>
+</ol>
+<p>最终更新：$\theta \leftarrow \theta + \alpha, d$</p>
+<h2 id="七、完整数据流"><a href="#七、完整数据流" class="headerlink" title="七、完整数据流"></a>七、完整数据流</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">states  ──→  policy_net  ──→  logits  ──→  Categorical</span><br><span class="line">                                               │</span><br><span class="line">                                               ▼</span><br><span class="line">                                       new_log_probs [batch]</span><br><span class="line">                                               │</span><br><span class="line">                             old_log_probs ────┤</span><br><span class="line">                                               ▼</span><br><span class="line">                                  ratio = exp(new - old)  [batch]</span><br><span class="line">                                               │</span><br><span class="line">                             advantages ───────┤</span><br><span class="line">                                               ▼</span><br><span class="line">                               L = (ratio × adv).mean()</span><br><span class="line">                               loss = -L</span><br><span class="line">                                               │</span><br><span class="line">                                               ▼</span><br><span class="line">                               g = ∂loss/∂θ  (create_graph=True)</span><br><span class="line">                               flat_grads ∈ ℝⁿ</span><br><span class="line">                                               │</span><br><span class="line">                                               ▼</span><br><span class="line">                         共轭梯度法：解 Fd = g</span><br><span class="line">                         （每步用 HVP 算 Fv，无需存 F）</span><br><span class="line">                                               │</span><br><span class="line">                                               ▼</span><br><span class="line">                         线性搜索：找满足 KL ≤ ε 的步长 α</span><br><span class="line">                                               │</span><br><span class="line">                                               ▼</span><br><span class="line">                              θ ← θ + α · d</span><br></pre></td></tr></table></figure>
+
+<h2 id="八、总结与对比"><a href="#八、总结与对比" class="headerlink" title="八、总结与对比"></a>八、总结与对比</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>普通策略梯度</th>
+<th>TRPO</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>更新规则</td>
+<td>$\theta \leftarrow \theta + \alpha g$</td>
+<td>$\theta \leftarrow \theta + \alpha F^{-1}g$</td>
+</tr>
+<tr>
+<td>步长控制</td>
+<td>手动设置学习率</td>
+<td>KL 约束自动确定</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>容易崩塌</td>
+<td>有理论保证单调提升</td>
+</tr>
+<tr>
+<td>计算代价</td>
+<td>低 $O(n)$</td>
+<td>高 $O(kn)$，需 CG + HVP</td>
+</tr>
+<tr>
+<td>实现难度</td>
+<td>简单</td>
+<td>复杂</td>
+</tr>
+</tbody></table>
+<p>TRPO 的核心贡献是将”策略更新不能太激进”这一直觉<strong>严格数学化</strong>，并给出可行的计算方案。其后继者 PPO 用更简单的<strong>裁剪目标函数</strong>近似实现了类似效果，成为目前最主流的策略优化算法：</p>
+<p>$$L^\text{CLIP}(\theta) &#x3D; \mathbb{E}_t!\left[\min!\left(r_t(\theta)A_t,; \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\cdot A_t\right)\right]$$</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>Schulman et al., <em>Trust Region Policy Optimization</em>, ICML 2015. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1502.05477">arXiv:1502.05477</a></li>
 <li>Kakade &amp; Langford, <em>Approximately Optimal Approximate Reinforcement Learning</em>, ICML 2002.</li>
 <li>OpenAI Spinning Up: <a target="_blank" rel="noopener" href="https://spinningup.openai.com/en/latest/algorithms/trpo.html">TRPO</a></li>
